@@ -13,7 +13,7 @@ https://www.otree.org/
 ### Game format software library called Gambit
 http://www.gambit-project.org/
 
-### Game samples:
+### Game notes:
 http://jrwright.info/bgtcourse/winter2019/slides/06-PerfectInformation.pdf
 
 http://jrwright.info/bgtcourse/winter2019/slides/07-ImperfectInformation.pdf
