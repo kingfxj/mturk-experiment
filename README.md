@@ -1,9 +1,9 @@
 # MTurk-Experiment
 ## Resources
 
-### Googld Folder
+### Google Folder
 https://drive.google.com/drive/folders/1KYlwpVTTX0rzLuJ9vFENwyXi8BWl4DT-?usp=sharing
-#### Chart
+### Experiment/HIT diagram
 https://lucid.app/lucidchart/invitations/accept/034d729e-5cc0-4f02-9658-682ee829df0d
 
 ### MTurk API references
