@@ -10,5 +10,5 @@ Windows: ```./venv/Scripts/activate```<br><br>
 # PostgreSQL
 We are going to use PostgreSQL as a backend database as it is well-suited for production use.<br><br>
 To avoid the headache of everyone having to setup local a PostgreSQL server attempting to keep data synced while developing, we are going to make use of a cloud hosted PostgreSQL server service. We have chosen **ElephantSQL** (https://www.elephantsql.com/) to accomplish this.<br><br>
-You will find the database connection information for our ElephantSQL instance in ```mturksite/mturksite/settings.py``` in the DATABASES dictionary (or in our MTurk Framework backend instance in ElephantSQL). <br><br>
+You will find the connection information for our ElephantSQL instance in ```mturksite/mturksite/settings.py``` in the DATABASES dictionary (or in our MTurk Framework backend instance in ElephantSQL). <br><br>
 It is strongly reccommended that you install **pgAdmin 4** (https://www.pgadmin.org/) to use as a PostgreSQL management tool. Once installed, use the small tutorial found here https://www.elephantsql.com/docs/pgadmin.html to connect pgAdmin to our cloud PostgreSQL server, and off you go!
