@@ -1,29 +1,15 @@
-# MTurk-Experiment
-## Resources
+# Python Virtual Environment
+We are going to use a python virtual environment to avoid dependency problems.
+### *To install dependencies from requirements.txt*
+First, create a virtual environment in the root directory of you local repo.<br><br>
+Then, activate the virtual environment (assuming venv is the name of your virtual environment):<br>
+**Linux/Mac:** ```source venv/bin/activate```<br>
+**Windows:** ```./venv/Scripts/activate```<br><br>
+Then, while the venv is active, install dependencies from requirements.txt<br>
+```pip install -r requirements.txt```
 
-### Google Folder
-https://drive.google.com/drive/folders/1KYlwpVTTX0rzLuJ9vFENwyXi8BWl4DT-?usp=sharing
-### Experiment/HIT diagram
-https://lucid.app/lucidchart/invitations/accept/034d729e-5cc0-4f02-9658-682ee829df0d
-
-### MTurk API references
-https://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/Welcome.html
-https://docs.aws.amazon.com/cli/latest/reference/mturk/index.html
-
-### Turkserver
-https://github.com/dchui1/turkserver-demo#running-for-development
-
-https://github.com/TurkServer/long-run-cooperation
-
-https://turkserver.readthedocs.io/en/latest/
-
-### oTree
-https://www.otree.org/
-
-### Game format software library called Gambit
-http://www.gambit-project.org/
-
-### Game notes
-http://jrwright.info/bgtcourse/winter2019/slides/06-PerfectInformation.pdf
-
-http://jrwright.info/bgtcourse/winter2019/slides/07-ImperfectInformation.pdf
+# PostgreSQL
+We are going to use PostgreSQL as a backend database as it is well-suited for production use.<br><br>
+To avoid the headache of everyone having to setup local a PostgreSQL server attempting to keep data synced while developing, we are going to make use of a cloud hosted PostgreSQL server service. We have chosen **ElephantSQL** (https://www.elephantsql.com/) to accomplish this. ***WARNING: THIS MEANS THAT ANY DATABASE CHANGES WILL AFFECT EVERYONE.***<br><br>
+You will find the connection information for our ElephantSQL instance in ```mturksite/mturksite/settings.py``` in the DATABASES dictionary (or in our *MTurk Framework backend* instance in ElephantSQL). <br><br>
+It is strongly recommended that you install **pgAdmin 4** (https://www.pgadmin.org/) to use as a PostgreSQL management tool. Once installed, use the small tutorial found here https://www.elephantsql.com/docs/pgadmin.html to connect pgAdmin to our cloud PostgreSQL server. Once connected, scroll down the list of databases to find our specific database, and off you go!
