@@ -2,7 +2,7 @@
 We are going to use a python virtual environment to avoid dependency problems.
 ### *To install dependencies from requirements.txt*
 First, create a virtual environment in the root directory of you local repo.<br><br>
-Then, activate virtualenv (assuming venv is the name of your virtual environment):<br>
+Then, activate the virtual environment (assuming venv is the name of your virtualenv):<br>
 **Linux/Mac:** ```source venv/bin/activate```<br>
 **Windows:** ```./venv/Scripts/activate```<br><br>
 Then, while the venv is active, install dependencies from requirements.txt<br>
