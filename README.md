@@ -6,7 +6,8 @@ Then, activate the virtual environment (assuming venv is the name of your virtua
 **Linux/Mac:** ```source venv/bin/activate```<br>
 **Windows:** ```./venv/Scripts/activate```<br><br>
 Then, while the venv is active, install dependencies from requirements.txt<br>
-```pip install -r requirements.txt```
+```pip install -r requirements.txt```<br><br>
+**Remember to keep your python virtual environment activated while developing**
 
 # PostgreSQL
 We are going to use PostgreSQL as a backend database as it is well-suited for production use.<br><br>
