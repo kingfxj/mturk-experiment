@@ -10,6 +10,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Button from "@material-ui/core/Button";
+import AccountCircleTwoToneIcon from "@material-ui/icons/AccountCircleTwoTone";
+import TelegramIcon from "@material-ui/icons/Telegram";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,7 +55,13 @@ export const LoginPage = () => {
   return (
     <div className="login">
       <div>
-        <h2 style={{ color: "#f50057" }}>SIGN IN</h2>
+        <AccountCircleTwoToneIcon className="scale_icons" />
+      </div>
+      <br></br>
+      <div>
+        <h2 className="style_bold" style={{ color: "#f50057" }}>
+          SIGN IN
+        </h2>
       </div>
       <div>
         <FormControl className={clsx(classes.margin, classes.textField)}>
@@ -99,6 +107,7 @@ export const LoginPage = () => {
           variant="contained"
           color="secondary"
           className={classes.button}
+          endIcon={<TelegramIcon></TelegramIcon>}
         >
           LOGIN
         </Button>

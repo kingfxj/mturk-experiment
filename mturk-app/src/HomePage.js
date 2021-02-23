@@ -52,14 +52,15 @@ export const HomePage = () => {
     {
       title: "Birth Place",
       field: "birthCity",
-      lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
+      lookup: { 34: "Calgary", 63: "Edmonton" },
     },
   ]);
 
   const [data, setData] = useState([
-    { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
-    { name: "Zerya Betül", surname: "Baran", birthYear: 2017, birthCity: 34 },
+    { name: "Jonathan", surname: "issaGod", birthYear: 1987, birthCity: 63 },
+    { name: "Ildar", surname: "issaGod", birthYear: 2020, birthCity: 34 },
   ]);
+
   return (
     <MaterialTable
       icons={tableIcons}
@@ -73,9 +74,11 @@ export const HomePage = () => {
           backgroundColor: "#a5bddd",
           color: "#FFF",
           fontSize: 15,
+          textAlign: "center",
         },
         cellStyle: {
           fontSize: 12,
+          textAlign: "center",
         },
       }}
       actions={[
@@ -86,18 +89,25 @@ export const HomePage = () => {
             alert("You want to pay " + data.length + " Turkers!"),
         },
       ]}
-      detailPanel={(rowData) => {
-        return (
-          <iframe
-            width="100%"
-            height="315"
-            src="https://www.youtube.com/embed/C0DPdy98e4c"
-            frameborder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          />
-        );
-      }}
+      detailPanel={[
+        {
+          tooltip: "Show/Hide",
+          render: (rowData) => {
+            return (
+              <div
+                style={{
+                  fontSize: 50,
+                  textAlign: "center",
+                  color: "white",
+                  backgroundColor: "#a5bddd",
+                }}
+              >
+                {rowData.name} {rowData.surname}
+              </div>
+            );
+          },
+        },
+      ]}
       editable={{
         onRowUpdate: (newData, oldData) =>
           new Promise((resolve, reject) => {
