@@ -77,10 +77,11 @@ WSGI_APPLICATION = 'mturksite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zpmliizx',
-        'USER': 'zpmliizx',
-        'PASSWORD': 'wO8rCX0uaV6W5pLSm12WI8bFsz3xQGDX',
-        'HOST': 'ziggy.db.elephantsql.com',
+        'NAME': 'mturksite',
+        'USER': 'mturksite',
+        'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
+        'HOST': '10.2.9.178',
+        #'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
         'PORT': '5432',
     }
 }
