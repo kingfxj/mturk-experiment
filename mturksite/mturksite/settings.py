@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,8 +79,8 @@ DATABASES = {
         'NAME': 'mturksite',
         'USER': 'mturksite',
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
-        'HOST': '10.2.9.178',
-        #'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
+        # 'HOST': '10.2.9.178',
+        'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
         'PORT': '5432',
     }
 }
