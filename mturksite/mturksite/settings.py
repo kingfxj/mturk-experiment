@@ -54,7 +54,9 @@ ROOT_URLCONF = 'mturksite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            Path.joinpath(BASE_DIR, 'react-app/build')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,8 +81,8 @@ DATABASES = {
         'NAME': 'mturksite',
         'USER': 'mturksite',
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
-        # 'HOST': '10.2.9.178',
-        'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
+        'HOST': '10.2.9.178',
+        #'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
         'PORT': '5432',
     }
 }
@@ -123,3 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    Path.joinpath(BASE_DIR, 'react-app/build/static'),
+]
