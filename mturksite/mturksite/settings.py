@@ -54,9 +54,7 @@ ROOT_URLCONF = 'mturksite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            Path.joinpath(BASE_DIR, 'react-app/build')
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,7 +123,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    Path.joinpath(BASE_DIR, 'react-app/build/static'),
-]
