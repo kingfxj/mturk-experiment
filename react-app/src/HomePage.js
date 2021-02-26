@@ -52,13 +52,22 @@ export const HomePage = () => {
     {
       title: "Birth Place",
       field: "birthCity",
-      lookup: { 34: "Calgary", 63: "Edmonton" },
     },
   ]);
 
   const [data, setData] = useState([
-    { name: "Jonathan", surname: "issaGod", birthYear: 1987, birthCity: 63 },
-    { name: "Ildar", surname: "issaGod", birthYear: 2020, birthCity: 34 },
+    {
+      name: "Jonathan",
+      surname: "issaGod",
+      birthYear: 1987,
+      birthCity: "Edmonton",
+    },
+    {
+      name: "Ildar",
+      surname: "issaGod",
+      birthYear: 2020,
+      birthCity: "Calgary",
+    },
   ]);
 
   return (

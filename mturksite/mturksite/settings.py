@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mturk_app.apps.MturkAppConfig',
+    'rest_framework',
+    'frontend'
 ]
 
 MIDDLEWARE = [
@@ -79,8 +82,8 @@ DATABASES = {
         'NAME': 'mturksite',
         'USER': 'mturksite',
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
-        'HOST': '10.2.9.178',
-        #'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
+        #'HOST': '10.2.9.178',
+        'HOST': '2605:fd00:4:1001:f816:3eff:fe72:95e9',
         'PORT': '5432',
     }
 }
@@ -123,3 +126,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# enable/disable browseable API
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
