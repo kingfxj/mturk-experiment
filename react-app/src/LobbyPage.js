@@ -6,6 +6,7 @@ import {
   Dropdown,
   Table,
 } from "react-bootstrap";
+import mButton from "@material-ui/core/Button";
 
 const lobbyName = "Lobby 1";
 // Lobby page
@@ -14,6 +15,11 @@ export const LobbyPage = () => {
     <div>
       {/* Lobby info */}
       <Jumbotron style={{ color: "#282c34" }}>
+        <div style={{ fontSize: 15, display: "flex" }}>
+          <Button variant="info" style={{ marginLeft: "auto" }}>
+            Create Lobby
+          </Button>
+        </div>
         <div style={{ display: "flex" }}>
           <h1 style={{ marginRight: "auto" }}>Lobby</h1>
           <DropdownButton
