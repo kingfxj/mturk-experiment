@@ -9,7 +9,7 @@ export const NavBar = () => (
     <Nav className="mr-auto">
       {/* navbar paths to corresponding pages */}
       <Nav.Link href="/">Home</Nav.Link>
-      <Nav.Link href="/about">About</Nav.Link>
+      <Nav.Link href="/lobby">Lobby</Nav.Link>
       <Nav.Link href="/login">Login</Nav.Link>
     </Nav>
   </Navbar>

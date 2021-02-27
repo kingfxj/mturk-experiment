@@ -55,69 +55,71 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="login">
-      {/* icon */}
-      <div>
-        <AccountCircleTwoToneIcon className="scale_icons" />
-      </div>
-      <br></br>
-      {/* SIGN IN title */}
-      <div>
-        <h2 className="style_bold" style={{ color: "#f50057" }}>
-          SIGN IN
-        </h2>
-      </div>
-      {/* username field */}
-      <div>
-        <FormControl className={clsx(classes.margin, classes.textField)}>
-          <InputLabel color="secondary" htmlFor="standard-adornment-username">
-            Username
-          </InputLabel>
-          <Input
-            id="standard-adornment-username"
-            value={values.username}
-            color="secondary"
-            onChange={handleChange("username")}
-          />
-        </FormControl>
-      </div>
-      {/* password field */}
-      <div>
-        <FormControl className={clsx(classes.margin, classes.textField)}>
-          <InputLabel color="secondary" htmlFor="standard-adornment-password">
-            Password
-          </InputLabel>
-          <Input
-            id="standard-adornment-password"
-            type={values.showPassword ? "text" : "password"}
-            value={values.password}
-            color="secondary"
-            onChange={handleChange("password")}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-      </div>
-      {/* LOGIN button */}
-      <div>
+    <div className="background">
+      <div className="login">
+        {/* icon */}
+        <div>
+          <AccountCircleTwoToneIcon className="scale_icons" />
+        </div>
         <br></br>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          endIcon={<TelegramIcon></TelegramIcon>}
-        >
-          LOGIN
-        </Button>
+        {/* SIGN IN title */}
+        <div>
+          <h2 className="style_bold" style={{ color: "#f50057" }}>
+            SIGN IN
+          </h2>
+        </div>
+        {/* username field */}
+        <div>
+          <FormControl className={clsx(classes.margin, classes.textField)}>
+            <InputLabel color="secondary" htmlFor="standard-adornment-username">
+              Username
+            </InputLabel>
+            <Input
+              id="standard-adornment-username"
+              value={values.username}
+              color="secondary"
+              onChange={handleChange("username")}
+            />
+          </FormControl>
+        </div>
+        {/* password field */}
+        <div>
+          <FormControl className={clsx(classes.margin, classes.textField)}>
+            <InputLabel color="secondary" htmlFor="standard-adornment-password">
+              Password
+            </InputLabel>
+            <Input
+              id="standard-adornment-password"
+              type={values.showPassword ? "text" : "password"}
+              value={values.password}
+              color="secondary"
+              onChange={handleChange("password")}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+        </div>
+        {/* LOGIN button */}
+        <div>
+          <br></br>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            endIcon={<TelegramIcon></TelegramIcon>}
+          >
+            LOGIN
+          </Button>
+        </div>
       </div>
     </div>
   );

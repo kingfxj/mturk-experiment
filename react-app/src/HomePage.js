@@ -87,12 +87,12 @@ export const HomePage = () => {
           selection: true,
           headerStyle: {
             backgroundColor: "#a5bddd",
-            color: "#FFF",
-            fontSize: 15,
+            color: "black",
+            fontSize: 20,
             textAlign: "center",
           },
           cellStyle: {
-            fontSize: 12,
+            fontSize: 15,
             textAlign: "center",
           },
         }}
@@ -113,9 +113,9 @@ export const HomePage = () => {
               return (
                 <div
                   style={{
-                    fontSize: 50,
+                    fontSize: 40,
                     textAlign: "center",
-                    color: "white",
+                    color: "black",
                     backgroundColor: "#a5bddd",
                   }}
                 >
