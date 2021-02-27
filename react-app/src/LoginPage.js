@@ -59,7 +59,10 @@ export const LoginPage = () => {
       <div className="login">
         {/* icon */}
         <div>
-          <AccountCircleTwoToneIcon className="scale_icons" />
+          <AccountCircleTwoToneIcon
+            className="scale_icons"
+            style={{ color: "white" }}
+          />
         </div>
         <br></br>
         {/* SIGN IN title */}

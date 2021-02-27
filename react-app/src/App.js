@@ -3,10 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { HomePage } from "./HomePage";
 import { LobbyPage } from "./LobbyPage";
 import { LoginPage } from "./LoginPage";
-import { NotFoundPage } from "./NotFoundPage.js";
+import { NotFoundPage } from "./NotFoundPage";
 import { NavBar } from "./NavBar";
+import { AssignmentsPage } from "./AssignmentsPage";
+import { HITsPage } from "./HITsPage";
+import { HITTypesPage } from "./HITTypesPage";
 
-// displays everything - navbar, pages with corresponding path routes
+// displays everything - navbar + pages with corresponding path routes
 function App() {
   return (
     <div className="App">
@@ -16,6 +19,15 @@ function App() {
           <Switch>
             <Route path="/" exact>
               <HomePage />
+            </Route>
+            <Route path="/hittypes" exact>
+              <HITTypesPage />
+            </Route>
+            <Route path="/hits" exact>
+              <HITsPage />
+            </Route>
+            <Route path="/assignments" exact>
+              <AssignmentsPage />
             </Route>
             <Route path="/lobby" exact>
               <LobbyPage />
