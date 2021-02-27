@@ -24,3 +24,9 @@ test("Login on NavBar exists and is visible", () => {
   render(<App />);
   expect(screen.getByText("Login")).toBeInTheDocument();
 });
+
+// check if 'Assignments' title in table exists and is visible
+test("Assignments table exists and is visible", () => {
+  render(<App />);
+  expect(screen.getByText("Assignments")).toBeInTheDocument();
+});
