@@ -1,8 +1,32 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-test('renders learn react link', () => {
+// check if 'MTurk' exists and is visible on NavBar
+test("MTurk on NavBar exists and is visible", () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByText("MTurk")).toBeInTheDocument();
+});
+
+// check if 'Home' exists and is visible on NavBar
+test("Home on NavBar exists and is visible", () => {
+  render(<App />);
+  expect(screen.getByText("Home")).toBeInTheDocument();
+});
+
+// check if 'About' exists and is visible on NavBar
+test("About on NavBar exists and is visible", () => {
+  render(<App />);
+  expect(screen.getByText("About")).toBeInTheDocument();
+});
+
+// check if 'Login' exists and is visible on NavBar
+test("Login on NavBar exists and is visible", () => {
+  render(<App />);
+  expect(screen.getByText("Login")).toBeInTheDocument();
+});
+
+// check if 'Assignments' title in table exists and is visible
+test("Assignments table exists and is visible", () => {
+  render(<App />);
+  expect(screen.getByText("Assignments")).toBeInTheDocument();
 });
