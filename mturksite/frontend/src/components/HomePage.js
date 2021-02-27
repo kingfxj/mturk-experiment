@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import MaterialTable from "material-table";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
@@ -15,6 +15,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import LocalAtmIcon from "@material-ui/icons/LocalAtm";
 
+// icons
 const tableIcons = {
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
@@ -40,13 +41,13 @@ const tableIcons = {
   )),
 };
 
+// set assignments variables
 export const HomePage = () => {
   const [columns, setColumns] = useState([
     { title: "Name", field: "name" },
     {
       title: "Surname",
       field: "surname",
-      initialEditValue: "initial edit value",
     },
     { title: "Birth Year", field: "birthYear", type: "numeric" },
     {
@@ -55,81 +56,87 @@ export const HomePage = () => {
     },
   ]);
 
-  const [data, setData] = useState([
-    {
-      name: "Jonathan",
-      surname: "issaGod",
-      birthYear: 1987,
-      birthCity: "Edmonton",
-    },
-    {
-      name: "Ildar",
-      surname: "issaGod",
-      birthYear: 2020,
-      birthCity: "Calgary",
-    },
-  ]);
+  // set/get data from json with path 'test/'
+  const [data, setData] = useState([]);
+  const getData = () => {
+    fetch("test/")
+      .then(function (response) {
+        // console.log(response);
+        return response.json();
+      })
+      .then(function (myJson) {
+        // console.log(myJson);
+        setData(myJson);
+      });
+  };
+  useEffect(() => {
+    getData();
+  }, []);
 
+  // return material table with given data
   return (
-    <MaterialTable
-      icons={tableIcons}
-      title="Assignments"
-      columns={columns}
-      data={data}
-      options={{
-        filtering: true,
-        selection: true,
-        headerStyle: {
-          backgroundColor: "#a5bddd",
-          color: "#FFF",
-          fontSize: 15,
-          textAlign: "center",
-        },
-        cellStyle: {
-          fontSize: 12,
-          textAlign: "center",
-        },
-      }}
-      actions={[
-        {
-          tooltip: "Pay Selected Users",
-          icon: LocalAtmIcon,
-          onClick: (evt, data) =>
-            alert("You want to pay " + data.length + " Turkers!"),
-        },
-      ]}
-      detailPanel={[
-        {
-          tooltip: "Show/Hide",
-          render: (rowData) => {
-            return (
-              <div
-                style={{
-                  fontSize: 50,
-                  textAlign: "center",
-                  color: "white",
-                  backgroundColor: "#a5bddd",
-                }}
-              >
-                {rowData.name} {rowData.surname}
-              </div>
-            );
+    data && data.length > 0 && data.map((item) => <p>{item.about}</p>),
+    (
+      <MaterialTable
+        icons={tableIcons}
+        title="Assignments"
+        columns={columns}
+        data={data}
+        options={{
+          filtering: true,
+          selection: true,
+          headerStyle: {
+            backgroundColor: "#a5bddd",
+            color: "#FFF",
+            fontSize: 15,
+            textAlign: "center",
           },
-        },
-      ]}
-      editable={{
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              const dataUpdate = [...data];
-              const index = oldData.tableData.id;
-              dataUpdate[index] = newData;
-              setData([...dataUpdate]);
+          cellStyle: {
+            fontSize: 12,
+            textAlign: "center",
+          },
+        }}
+        actions={[
+          {
+            tooltip: "Pay Selected Users",
+            icon: LocalAtmIcon,
+            onClick: (evt, data) =>
+              alert("You want to pay " + data.length + " Turkers!"),
+          },
+        ]}
+        detailPanel={[
+          {
+            tooltip: "Show/Hide",
+            render: (rowData) => {
+              return (
+                <div
+                  style={{
+                    fontSize: 50,
+                    textAlign: "center",
+                    color: "white",
+                    backgroundColor: "#a5bddd",
+                  }}
+                >
+                  {rowData.name} {rowData.surname}
+                </div>
+              );
+            },
+          },
+        ]}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                const dataUpdate = [...data];
+                const index = oldData.tableData.id;
+                dataUpdate[index] = newData;
+                setData([...dataUpdate]);
 
-              resolve();
-            }, 1000);
-          }),
-      }}
-    />
+                resolve();
+              }, 1000);
+            }),
+        }}
+      />
+    )
   );
 };
