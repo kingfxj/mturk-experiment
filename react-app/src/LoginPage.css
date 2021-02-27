@@ -1,13 +1,16 @@
+/* login background */
 .login {
   background-color: #a5bddd;
   border-radius: 15px;
   padding: 40px;
 }
 
+/* scale size of login icon */
 .scale_icons {
   transform: scale(5);
 }
 
+/* SIGN IN title - bold */
 .style_bold {
   font-weight: bold;
 }

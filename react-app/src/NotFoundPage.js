@@ -1,5 +1,6 @@
 import React from "react";
 
+// NotFoundPage for unassigned paths + redirecting back to Home Page
 export const NotFoundPage = () => {
   return (
     <div>

@@ -8,7 +8,7 @@ import { HomePage } from "./HomePage";
 // import { NotFoundPage } from "./NotFoundPage.js";
 // import { NavBar } from "./NavBar";
 
-// Displays NavBar, then the following pages with its corresponding paths
+// displays everything - navbar, pages with corresponding path routes
 function App() {
   return (
     <div className="App">

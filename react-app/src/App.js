@@ -6,6 +6,7 @@ import { LoginPage } from "./LoginPage";
 import { NotFoundPage } from "./NotFoundPage.js";
 import { NavBar } from "./NavBar";
 
+// displays everything - navbar, pages with corresponding path routes
 function App() {
   return (
     <div className="App">

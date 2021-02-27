@@ -13,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import AccountCircleTwoToneIcon from "@material-ui/icons/AccountCircleTwoTone";
 import TelegramIcon from "@material-ui/icons/Telegram";
 
+// login styling
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -34,35 +35,39 @@ const useStyles = makeStyles((theme) => ({
 
 export const LoginPage = () => {
   const classes = useStyles();
+
+  // username/password variables
   const [values, setValues] = React.useState({
     username: "",
     password: "",
     showPassword: false,
   });
 
+  // handling
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
-
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
   return (
     <div className="login">
+      {/* icon */}
       <div>
         <AccountCircleTwoToneIcon className="scale_icons" />
       </div>
       <br></br>
+      {/* SIGN IN title */}
       <div>
         <h2 className="style_bold" style={{ color: "#f50057" }}>
           SIGN IN
         </h2>
       </div>
+      {/* username field */}
       <div>
         <FormControl className={clsx(classes.margin, classes.textField)}>
           <InputLabel color="secondary" htmlFor="standard-adornment-username">
@@ -76,6 +81,7 @@ export const LoginPage = () => {
           />
         </FormControl>
       </div>
+      {/* password field */}
       <div>
         <FormControl className={clsx(classes.margin, classes.textField)}>
           <InputLabel color="secondary" htmlFor="standard-adornment-password">
@@ -101,6 +107,7 @@ export const LoginPage = () => {
           />
         </FormControl>
       </div>
+      {/* LOGIN button */}
       <div>
         <br></br>
         <Button

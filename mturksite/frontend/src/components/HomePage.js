@@ -82,6 +82,7 @@ export const HomePage = () => {
         title="Assignments"
         columns={columns}
         data={data}
+        // filtering/selection option + table styles
         options={{
           filtering: true,
           selection: true,
@@ -96,6 +97,7 @@ export const HomePage = () => {
             textAlign: "center",
           },
         }}
+        // pay option
         actions={[
           {
             tooltip: "Pay Selected Users",
@@ -104,6 +106,7 @@ export const HomePage = () => {
               alert("You want to pay " + data.length + " Turkers!"),
           },
         ]}
+        // preview/additional info on assignments
         detailPanel={[
           {
             tooltip: "Show/Hide",
@@ -123,6 +126,7 @@ export const HomePage = () => {
             },
           },
         ]}
+        // edit assignments row option
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
