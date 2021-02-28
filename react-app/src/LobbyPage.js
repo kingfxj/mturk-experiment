@@ -6,7 +6,6 @@ import {
   Dropdown,
   Table,
 } from "react-bootstrap";
-import mButton from "@material-ui/core/Button";
 
 const lobbyName = "Lobby 1";
 // Lobby page
@@ -15,11 +14,13 @@ export const LobbyPage = () => {
     <div>
       {/* Lobby info */}
       <Jumbotron style={{ color: "#282c34" }}>
+        {/* Create lobby button */}
         <div style={{ fontSize: 15, display: "flex" }}>
           <Button variant="info" style={{ marginLeft: "auto" }}>
             Create Lobby
           </Button>
         </div>
+        {/* Current lobby dropdown button */}
         <div style={{ display: "flex" }}>
           <h1 style={{ marginRight: "auto" }}>Lobby</h1>
           <DropdownButton
@@ -31,6 +32,7 @@ export const LobbyPage = () => {
             <Dropdown.Item href="#/action-1">{lobbyName}</Dropdown.Item>
           </DropdownButton>
         </div>
+        {/* Additional info text */}
         <p style={{ display: "flex" }}>
           Viewing lobby users in batch {lobbyName}
         </p>
@@ -40,6 +42,7 @@ export const LobbyPage = () => {
             <br></br>0 ready users in current lobby
           </p>
         </div>
+        {/* Trigger lobby event button */}
         <div style={{ fontSize: 15, display: "flex" }}>
           <Button variant="warning">Trigger Lobby Event</Button>
         </div>
