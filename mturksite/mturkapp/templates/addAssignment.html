@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %} Add Assignments {% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Add Assignment</h1>
+
+    <table class="table table-bordered table-primary">
+        <form class="d-flex" method="POST">
+            {% csrf_token %}
+            <tr><td>Name:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Name" Search aria-label="Search" name="name"></td>
+            </tr>
+            <tr><td>Surname:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Surame" Search aria-label="Search" name="surname"></td>
+            </tr>
+            <tr><td>Birth Year:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Birth Year" Search aria-label="Search" name="birthYear"></td>
+            </tr>
+            <tr><td>Birth Place:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Birth City" Search aria-label="Search" name="birthCity"></td>
+            </tr>
+                <td></br>
+                    <input type="submit" value="Submit">
+                </td>
+            </td>
+        </form>
+    </table>
+{% endblock %}
