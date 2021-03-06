@@ -20,14 +20,15 @@
                 <a class="navbar-brand text-success">Mturk</a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!--assignments, qualifications, lobby, HITs/HITTypes, login page , home page-->
+                        <li class="nav-item">
+                            <a class="nav-link active text-info" href="{% url 'assignmentView' %}">Log in</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link active text-info" href="{% url 'assignmentView' %}">Assignments</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active text-info" href="{% url 'maintenanceView' %}">Maintenance</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active text-info" href="{% url 'userManagementView' %}">User Management</a>
+                            <a class="nav-link active text-info" href="{% url 'maintenanceView' %}">Qualification</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active text-info" href="{% url 'lobbyView' %}">Lobby</a>
