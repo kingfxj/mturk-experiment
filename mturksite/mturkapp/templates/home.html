@@ -1,6 +1,6 @@
 <center>
     {% if user.is_authenticated %}
-        <h1>Hi {{ user.username }}!</h1>
+        <h1>Hi, {{ user.username }}!</h1>
         <h2><a href="{% url 'assignmentView'%}">Assignment</a></h2>
         <h3><a href="{% url 'logout' %}">Log Out</a></h3>
     {% else %}

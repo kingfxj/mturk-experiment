@@ -133,7 +133,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-LOGIN_REDIRECT_URL = 'assignmentView'
+LOGIN_REDIRECT_URL = 'homeView'
 LOGOUT_REDIRECT_URL = 'homeView'
 
 STATIC_URL = '/static/'
