@@ -2,32 +2,47 @@
 
 {% block title %} Add Assignments {% endblock %}
 
+{% block login %}
+    <h1 style="text-align:center">Add Assignment</h1>
+{% endblock %}
+
 {% block content %}
     <h1 style="text-align:center">Add Assignment</h1>
 
-    <table class="table table-bordered table-primary">
-        <form class="d-flex" method="POST">
-            {% csrf_token %}
+    <form class="d-flex" method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-primary">
             <tr><td>Name:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Name" Search aria-label="Search" name="name"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Name"  aria-label="Search" name="name"></td>
             </tr>
             <tr><td>Surname:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Surame" Search aria-label="Search" name="surname"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Surame" aria-label="Search" name="surname"></td>
             </tr>
             <tr><td>Birth Year:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Birth Year" Search aria-label="Search" name="birthYear"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Birth Year" aria-label="Search" name="birthYear"></td>
             </tr>
             <tr><td>Birth Place:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Birth City" Search aria-label="Search" name="birthCity"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Birth City" aria-label="Search" name="birthCity"></td>
             </tr>
+            <tr><td>Active:</td></tr>
+            <tr>
+                <td>
+                    <select class="form-control me-2" name="active">
+                        <option value="">--Please select an option--</option>
+                        <option value=True>True</option>
+                        <option value=False>False</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td></br>
                     <input type="submit" value="Submit">
                 </td>
-            </td>
-        </form>
-    </table>
+            </tr>
+        </table>
+    </form>
 {% endblock %}

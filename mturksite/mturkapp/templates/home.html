@@ -1,0 +1,9 @@
+{% if user.is_authenticated %}
+    <h1><center>Hi {{ user.username }}!</center></h1>
+    <h2><center><a href="{% url 'assignmentView'%}">Assignment</a></center></h2>
+    <h3><center><a href="{% url 'logout' %}">Log Out</a></center></h3>
+{% else %}
+    <h1><center>You are not logged in</center></h1>
+    <h2><center><a href="{% url 'login' %}">Log In</a></center></h2></br>
+    <h3><center>Don't have an account? <a href="{% url 'signup' %}">Create one</a></center></h3>
+{% endif %}
