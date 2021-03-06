@@ -12,7 +12,6 @@ class SignUpForm(UserCreationForm):
 
 
 class assignmentForm(forms.ModelForm):
-    # active = forms.ModelChoiceField(label="", queryset=Assignment.objects.all(), empty_label="--Please select an option--")
     class Meta:
         model = Assignment
         fields = ['name', 'surname', 'birthYear', 'birthCity', 'active']

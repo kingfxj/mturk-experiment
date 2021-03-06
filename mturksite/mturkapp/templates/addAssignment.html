@@ -3,6 +3,7 @@
 {% block title %} Add Assignments {% endblock %}
 
 {% block login %}
+    <!-- Data is not shown if they are not logged in -->
     <h1 style="text-align:center">Add Assignment</h1>
 {% endblock %}
 
@@ -39,9 +40,7 @@
                 </td>
             </tr>
             <tr>
-                <td></br>
-                    <input type="submit" value="Submit">
-                </td>
+                <td><input type="submit" value="Submit"></td>
             </tr>
         </table>
     </form>

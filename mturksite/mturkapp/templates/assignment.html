@@ -3,22 +3,19 @@
 {% block title %} Assignments {% endblock %}
 
 {% block login %}
+    <!-- Data is not shown if they are not logged in -->
     <h1 style="text-align:center">Assignment</h1>
 {% endblock %}
 
 {% block content %}
     <h1 style="text-align:center">Assignment</h1>
 
-    {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
-            {{ message }}
-        </div>
-    {% endfor %}
+     {% include 'messages.html' %}
 
     <table class="table table-bordered table-primary" style="text-align: center">
-        <form class="d-flex" method="POST">
-            {% csrf_token %}
-            <tr>
+        <tr>
+            <form class="d-flex" method="POST">
+                {% csrf_token %}
                 <td>
                     Name:
                     <input class="form-control me-2" type="search" placeholder="Name" aria-label="Search" name="name">
@@ -44,11 +41,11 @@
                     </select>
                 </td>
                 <td>
-                    </br>
+                    <br>
                     <input type="submit" value="Search">
                 </td>
-            </tr>
-        </form>
+            </form>
+        </tr>
         {%  if all_items %}
             {% for item in all_items %}
                 <tr class="table-secondary">

@@ -10,4 +10,5 @@ class Assignment(models.Model):
     active = models.BooleanField(default=False)
 
     class Meta:
+        # Remote database name
         db_table = "mturk_app_assignments"

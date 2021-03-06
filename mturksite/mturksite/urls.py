@@ -18,6 +18,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('django.contrib.auth.urls')),
-    path('', include('mturkapp.urls'))
+    path('', include('django.contrib.auth.urls')),      # Authentication
+    path('', include('mturkapp.urls'))                  # Main mturk app
 ]
