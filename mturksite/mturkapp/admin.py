@@ -1,5 +1,5 @@
-from .models import Assignments
+from .models import Assignment
 from django.contrib import admin
 
 # Register your models here.
-admin.site.register(Assignments)
+admin.site.register(Assignment)

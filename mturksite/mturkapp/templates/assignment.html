@@ -2,14 +2,15 @@
 
 {% block title %} Assignments {% endblock %}
 
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align:center">Assignment</h1>
+{% endblock %}
+
 {% block content %}
     <h1 style="text-align:center">Assignment</h1>
 
-    {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
-            {{ message }}
-        </div>
-    {% endfor %}
+     {% include 'messages.html' %}
 
     <table class="table table-bordered table-primary" style="text-align: center">
         <tr>
@@ -17,22 +18,30 @@
                 {% csrf_token %}
                 <td>
                     Name:
-                    <input class="form-control me-2" type="search" placeholder="Name" Search aria-label="Search" name="name">
+                    <input class="form-control me-2" type="search" placeholder="Name" aria-label="Search" name="name">
                 </td>
                 <td>
                     Surname:
-                    <input class="form-control me-2" type="search" placeholder="Surame" Search aria-label="Search" name="surname">
+                    <input class="form-control me-2" type="search" placeholder="Surame" aria-label="Search" name="surname">
                 </td>
                 <td>
                     Birth Year:
-                    <input class="form-control me-2" type="search" placeholder="Birth Year" Search aria-label="Search" name="birthYear">
+                    <input class="form-control me-2" type="search" placeholder="Birth Year" aria-label="Search" name="birthYear">
                 </td>
                 <td>
                     Birth Place:
-                    <input class="form-control me-2" type="search" placeholder="Birth Place" Search aria-label="Search" name="birthPlace">
+                    <input class="form-control me-2" type="search" placeholder="Birth Place" aria-label="Search" name="birthPlace">
                 </td>
                 <td>
-                    </br>
+                    Active:
+                    <select class="form-control me-2" name="active">
+                        <option value="">--Please select an option--</option>
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                    </select>
+                </td>
+                <td>
+                    <br>
                     <input type="submit" value="Search">
                 </td>
             </form>
@@ -40,10 +49,11 @@
         {%  if all_items %}
             {% for item in all_items %}
                 <tr class="table-secondary">
-                    <td class="striker"> <a class="nav-link" href="{% url 'editAssignment' item.id %}">{{ item.name }}</a> </center></td>
+                    <td class="striker"><center> <a class="nav-link" href="{% url 'editAssignment' item.id %}">{{ item.name }}</a> </center></td>
                     <td><center> {{ item.surname }}</center></td>
                     <td><center>  {{ item.birthYear }}</center></td>
                     <td><center>  {{ item.birthCity }}</center></td>
+                    <td><center>  {{ item.active }}</center></td>
                     <td><center> <a class="nav-link" href="{% url 'deleteAssignment' item.id %}">Delete</a> </center></td>
                 </tr>
             {% endfor %}

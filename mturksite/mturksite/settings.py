@@ -133,6 +133,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
+LOGIN_REDIRECT_URL = 'homeView'
+LOGOUT_REDIRECT_URL = 'homeView'
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
