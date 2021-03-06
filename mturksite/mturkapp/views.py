@@ -19,9 +19,12 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password, is_superuser=True, is_staff=True)
+            user = authenticate(username=username, password=raw_password)
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
             login(request, user)
-            return redirect('assignmentView')
+            return redirect('homeView')
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
