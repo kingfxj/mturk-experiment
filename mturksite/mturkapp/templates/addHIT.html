@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %} Add HIT {% endblock %}
+
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align:center">Add HIT</h1>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Add HIT</h1>
+
+    <form class="d-flex" method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-primary">
+            <tr><td>HIT ID:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="HIT ID"  aria-label="Search" name="hit_id"></td>
+            </tr>
+            <tr><td>HITType ID:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id"></td>
+            </tr>
+            <tr><td>Assignments:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Assignments" aria-label="Search" name="assignments"></td>
+            </tr>
+            <tr><td>Expiry Date:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Expiry Date" aria-label="Search" name="expiry_date"></td>
+            </tr>
+            <tr>
+                <td><input type="submit" style="float: right;" value="Submit"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

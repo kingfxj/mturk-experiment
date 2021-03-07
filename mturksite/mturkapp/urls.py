@@ -25,5 +25,8 @@ urlpatterns = [
     path('delete/<list_id>', views.deleteAssignment, name="deleteAssignment"),
     path('qualification/', views.qualificationView, name="qualificationView"),
     path('lobby/', views.lobbyView, name="lobbyView"),
+    path('hittypes/', views.hittypeView, name="hittypeView"),
+    path('addhittypes/', views.addHITType, name="addHITType"),
     path('hits/', views.hitView, name="hitView"),
+    path('addhits/', views.addHIT, name="addHIT"),
 ]
