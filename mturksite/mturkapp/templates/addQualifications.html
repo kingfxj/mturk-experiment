@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Add Qualifications {% endblock %}
+
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align:center">Add Qualification</h1>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Add Qualification</h1>
+
+    <form class="d-flex" method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-primary">
+            <tr><td>Nickname:</td></tr>  <!-- Qualification nickname -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Name"  aria-label="Search" name="name"></td>
+            </tr>
+
+            <tr><td>QualificationType Id:</td></tr>  <!-- QualificationType id -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Surame" aria-label="Search" name="surname"></td>
+            </tr>
+
+            <tr><td>Comparator:</td></tr>  <!-- Comparator -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Birth Year" aria-label="Search" name="birthYear"></td>
+            </tr>
+            
+            <tr><td>Integer Values:</td></tr>  <!-- Submit button -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Birth City" aria-label="Search" name="birthCity"></td>
+            </tr>
+            
+            <tr><td>Active:</td></tr>  <!-- Submit button -->
+            <tr>
+                <td>
+                    <select class="form-control me-2" name="active">
+                        <option value="">--Please select an option--</option>
+                        <option value=True>True</option>
+                        <option value=False>False</option>
+                    </select>
+                </td>
+            </tr>
+            
+            <tr> 
+                <td><input type="submit" value="Submit"></td>    <!-- Submit button -->
+            </tr>
+        </table>
+    </form>
+{% endblock %}

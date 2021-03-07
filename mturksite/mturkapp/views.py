@@ -1,5 +1,5 @@
 from .forms import assignmentForm, SignUpForm
-from .models import Assignment
+from .models import Assignment, Qualification
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -140,9 +140,27 @@ def qualificationView(request):
     :param request
     :return: Qualification view page
     """
-    all_items = Assignment.objects.all()
+    all_items = Qualification.objects.all()
     return render(request, 'qualification.html', {"all_items": all_items})
 
+def addQualification(request):
+    """
+    Add a new qualification
+    :param request
+    :return: Redirect to Assignment View page after changes are made
+    """
+    if request.method == "POST":
+        form = qualificationForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item has been added!")
+            return redirect(qualificationView)
+        else:
+            messages.error(request, "Item was not added")
+            return redirect(qualificationView)
+    else:
+        all_items = Qualification.objects.all()
+        return render(request, 'addQualifications.html', {"all_items": all_items})
 
 def lobbyView(request):
     """

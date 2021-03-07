@@ -9,4 +9,41 @@
 
 {% block content %}
     <h1 style="text-align:center">Qualification</h1>
+    {% include 'messages.html' %}
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        {% comment %} <button type="button" class="btn btn-primary">Add Qualification</button> {% endcomment %}
+        <a href="{% url 'addQualification' %}">Add Qualification</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nickname</th>
+            <th scope="col">QualificationType ID</th>
+            <th scope="col">Comparator</th>
+            <th scope="col">Value</th>
+            <th scope="col">Comparator</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+            {% comment %} <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            </tr>
+            <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+            </tr>
+            <tr>
+            <th scope="row">3</th>
+            <td colspan="2">Larry the Bird</td>
+            <td>@twitter</td>
+            </tr> {% endcomment %}
+        </tbody>
+        </table>
 {% endblock %}

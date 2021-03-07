@@ -26,4 +26,5 @@ urlpatterns = [
     path('qualification/', views.qualificationView, name="qualificationView"),
     path('lobby/', views.lobbyView, name="lobbyView"),
     path('hits/', views.hitView, name="hitView"),
+    path('addQualifications/', views.addQualification, name='addQualification')
 ]
