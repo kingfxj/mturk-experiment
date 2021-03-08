@@ -28,6 +28,6 @@ urlpatterns = [
     path('hittypes/', views.hittypeView, name="hittypeView"),
     path('addhittypes/', views.addHITType, name="addHITType"),
     path('hits/', views.hitView, name="hitView"),
-    path('addQualifications/', views.addQualification, name='addQualification')
+    path('addQualifications/', views.addQualification, name='addQualification'),
     path('addhits/', views.addHIT, name="addHIT"),
 ]
