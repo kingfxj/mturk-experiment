@@ -26,3 +26,24 @@ class Qualification(models.Model):
         #remote database name
         db_table = "mturk_app_qualifications"
         
+class HIT(models.Model):
+    hit_id = models.CharField(max_length=100)
+    hittype_id = models.CharField(max_length=100)
+    assignments = models.IntegerField()
+    expiry_date = models.CharField(max_length=100)
+
+    class Meta:
+        # Remote database name
+        db_table = "mturk_app_hits"
+
+class HITType(models.Model):
+    batch = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    hittype_id = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
+    reward = models.CharField(max_length=100)
+    quals = models.CharField(max_length=100)
+
+    class Meta:
+        # Remote database name
+        db_table = "mturk_app_hittypes"

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Add HITType {% endblock %}
+
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align:center">Add HITType</h1>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Add HITType</h1>
+
+    <form class="d-flex" method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-primary">
+            <tr><td>Batch:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Batch"  aria-label="Search" name="batch"></td>
+            </tr>
+            <tr><td>Title:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Title"  aria-label="Search" name="title"></td>
+            </tr>
+            <tr><td>HITType ID:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id"></td>
+            </tr>
+            <tr><td>Description:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="description"></td>
+            </tr>
+            <tr><td>Reward:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Reward" aria-label="Search" name="reward"></td>
+            </tr>
+            <tr><td>Qualifications:</td></tr>
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="quals"></td>
+            </tr>
+            <tr>
+                <td><input type="submit" style="float: right;" value="Submit"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
