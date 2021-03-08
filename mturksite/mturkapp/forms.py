@@ -1,4 +1,4 @@
-from .models import Assignment
+from .models import Assignment, HIT, HITType, Qualification
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -10,8 +10,22 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-
 class assignmentForm(forms.ModelForm):
     class Meta:
         model = Assignment
         fields = ['name', 'surname', 'birthYear', 'birthCity', 'active']
+
+class qualificationForm(forms.ModelForm):
+    class Meta:
+        model = Qualification 
+        fields = ['nickname', 'qualID', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
+        
+class hitForm(forms.ModelForm):
+    class Meta:
+        model = HIT
+        fields = ['hit_id', 'hittype_id', 'assignments', 'expiry_date']
+
+class hittypeForm(forms.ModelForm):
+    class Meta:
+        model = HITType
+        fields = ['batch', 'title', 'hittype_id', 'description', 'reward', 'quals']

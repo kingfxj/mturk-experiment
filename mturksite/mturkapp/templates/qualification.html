@@ -9,4 +9,40 @@
 
 {% block content %}
     <h1 style="text-align:center">Qualification</h1>
+    {% include 'messages.html' %}
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        {% comment %} <button type="button" class="btn btn-primary">Add Qualification</button> {% endcomment %}
+        <a href="{% url 'addQualification' %}">Add Qualification</a>  
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            {% comment %} <th scope="col">#</th> {% endcomment %}
+            <th scope="col">Nickname</th>
+            <th scope="col">QualificationType ID</th>
+            <th scope="col">Comparator</th>
+            <th scope="col">Integer Values</th>
+            <th scope="col">Country</th>
+            <th scope="col">Subdivision</th>
+            <th scope="col">Actions Guarded</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%  if all_items %}
+                {% for item in all_items %}
+                    <tr class="table-secondary">
+                        <td>{{ item.nickname }}</td>
+                        <td> {{ item.qualID }} </td>
+                        <td> {{ item.comparator }}</td>
+                        <td> {{ item.int_value }} </td>
+                        <td> {{ item.country }} </td>
+                        <td> {{ item.subdivision }} </td>
+                        <td> {{ item.actions_guarded }} </td>
+
+                        <td><center></center></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+        </table>
 {% endblock %}

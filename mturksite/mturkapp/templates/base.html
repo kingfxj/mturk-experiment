@@ -14,7 +14,7 @@
             {% block title %}
             {% endblock %}
         </title>
-    </head>
+    </head> 
 
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -35,7 +35,10 @@
                             <a class="nav-link active text-info" href="{% url 'lobbyView' %}">Lobby</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active text-info" href="{% url 'hitView' %}">Hits</a>
+                            <a class="nav-link active text-info" href="{% url 'hittypeView' %}">HITTypes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active text-info" href="{% url 'hitView' %}">HITs</a>
                         </li>
                         <li class="nav-item">
                           <a class="nav-link active text-info" href="{% url 'admin:index' %}">Admin</a>
