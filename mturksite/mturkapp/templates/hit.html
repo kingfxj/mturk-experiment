@@ -1,12 +1,52 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
-{% block title %} Hit {% endblock %}
+{% block title %} HITs {% endblock %} 
 
 {% block login %}
     <!-- Data is not shown if they are not logged in -->
-    <h1 style="text-align:center">Hit</h1>
-{% endblock %}
+    <h1 style="text-align: center">HITs</h1>
+{% endblock %} 
 
 {% block content %}
-    <h1 style="text-align:center">Hit</h1>
+    <h1 style="text-align: center">HITs</h1>
+    {% include 'messages.html' %}
+    <table class="table table-bordered table-primary" style="text-align: center">
+        <tr>
+            <form class="d-flex" method="POST">
+                {% csrf_token %}
+                <td>
+                    HIT ID:
+                    <input class="form-control me-2" type="search" placeholder="HIT ID" aria-label="Search" name="hit_id">
+                </td>
+                <td>
+                    HITType ID:
+                    <input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id">
+                </td>
+                <td>
+                    Assignments:
+                    <input class="form-control me-2" type="search" placeholder="Assignments" aria-label="Search" name="assignments">
+                </td>
+                <td>
+                    Expiry Date:
+                    <input class="form-control me-2" type="search" placeholder="Expiry Date" aria-label="Search" name="expiry_date">
+                </td>
+                <td>
+                    <br>
+                    <input type="submit" value="Search">
+                </td>
+            </form>
+        </tr>
+        {%  if all_items %}
+            {% for item in all_items %}
+                <tr class="table-secondary">
+                    <td><center> {{ item.hit_id }} </center></td>
+                    <td><center> {{ item.hittype_id }}</center></td>
+                    <td><center>  {{ item.assignments }}</center></td>
+                    <td><center>  {{ item.expiry_date }}</center></td>
+                    <td><center></center></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+    <a href="{% url 'addHIT' %}"><button type="button" class="btn btn-primary" style="float: right;">New HIT</button></a>
 {% endblock %}
