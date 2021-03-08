@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %} Add Qualifications {% endblock %}
+
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align:center">Add Qualification</h1>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Add Qualification</h1>
+
+    <form class="d-flex" method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-primary">
+            <tr><td>Nickname:</td></tr>  <!-- Qualification nickname -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Nickname"  aria-label="Search" name="nickname"></td>
+            </tr>
+
+            <tr><td>QualificationType Id:</td></tr>  <!-- QualificationType id -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="QualificationType Id" aria-label="Search" name="qualID"></td>
+            </tr>
+
+            <tr><td>Comparator:</td></tr>  <!-- Comparator -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Comparator" aria-label="Search" name="comparator"></td>
+            </tr>
+            
+            <tr><td>Integer Values:</td></tr>  <!-- Integer values -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Integer Values" aria-label="Search" name="int_value"></td>
+            </tr>
+            
+            <tr><td>Country:</td></tr>  <!-- Country for LocaleValue -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Country" aria-label="Search" name="country"></td>
+            </tr>
+
+            <tr><td>Subdivision:</td></tr>  <!-- subdivision for LocaleValue -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Subdivision" aria-label="Search" name="subdivision"></td>
+            </tr>
+
+            <tr><td>Actions Guarded:</td></tr>  <!-- actions guarded -->
+            <tr>
+                <td><input class="form-control me-2" type="search" placeholder="Actions Guarded" aria-label="Search" name="actions_guarded"></td>
+            </tr>            
+
+            <tr> 
+                <td><input type="submit" value="Submit"></td>    <!-- Submit button -->
+            </tr>
+        </table>
+    </form>
+{% endblock %}
