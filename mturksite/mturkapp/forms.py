@@ -18,4 +18,4 @@ class assignmentForm(forms.ModelForm):
 class qualificationForm(forms.ModelForm):
     class Meta:
         model = Qualification 
-        fields = ['nickname', 'qualID', 'comparator', 'int_value', 'country', 'subdivision']
+        fields = ['nickname', 'qualID', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']

@@ -15,11 +15,12 @@ class Assignment(models.Model):
 
 class Qualification(models.Model):
     nickname = models.CharField(max_length=100)
-    qualID = models.CharField(max_length=255)
+    qualID = models.CharField(max_length=255, null=False)
     comparator = models.CharField(max_length=50)
-    int_value = models.IntegerField()
-    country = models.CharField(max_length=100)
-    subdivision = models.CharField(max_length=100)
+    int_value = models.IntegerField(blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
+    subdivision = models.CharField(max_length=100, blank=True, null=True)
+    actions_guarded = models.CharField(max_length=100, blank=True, null=True)
     
     class Meta:
         #remote database name

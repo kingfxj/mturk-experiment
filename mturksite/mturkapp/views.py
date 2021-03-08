@@ -1,4 +1,4 @@
-from .forms import assignmentForm, SignUpForm
+from .forms import assignmentForm, SignUpForm, qualificationForm
 from .models import Assignment, Qualification
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
@@ -141,6 +141,22 @@ def qualificationView(request):
     :return: Qualification view page
     """
     all_items = Qualification.objects.all()
+    if request.method == "POST":
+                nickname = request.POST.get('nickname')             # Retrieve query for nickname
+                qualID = request.POST.get('qualID')             # Retrieve query for qualID
+                comparator = request.POST.get('comparator')       # Retrieve query for comparator
+                int_value = request.POST.get('int_value')   # Retrieve query for int_value
+                country = request.POST.get('country')   # Retrieve query for country
+                subdivision = request.POST.get('subdivision')   # Retrieve query for subdivision
+                actions_guarded = request.POST.get('actions_guarded')   # Retrieve query for actions_guarded
+                all_items = all_items.filter(nickname__icontains=nickname)  
+                all_items = all_items.filter(qualID__icontains=qualID)
+                all_items = all_items.filter(comparator__icontains=comparator)
+                all_items = all_items.filter(int_value__icontains=int_value)
+                all_items = all_items.filter(country__icontains=country)
+                all_items = all_items.filter(subdivision__icontains=subdivision)
+                all_items = all_items.filter(actions_guarded__icontains=actions_guarded)
+
     return render(request, 'qualification.html', {"all_items": all_items})
 
 def addQualification(request):
