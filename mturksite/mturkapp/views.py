@@ -51,6 +51,16 @@ def assignmentView(request):
         birthYear = request.POST.get('birthYear')   # Retrieve query for Birth Year
         birthCity = request.POST.get('birthCity')   # Retrieve query for Birth City
         active = request.POST.get('active')         # Retrieve query for active
+        payBonus = request.POST.getlist('payBonus') # Retrieve query for pay Bonus
+        if payBonus:                                # Save the ids to a list
+            if 'all' in payBonus:
+                payBonus = []
+                for item in all_items:
+                    payBonus.append(str(item.id))
+            # Save the list into a session
+            request.session['payBonus'] = payBonus
+            return redirect('payBonus')
+
         # Filter the objects according to the sort
         if name != '' and name is not None:
             all_items = all_items.filter(name__icontains=name)
@@ -62,9 +72,9 @@ def assignmentView(request):
             all_items = all_items.filter(birthCity__icontains=birthCity)
         if active != '' and active is not None:
             all_items = all_items.filter(active__icontains=active)
+
     # Return the objects that satisfy all search filter
     return render(request, 'assignment.html', {"all_items": all_items})
-
 
 def addAssignment(request):
     """
@@ -82,8 +92,7 @@ def addAssignment(request):
             messages.error(request, "Item was not added")
             return redirect(assignmentView)
     else:
-        all_items = Assignment.objects.all()
-        return render(request, 'addAssignment.html', {"all_items": all_items})
+        return render(request, 'addAssignment.html', {})
 
 
 def editAssignment(request, list_id):
@@ -133,6 +142,48 @@ def deleteAssignment(request, list_id):
     return redirect(assignmentView)
 
 
+def payBonus(request):
+    """
+    Pay Bonus
+    :param request
+    :return:
+    """
+    # Retrieve the IDs' of the assignment
+    selectPayment = request.session.get('payBonus', None)
+    if not selectPayment:
+        selectPayment = []
+
+    all_items = Assignment.objects.filter(id__in=selectPayment)
+
+    if request.method == "POST":
+        name = request.POST.get('name')             # Retrieve query for name
+        surname = request.POST.get('surname')       # Retrieve query for surname
+        birthYear = request.POST.get('birthYear')   # Retrieve query for Birth Year
+        birthCity = request.POST.get('birthCity')   # Retrieve query for Birth City
+        active = request.POST.get('active')         # Retrieve query for active
+        # Remove that id from the payment
+        for key in request.POST.keys():
+            if key.startswith('deletePayment'):
+                action = key[14:]
+                selectPayment.remove(action)
+                request.session['payBonus'] = selectPayment
+                all_items = Assignment.objects.filter(id__in=selectPayment)
+
+        # Filter the objects according to the sort
+        if name != '' and name is not None:
+            all_items = all_items.filter(name__icontains=name)
+        if surname != '' and surname is not None:
+            all_items = all_items.filter(surname__icontains=surname)
+        if birthYear != '' and birthYear is not None:
+            all_items = all_items.filter(birthYear__icontains=birthYear)
+        if birthCity != '' and birthCity is not None:
+            all_items = all_items.filter(birthCity__icontains=birthCity)
+        if active != '' and active is not None:
+            all_items = all_items.filter(active__icontains=active)
+
+    return render(request, 'payBonus.html', {"all_items": all_items})
+
+
 def qualificationView(request):
     """
     Qualification View Page
@@ -158,6 +209,7 @@ def qualificationView(request):
 
     return render(request, 'qualification.html', {"all_items": all_items})
 
+
 def addQualification(request):
     """
     Add a new qualification
@@ -177,6 +229,7 @@ def addQualification(request):
         all_items = Qualification.objects.all()
         return render(request, 'addQualifications.html', {"all_items": all_items})
 
+
 def lobbyView(request):
     """
     Lobby View Page
@@ -185,6 +238,7 @@ def lobbyView(request):
     """
     all_items = Assignment.objects.all()
     return render(request, 'lobby.html', {"all_items": all_items})
+
 
 def hittypeView(request):
     """
@@ -216,6 +270,7 @@ def hittypeView(request):
     # Return the objects that satisfy all search filter
     return render(request, 'hittype.html', {"all_items": all_items})
 
+
 def addHITType(request):
     """
     Add a new HITType
@@ -234,6 +289,7 @@ def addHITType(request):
     else:
         all_items = HITType.objects.all()
         return render(request, 'addHITType.html', {"all_items": all_items})
+
 
 def hitView(request):
     """
@@ -258,6 +314,7 @@ def hitView(request):
             all_items = all_items.filter(expiry_date__icontains=expiry_date)
     # Return the objects that satisfy all search filter
     return render(request, 'hit.html', {"all_items": all_items})
+
 
 def addHIT(request):
     """

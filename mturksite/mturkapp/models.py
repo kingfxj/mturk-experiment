@@ -13,6 +13,7 @@ class Assignment(models.Model):
         # Remote database name
         db_table = "mturk_app_assignments"
 
+
 class Qualification(models.Model):
     nickname = models.CharField(max_length=100)
     qualID = models.CharField(max_length=255, null=False)
@@ -23,9 +24,10 @@ class Qualification(models.Model):
     actions_guarded = models.CharField(max_length=100, blank=True, null=True)
     
     class Meta:
-        #remote database name
+        # Remote database name
         db_table = "mturk_app_qualifications"
-        
+
+
 class HIT(models.Model):
     hit_id = models.CharField(max_length=100)
     hittype_id = models.CharField(max_length=100)
@@ -35,6 +37,7 @@ class HIT(models.Model):
     class Meta:
         # Remote database name
         db_table = "mturk_app_hits"
+
 
 class HITType(models.Model):
     batch = models.CharField(max_length=100)
