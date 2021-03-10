@@ -192,21 +192,31 @@ def qualificationView(request):
     """
     all_items = Qualification.objects.all()
     if request.method == "POST":
-                nickname = request.POST.get('nickname')             # Retrieve query for nickname
-                qualID = request.POST.get('qualID')             # Retrieve query for qualID
-                comparator = request.POST.get('comparator')       # Retrieve query for comparator
-                int_value = request.POST.get('int_value')   # Retrieve query for int_value
-                country = request.POST.get('country')   # Retrieve query for country
-                subdivision = request.POST.get('subdivision')   # Retrieve query for subdivision
-                actions_guarded = request.POST.get('actions_guarded')   # Retrieve query for actions_guarded
-                all_items = all_items.filter(nickname__icontains=nickname)  
-                all_items = all_items.filter(qualID__icontains=qualID)
-                all_items = all_items.filter(comparator__icontains=comparator)
-                all_items = all_items.filter(int_value__icontains=int_value)
-                all_items = all_items.filter(country__icontains=country)
-                all_items = all_items.filter(subdivision__icontains=subdivision)
-                all_items = all_items.filter(actions_guarded__icontains=actions_guarded)
+        nickname = request.POST.get('nickname')                 # Retrieve query for nickname
+        qualID = request.POST.get('qualID')                     # Retrieve query for qualID
+        comparator = request.POST.get('comparator')             # Retrieve query for comparator
+        int_value = request.POST.get('int_value')               # Retrieve query for int_value
+        country = request.POST.get('country')                   # Retrieve query for country
+        subdivision = request.POST.get('subdivision')           # Retrieve query for subdivision
+        actions_guarded = request.POST.get('actions_guarded')   # Retrieve query for actions_guarded
 
+        # Filter the objects according to the sort
+        if nickname != '' and nickname is not None:
+            all_items = all_items.filter(nickname__icontains=nickname)
+        if qualID != '' and nickname is not None:
+            all_items = all_items.filter(qualID__icontains=qualID)
+        if comparator != '' and comparator is not None:
+            all_items = all_items.filter(comparator__icontains=comparator)
+        if int_value != '' and int_value is not None:
+            all_items = all_items.filter(int_value__icontains=int_value)
+        if country != '' and country is not None:
+            all_items = all_items.filter(country__icontains=country)
+        if subdivision != '' and subdivision != None:
+            all_items = all_items.filter(subdivision__icontains=subdivision)
+        if actions_guarded != '' and actions_guarded is not None:
+            all_items = all_items.filter(actions_guarded__icontains=actions_guarded)
+
+    # Return the objects that satisfy all search filter
     return render(request, 'qualification.html', {"all_items": all_items})
 
 
@@ -303,6 +313,7 @@ def hitView(request):
         hittype_id = request.POST.get('hittype_id')       # Retrieve query for hittype id
         assignments = request.POST.get('assignments')   # Retrieve query for assignments number
         expiry_date = request.POST.get('expiry_date')   # Retrieve query for expiry date
+
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
             all_items = all_items.filter(hit_id__icontains=hit_id)
@@ -312,6 +323,7 @@ def hitView(request):
             all_items = all_items.filter(assignments__icontains=assignments)
         if expiry_date != '' and expiry_date is not None:
             all_items = all_items.filter(expiry_date__icontains=expiry_date)
+
     # Return the objects that satisfy all search filter
     return render(request, 'hit.html', {"all_items": all_items})
 
