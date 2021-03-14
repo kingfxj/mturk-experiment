@@ -21,28 +21,20 @@
                     <input type="checkbox" name="payBonus" value="all"/>
                 </td>
                 <td>
-                    Name:
-                    <input class="form-control me-2" type="search" placeholder="Name" aria-label="Search" name="name">
+                    Assignment ID:
+                    <input class="form-control me-2" type="search" placeholder="Assignment ID" aria-label="Search" name="assignmentId">
                 </td>
                 <td>
-                    Surname:
-                    <input class="form-control me-2" type="search" placeholder="Surame" aria-label="Search" name="surname">
+                    Worker ID:
+                    <input class="form-control me-2" type="search" placeholder="Worker ID" aria-label="Search" name="workerId">
                 </td>
                 <td>
-                    Birth Year:
-                    <input class="form-control me-2" type="search" placeholder="Birth Year" aria-label="Search" name="birthYear">
+                    Acceptance Time:
+                    <input class="form-control me-2" type="search" placeholder="Acceptance Time" aria-label="Search" name="acceptanceTime">
                 </td>
                 <td>
-                    Birth Place:
-                    <input class="form-control me-2" type="search" placeholder="Birth Place" aria-label="Search" name="birthPlace">
-                </td>
-                <td>
-                    Active:
-                    <select class="form-control me-2" name="active">
-                        <option value="">--Please select an option--</option>
-                        <option value="True">True</option>
-                        <option value="False">False</option>
-                    </select>
+                    Assignment Status:
+                    <input class="form-control me-2" type="search" placeholder="Assignment Status" aria-label="Search" name="assignmentStatus">
                 </td>
                 <td>
                     <br>
@@ -50,16 +42,14 @@
                 </td>
             </tr>
 
-            {%  if all_items %}
-                {% for item in all_items|dictsort:"name.lower" %}
+            {%  if assignments %}
+                {% for item in assignments %}
                     <tr class="table-secondary">
                         <td><input type="checkbox" name="payBonus" value="{{ item.id }}"/></td>
-                        <td> <a class="nav-link" href="{% url 'editAssignment' item.id %}">{{ item.name }}</a> </td>
-                        <td> {{ item.surname }} </td>
-                        <td> {{ item.birthYear }} </td>
-                        <td> {{ item.birthCity }} </td>
-                        <td> {{ item.active }} </td>
-                        <td> <a class="nav-link" href="{% url 'deleteAssignment' item.id %}">Delete</a> </td>
+                        <td> {{ item.AssignmentId }} </td>
+                        <td> {{ item.WorkerId }} </td>
+                        <td> {{ item.AcceptTime }} </td>
+                        <td> {{ item.AssignmentStatus }} </td>
                     </tr>
                 {% endfor %}
             {% endif %}
@@ -67,6 +57,5 @@
         </table>
 
         <input type="submit" class="btn btn-primary" style="float: left;" onclick="{% url 'payBonus' %}" value="Pay Bonus for selected"/>
-        <a href="{% url 'addAssignment' %}"><button type="button" class="btn btn-primary" style="float: right">New Assignment</button></a>
     </form>
 {% endblock %}

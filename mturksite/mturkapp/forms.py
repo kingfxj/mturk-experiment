@@ -1,4 +1,4 @@
-from .models import Assignment, HIT, HITType, Qualification
+from .models import HIT, HITType, Qualification
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -9,11 +9,6 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
-
-class assignmentForm(forms.ModelForm):
-    class Meta:
-        model = Assignment
-        fields = ['name', 'surname', 'birthYear', 'birthCity', 'active']
 
 class qualificationForm(forms.ModelForm):
     class Meta:
