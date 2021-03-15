@@ -1,11 +1,12 @@
 import boto3
+from django.conf import settings
 
 def mturk_client():
     mturk = boto3.client('mturk',
-        aws_access_key_id = "PASTE_YOUR_IAM_USER_ACCESS_KEY",
-        aws_secret_access_key = "PASTE_YOUR_IAM_USER_SECRET_KEY",
-        region_name='us-east-1',
-        endpoint_url = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+        aws_access_key_id = settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key = settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_REGION_NAME,
+        endpoint_url = settings.AWS_ENDPOINT_URL
     )
 
     return mturk

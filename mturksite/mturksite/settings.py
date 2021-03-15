@@ -11,12 +11,18 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import environ
 from django.contrib.messages import constants as messages
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# Initialise environment variables
+# https://django-environ.readthedocs.io/en/latest/
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -87,6 +93,14 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+
+# AWS Connection Information
+# https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_REGION_NAME = env('AWS_REGION_NAME')
+AWS_ENDPOINT_URL = env('AWS_ENDPOINT_URL')
 
 
 # Password validation
