@@ -1,9 +1,10 @@
-from .forms import assignmentForm, SignUpForm, hitForm, hittypeForm
-from .models import Assignment, HIT, HITType
+from .forms import SignUpForm, hitForm, hittypeForm, qualificationForm
+from .models import HIT, HITType, Qualification
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from .mturk_client import mturk_client
 
 # Create your views here.
 @login_required
@@ -43,14 +44,66 @@ def assignmentView(request):
     View Assignment
     :param request
     :return: Assignment page
+    """   
+
+    mturk = mturk_client()
+    assignments = mturk.list_assignments_for_hit(HITId='PASTE_HITID_HERE')['Assignments']
+
+    if request.method == "POST":
+        assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
+        workerIdFilter = request.POST.get('workerId')                     # Retrieve query for Worker ID
+        acceptanceTimeFilter = request.POST.get('acceptanceTime')         # Retrieve query for Acceptance Time
+        assignmentStatusFilter = request.POST.get('assignmentStatus')     # Retrieve query for Assignment Status
+        
+        # Filter the objects according to the sort
+        if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            for assignment in assignments:
+                if assignmentIdFilter not in assignment['AssignmentId']:
+                    assignments.remove(assignment)
+        if workerIdFilter != '' and workerIdFilter is not None:
+            for assignment in assignments:
+                if  workerIdFilter not in assignment['WorkerId']:
+                    assignments.remove(assignment)
+        if acceptanceTimeFilter != '' and acceptanceTimeFilter is not None:
+            for assignment in assignments:
+                if acceptanceTimeFilter not in assignment['AcceptTime']:
+                    assignments.remove(assignment)
+        if assignmentStatusFilter != '' and assignmentStatusFilter is not None:
+            for assignment in assignments:
+                if assignmentStatusFilter not in assignment['AssignmentStatus']:
+                    assignments.remove(assignment)
+
+    # Return the objects that satisfy all search filter
+    return render(request, 'assignment.html', {"assignments": assignments})
+
+
+def payBonus(request):
     """
-    all_items = Assignment.objects.all()
+    Pay Bonus
+    :param request
+    :return:
+    """
+    # Retrieve the IDs' of the assignment
+    selectPayment = request.session.get('payBonus', None)
+    if not selectPayment:
+        selectPayment = []
+
+    all_items = Assignment.objects.filter(id__in=selectPayment)
+
     if request.method == "POST":
         name = request.POST.get('name')             # Retrieve query for name
         surname = request.POST.get('surname')       # Retrieve query for surname
         birthYear = request.POST.get('birthYear')   # Retrieve query for Birth Year
         birthCity = request.POST.get('birthCity')   # Retrieve query for Birth City
         active = request.POST.get('active')         # Retrieve query for active
+        # Remove that id from the payment
+        for key in request.POST.keys():
+            if key.startswith('deletePayment'):
+                action = key[14:]
+                selectPayment.remove(action)
+                request.session['payBonus'] = selectPayment
+                all_items = Assignment.objects.filter(id__in=selectPayment)
+
         # Filter the objects according to the sort
         if name != '' and name is not None:
             all_items = all_items.filter(name__icontains=name)
@@ -62,75 +115,8 @@ def assignmentView(request):
             all_items = all_items.filter(birthCity__icontains=birthCity)
         if active != '' and active is not None:
             all_items = all_items.filter(active__icontains=active)
-    # Return the objects that satisfy all search filter
-    return render(request, 'assignment.html', {"all_items": all_items})
 
-
-def addAssignment(request):
-    """
-    Add a new assignment
-    :param request
-    :return: Redirect to Assignment View page after changes are made
-    """
-    if request.method == "POST":
-        form = assignmentForm(request.POST or None)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Item has been added!")
-            return redirect(assignmentView)
-        else:
-            messages.error(request, "Item was not added")
-            return redirect(assignmentView)
-    else:
-        all_items = Assignment.objects.all()
-        return render(request, 'addAssignment.html', {"all_items": all_items})
-
-
-def editAssignment(request, list_id):
-    """
-    Edit the values of the specific assignments, leave values the same if they are unchanged
-    :param request
-    :param list_id: The ID of the assignments that needs to be changed
-    :return: Return to Assignment View page after changes are made
-    """
-    if request.method == "POST":
-        item = Assignment.objects.get(pk=list_id)   # Retrieve the data to edit
-        active = item.active                        # Save original value for active
-        try:
-            form = assignmentForm(request.POST or None, instance=item)
-        except ValueError:
-            messages.error(request, "Item was not edited")
-            return redirect(assignmentView)
-        else:
-            if form.is_valid():
-                form.save()
-                # If data for active is not changed, change it back to original value
-                if form.data['active'] == '':
-                    newItem = Assignment.objects.get(pk=list_id)
-                    newItem.active = active         # Change back the value for active
-                    newItem.save()                  # Save the change
-                messages.success(request, "Item has been edited!")
-                return redirect(assignmentView)
-            else:
-                messages.error(request, "Item was not edited")
-                return redirect(assignmentView)
-    else:
-        # Edit the specific item
-        item = Assignment.objects.get(pk=list_id)
-        return render(request, 'editAssignment.html', {"item": item})
-
-
-def deleteAssignment(request, list_id):
-    """
-    Delete a specific assignment
-    :param request
-    :param list_id: The ID of the assignments that needs to be deleted
-    :return: Return to Assignment View page after deletion
-    """
-    item = Assignment.objects.get(pk=list_id)
-    item.delete()
-    messages.success(request, "Item has been deleted from the list!")
-    return redirect(assignmentView)
+    return render(request, 'payBonus.html', {"all_items": all_items})
 
 
 def qualificationView(request):
@@ -139,8 +125,54 @@ def qualificationView(request):
     :param request
     :return: Qualification view page
     """
-    all_items = Assignment.objects.all()
+    all_items = Qualification.objects.all()
+    if request.method == "POST":
+        nickname = request.POST.get('nickname')                 # Retrieve query for nickname
+        qualID = request.POST.get('qualID')                     # Retrieve query for qualID
+        comparator = request.POST.get('comparator')             # Retrieve query for comparator
+        int_value = request.POST.get('int_value')               # Retrieve query for int_value
+        country = request.POST.get('country')                   # Retrieve query for country
+        subdivision = request.POST.get('subdivision')           # Retrieve query for subdivision
+        actions_guarded = request.POST.get('actions_guarded')   # Retrieve query for actions_guarded
+
+        # Filter the objects according to the sort
+        if nickname != '' and nickname is not None:
+            all_items = all_items.filter(nickname__icontains=nickname)
+        if qualID != '' and nickname is not None:
+            all_items = all_items.filter(qualID__icontains=qualID)
+        if comparator != '' and comparator is not None:
+            all_items = all_items.filter(comparator__icontains=comparator)
+        if int_value != '' and int_value is not None:
+            all_items = all_items.filter(int_value__icontains=int_value)
+        if country != '' and country is not None:
+            all_items = all_items.filter(country__icontains=country)
+        if subdivision != '' and subdivision != None:
+            all_items = all_items.filter(subdivision__icontains=subdivision)
+        if actions_guarded != '' and actions_guarded is not None:
+            all_items = all_items.filter(actions_guarded__icontains=actions_guarded)
+
+    # Return the objects that satisfy all search filter
     return render(request, 'qualification.html', {"all_items": all_items})
+
+
+def addQualification(request):
+    """
+    Add a new qualification
+    :param request
+    :return: Redirect to Assignment View page after changes are made
+    """
+    if request.method == "POST":
+        form = qualificationForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item has been added!")
+            return redirect(qualificationView)
+        else:
+            messages.error(request, "Item was not added")
+            return redirect(qualificationView)
+    else:
+        all_items = Qualification.objects.all()
+        return render(request, 'addQualifications.html', {"all_items": all_items})
 
 
 def lobbyView(request):
@@ -151,6 +183,7 @@ def lobbyView(request):
     """
     all_items = Assignment.objects.all()
     return render(request, 'lobby.html', {"all_items": all_items})
+
 
 def hittypeView(request):
     """
@@ -185,6 +218,7 @@ def hittypeView(request):
     # Return the objects that satisfy all search filter
     return render(request, 'hittype.html', {"all_items": all_items})
 
+
 def addHITType(request):
     """
     Add a new HITType
@@ -204,6 +238,7 @@ def addHITType(request):
         all_items = HITType.objects.all()
         return render(request, 'addHITType.html', {"all_items": all_items})
 
+
 def hitView(request):
     """
     Hit View Page
@@ -216,6 +251,7 @@ def hitView(request):
         hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
         assignments = request.POST.get('assignments')       # Retrieve query for assignments number
         expiry_date = request.POST.get('expiry_date')       # Retrieve query for expiry date
+
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
             all_items = all_items.filter(hit_id__icontains=hit_id)
@@ -225,8 +261,10 @@ def hitView(request):
             all_items = all_items.filter(assignments__icontains=assignments)
         if expiry_date != '' and expiry_date is not None:
             all_items = all_items.filter(expiry_date__icontains=expiry_date)
+
     # Return the objects that satisfy all search filter
     return render(request, 'hit.html', {"all_items": all_items})
+
 
 def addHIT(request):
     """

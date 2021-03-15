@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %} Pay Bonus {% endblock %}
+
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align:center">Pay Bonus</h1>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Pay Bonus</h1>
+
+     {% include 'messages.html' %}
+
+    <form class="d-flex" method="POST">
+        {% csrf_token %}
+        <table id="assignment" class="table table-striped table-bordered table-primary" style="text-align: center; vertical-align: middle; ">
+            <tr>
+                <td>
+                    Name:
+                    <input class="form-control me-2" type="search" placeholder="Name" aria-label="Search" name="name">
+                </td>
+                <td>
+                    Surname:
+                    <input class="form-control me-2" type="search" placeholder="Surame" aria-label="Search" name="surname">
+                </td>
+                <td>
+                    Birth Year:
+                    <input class="form-control me-2" type="search" placeholder="Birth Year" aria-label="Search" name="birthYear">
+                </td>
+                <td>
+                    Birth Place:
+                    <input class="form-control me-2" type="search" placeholder="Birth Place" aria-label="Search" name="birthPlace">
+                </td>
+                <td>
+                    Active:
+                    <select class="form-control me-2" name="active">
+                        <option value="">--Please select an option--</option>
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                    </select>
+                </td>
+                <td>
+                    <br>
+                    <input type="submit" value="Search">
+                </td>
+            </tr>
+            {%  if all_items %}
+                {% for item in all_items|dictsort:"name.lower" %}
+                    <tr class="table-secondary">
+                        <td> {{ item.name }} </td>
+                        <td> {{ item.surname }} </td>
+                        <td> {{ item.birthYear }} </td>
+                        <td> {{ item.birthCity }} </td>
+                        <td> {{ item.active }} </td>
+                        <td> <input type="submit" name="deletePayment {{ item.id }}" id="{{ item.id }}" value="Delete"/></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+    </form>
+
+{% endblock %}
