@@ -27,8 +27,20 @@
                     <input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id">
                 </td>
                 <td>
+                    Description:
+                    <input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="description">
+                </td>
+                <td>
+                    Keyword:
+                    <input class="form-control me-2" type="search" placeholder="Keyword" aria-label="Search" name="keyword">
+                </td>
+                <td>
                     Reward:
                     <input class="form-control me-2" type="search" placeholder="Reward" aria-label="Search" name="reward">
+                </td>
+                <td>
+                    Qualifications:
+                    <input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="quals">
                 </td>
                 <td>
                     <br>
@@ -41,8 +53,11 @@
                 <tr class="table-secondary">
                     <td><center> {{ item.batch }} </center></td>
                     <td><center> {{ item.title }} </center></td>
-                    <td><center> {{ item.hittype_id }}</center></td>
+                    <td><center> {{ item.hittype_id }} </center></td>
+                    <td><center> {{ item.description }} </center></td>
+                    <td><center> {{ item.keyword }} </center></td>
                     <td><center> {{ item.reward }} </center></td>
+                    <td><center> {{ item.quals }} </center></td>
                     <td><center></center></td>
                 </tr>
             {% endfor %}
@@ -50,7 +65,7 @@
     </table>
     <a href="{% url 'addHITType' %}"><button type="button" class="btn btn-primary" style="float: right;">New HITType</button></a>
     <br></br>
-    {%  if all_items %}
+    <!-- {%  if all_items %}
         {% for item in all_items %}
             <div class="card">
                 <div class="card-header">
@@ -66,6 +81,6 @@
                 </div>
             </div>
         {% endfor %}
-    {% endif %}
+    {% endif %} -->
         
 {% endblock %}

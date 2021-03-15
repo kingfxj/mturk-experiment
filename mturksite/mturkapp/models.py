@@ -28,6 +28,7 @@ class HITType(models.Model):
     title = models.CharField(max_length=100)
     hittype_id = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
+    keyword = models.CharField(max_length=100)
     reward = models.CharField(max_length=100)
     quals = models.CharField(max_length=100)
 
