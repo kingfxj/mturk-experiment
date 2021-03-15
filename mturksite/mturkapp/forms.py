@@ -23,4 +23,4 @@ class hitForm(forms.ModelForm):
 class hittypeForm(forms.ModelForm):
     class Meta:
         model = HITType
-        fields = ['batch', 'title', 'hittype_id', 'description', 'reward', 'quals']
+        fields = ['batch', 'title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']

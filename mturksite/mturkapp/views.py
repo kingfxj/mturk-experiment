@@ -193,12 +193,13 @@ def hittypeView(request):
     """
     all_items = HITType.objects.all()
     if request.method == "POST":
-        batch = request.POST.get('batch')             # Retrieve query for batch
-        title = request.POST.get('title')             # Retrieve query for title
-        hittype_id = request.POST.get('hittype_id')       # Retrieve query for hittype id
-        description = request.POST.get('description')   # Retrieve query for description
-        reward = request.POST.get('reward')   # Retrieve query for reward
-        quals = request.POST.get('quals')   # Retrieve query for quals
+        batch = request.POST.get('batch')                   # Retrieve query for batch
+        title = request.POST.get('title')                   # Retrieve query for title
+        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
+        description = request.POST.get('description')       # Retrieve query for description
+        keyword = request.POST.get('keyword')               # Retrieve query for keyword
+        reward = request.POST.get('reward')                 # Retrieve query for reward
+        quals = request.POST.get('quals')                   # Retrieve query for quals
         # Filter the objects according to the sort
         if batch != '' and batch is not None:
             all_items = all_items.filter(batch__icontains=batch)
@@ -208,6 +209,8 @@ def hittypeView(request):
             all_items = all_items.filter(hittype_id__icontains=hittype_id)
         if description != '' and description is not None:
             all_items = all_items.filter(description__icontains=description)
+        if keyword != '' and keyword is not None:
+            all_items = all_items.filter(keyword__icontains=keyword)
         if reward != '' and reward is not None:
             all_items = all_items.filter(reward__icontains=reward)
         if quals != '' and quals is not None:
@@ -244,10 +247,10 @@ def hitView(request):
     """
     all_items = HIT.objects.all()
     if request.method == "POST":
-        hit_id = request.POST.get('hit_id')             # Retrieve query for hit id
-        hittype_id = request.POST.get('hittype_id')       # Retrieve query for hittype id
-        assignments = request.POST.get('assignments')   # Retrieve query for assignments number
-        expiry_date = request.POST.get('expiry_date')   # Retrieve query for expiry date
+        hit_id = request.POST.get('hit_id')                 # Retrieve query for hit id
+        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
+        assignments = request.POST.get('assignments')       # Retrieve query for assignments number
+        expiry_date = request.POST.get('expiry_date')       # Retrieve query for expiry date
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
