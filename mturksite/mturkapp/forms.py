@@ -17,15 +17,7 @@ class qualificationForm(forms.ModelForm):
     class Meta:
         model = Qualification 
         fields = ['nickname', 'description','comparator', 'int_value', 'subdivision']
-
-# class qualificationForm(forms.Form):
-#     nickname = forms.CharField(max_length=100)
-#     description = forms.CharField(max_length=2000)
-#     comparator = forms.CharField(max_length=50)
-#     int_value = forms.IntegerField(required=False)
-#     country = forms.CharField(max_length=100, required=False)
-#     subdivision = forms.CharField(max_length=100, required=False)
-        
+       
 class hitForm(forms.ModelForm):
     class Meta:
         model = HIT
