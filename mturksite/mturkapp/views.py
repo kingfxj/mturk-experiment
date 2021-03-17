@@ -128,7 +128,8 @@ def qualificationView(request):
     :return: Qualification view page
     """
     mturk = mturk_client()
-
+    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
+    qual_info = []
     # all_items = Qualification.objects.all()
     all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
         MustBeRequestable=False,
@@ -136,57 +137,26 @@ def qualificationView(request):
     )
     # print('all items: ', all_items['QualificationTypes'])  # print check
     if request.method == "POST":
-        nickname = request.POST.get('nickname')                 # Retrieve query for nickname
-        qualID = request.POST.get('qualID')                     # Retrieve query for qualID
-        comparator = request.POST.get('comparator')             # Retrieve query for comparator
-        int_value = request.POST.get('int_value')               # Retrieve query for int_value
-        country = request.POST.get('country')                   # Retrieve query for country
-        subdivision = request.POST.get('subdivision')           # Retrieve query for subdivision
-        actions_guarded = request.POST.get('actions_guarded')   # Retrieve query for actions_guarded
+        for field in qual_fields:
+            qual_info.append(request.POST.get(field))
 
         # Filter the objects according to the sort
-        if nickname != '' and nickname is not None:
-            all_items = all_items.filter(nickname__icontains=nickname)
-        if qualID != '' and nickname is not None:
-            all_items = all_items.filter(qualID__icontains=qualID)
-        if comparator != '' and comparator is not None:
-            all_items = all_items.filter(comparator__icontains=comparator)
-        if int_value != '' and int_value is not None:
-            all_items = all_items.filter(int_value__icontains=int_value)
-        if country != '' and country is not None:
-            all_items = all_items.filter(country__icontains=country)
-        if subdivision != '' and subdivision != None:
-            all_items = all_items.filter(subdivision__icontains=subdivision)
-        if actions_guarded != '' and actions_guarded is not None:
-            all_items = all_items.filter(actions_guarded__icontains=actions_guarded)
+        if qual_info[0] != '' and qual_info[0] is not None:
+            all_items = all_items.filter(nickname__icontains=qual_info[0])
+        if qual_info[1] != '' and qual_info[1] is not None:
+            all_items = all_items.filter(qualID__icontains=qual_info[1])
+        if qual_info[2] != '' and qual_info[2] is not None:
+            all_items = all_items.filter(comparator__icontains=qual_info[2])
+        if qual_info[3] != '' and qual_info[3] is not None:
+            all_items = all_items.filter(int_value__icontains=qual_info[3])
+        if qual_info[4] != '' and qual_info[4] is not None:
+            all_items = all_items.filter(country__icontains=qual_info[4])
+        if qual_info[5] != '' and qual_info[5] != None:
+            all_items = all_items.filter(subdivision__icontains=qual_info[5])
 
     # Return the objects that satisfy all search filter
     return render(request, 'qualification.html', {"all_items": all_items['QualificationTypes']})
 
-
-# def addQualification(request):
-#     """
-#     Add a new qualification
-#     :param request
-#     :return: Redirect to Assignment View page after changes are made
-#     """
-#     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
-#     if request.method == "POST":
-#         form = qualificationForm(request.POST or None)
-#         if form.is_valid():
-#             qual_info = []
-#             for i in qual_fields:
-#                 qual_info.append(form.cleaned_data[i])
-#             create_qualification(qual_info)
-#             # form.save()
-#             messages.success(request, "Item has been added!")
-#             return redirect(qualificationView)
-#         else:
-#             messages.error(request, "Item was not added")
-#             return redirect(qualificationView)
-#     else:
-#         all_items = Qualification.objects.all()
-#         return render(request, 'addQualifications.html', {"all_items": all_items})
 
 def addQualification(request):
     """
@@ -194,39 +164,44 @@ def addQualification(request):
     :param request
     :return: Redirect to Assignment View page after changes are made
     """
-    all_items = Qualification.objects.all() 
-    List2 = []
-    for code,name in list(countries):
-        List2.append(name)
-    print(countries)
+    mturk = mturk_client()
+
+    # all_items = Qualification.objects.all() 
+    all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+        MustBeRequestable=False,
+        MustBeOwnedByCaller=True,
+    )
+
+    country_list = []
+    for code, name in list(countries):
+        country_list.append(name)
+    # print(countries)
 
     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     if request.method == "POST":
         form = qualificationForm(request.POST or None)
-        print("WORKS1")
 
         if form.is_valid():
-            print("WORKS2")
+            #sorting data from fields
             qual_info = []
             for i in qual_fields:
                 qual_info.append(form.cleaned_data[i])
-            create_qualification(qual_info)
+
+            #api call to create qualification type
+            response = mturk.create_qualification_type(
+                Name= qual_info[0],
+                Description= qual_info[1],
+                QualificationTypeStatus='Active')
+            print("QUALIFICATION: ", response)
             messages.success(request, "Item has been added!")
             return redirect(qualificationView)
         else:
             messages.error(request, "Item was not added")
             return redirect(qualificationView)
     else:
-        context = {"all_items": all_items , "country": List2  }
+        context = {"all_items": all_items['QualificationTypes'], "country": country_list}
         return render(request, 'addQualifications.html', context)
 
-def create_qualification(info):
-    mturk = mturk_client()
-    response = mturk.create_qualification_type(
-        Name= info[0],
-        Description= info[1],
-        QualificationTypeStatus='Active')
-    print("QUALIFICATION: ", response)
 
 def updateQualification(request,List_id):
     all_items = Qualification.objects.get(pk = List_id) 
