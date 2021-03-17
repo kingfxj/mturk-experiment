@@ -46,7 +46,7 @@
                 {% for item in assignments %}
                     <tr class="table-secondary">
                         <td><input type="checkbox" name="payBonus" value="{{ item.id }}"/></td>
-                        <td> {{ item.AssignmentId }} </td>
+                        <td> {{ item.AssignmentId }} </td> 
                         <td> {{ item.WorkerId }} </td>
                         <td> {{ item.AcceptTime }} </td>
                         <td> {{ item.AssignmentStatus }} </td>
@@ -56,6 +56,6 @@
 
         </table>
 
-        <input type="submit" class="btn btn-primary" style="float: left;" onclick="{% url 'payBonus' %}" value="Pay Bonus for selected"/>
+        <input type="submit" class="btn btn-primary" style="float: left;" onclick=" {% url 'payBonus' %}" value="Pay Bonus for selected"/>
     </form>
 {% endblock %}

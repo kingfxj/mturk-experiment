@@ -13,21 +13,23 @@
     <form class="d-flex" method="POST">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
-            <tr><td>HIT ID:</td></tr>
+            <tr><td> HITType:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="HIT ID"  aria-label="Search" name="hit_id"></td>
+            <td><select name="hittype" id="hittype" class="form-control me-2" type="search" placeholder="HITType">
+                <option value="" disabled selected hidden>HITType</option>
+                  {% for item in hittype_items %}
+                          <option value="{{item.pk}}">{{item.title}}</option>
+                  {% endfor %} 
+            </td>
+            </select>
             </tr>
-            <tr><td>HITType ID:</td></tr>
+            <tr><td> Max Assignments:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Max Assignments" aria-label="Search" name="max_assignments"></td>
             </tr>
-            <tr><td>Assignments:</td></tr>
+            <tr><td>Expiry Time In:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Assignments" aria-label="Search" name="assignments"></td>
-            </tr>
-            <tr><td>Expiry Date:</td></tr>
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Expiry Date" aria-label="Search" name="expiry_date"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Expiry Time" aria-label="Search" name="expiry_time"></td>
             </tr>
             <tr>
                 <td><input type="submit" style="float: right;" value="Submit"></td>

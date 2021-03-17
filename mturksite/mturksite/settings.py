@@ -149,7 +149,6 @@ MESSAGE_TAGS = {
 
 LOGIN_REDIRECT_URL = 'homeView'
 LOGOUT_REDIRECT_URL = 'homeView'
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
