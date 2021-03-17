@@ -15,6 +15,10 @@
             <form class="d-flex" method="POST">
                 {% csrf_token %}
                 <td>
+                    Batch:
+                    <input class="form-control me-2" type="search" placeholder="Batch" aria-label="Search" name="batch">
+                </td>
+                <td>
                     Title:
                     <input class="form-control me-2" type="search" placeholder="Title" aria-label="Search" name="title">
                 </td>
@@ -47,6 +51,7 @@
         {%  if all_items %}
             {% for item in all_items %}
                 <tr class="table-secondary">
+                    <td><center> {{ item.batch }} </center></td>
                     <td><center> {{ item.title }} </center></td>
                     <td><center> {{ item.hittype_id }} </center></td>
                     <td><center> {{ item.description }} </center></td>
