@@ -20,24 +20,24 @@
             {% comment %} <th scope="col">#</th> {% endcomment %}
             <th scope="col">Nickname</th>
             <th scope="col">QualificationType ID</th>
-            <th scope="col">Comparator</th>
-            <th scope="col">Integer Values</th>
-            <th scope="col">Country</th>
-            <th scope="col">Subdivision</th>
-            <th scope="col">Actions Guarded</th>
+            <th scope="col">Description</th>
+            {% comment %} <th scope="col">Integer Values</th> {% endcomment %}
+            {% comment %} <th scope="col">Country</th> {% endcomment %}
+            {% comment %} <th scope="col">Subdivision</th> {% endcomment %}
+            {% comment %} <th scope="col">Actions Guarded</th> {% endcomment %}
             </tr>
         </thead>
         <tbody>
             {%  if all_items %}
                 {% for item in all_items %}
                     <tr class="table-secondary">
-                        <td>{{ item.nickname }}</td>
-                        <td> {{ item.qualID }} </td>
-                        <td> {{ item.comparator }}</td>
-                        <td> {{ item.int_value }} </td>
-                        <td> {{ item.country }} </td>
-                        <td> {{ item.subdivision }} </td>
-                        <td> {{ item.actions_guarded }} </td>
+                        <td>{{ item.Name }}</td>
+                        <td> {{ item.QualificationTypeId }} </td>
+                        <td> {{ item.Description }}</td>
+                        {% comment %} <td> {{ item.int_value }} </td> {% endcomment %}
+                        {% comment %} <td> {{ item.country }} </td> {% endcomment %}
+                        {% comment %} <td> {{ item.subdivision }} </td> {% endcomment %}
+                        {% comment %} <td> {{ item.actions_guarded }} </td> {% endcomment %}
 
                         <td><center></center></td>
                     </tr>

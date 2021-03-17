@@ -125,7 +125,14 @@ def qualificationView(request):
     :param request
     :return: Qualification view page
     """
-    all_items = Qualification.objects.all()
+    mturk = mturk_client()
+
+    # all_items = Qualification.objects.all()
+    all_items = mturk.list_qualification_types(
+        MustBeRequestable=False,
+        MustBeOwnedByCaller=True,
+    )
+    print('all items: ', all_items['QualificationTypes'])
     if request.method == "POST":
         nickname = request.POST.get('nickname')                 # Retrieve query for nickname
         qualID = request.POST.get('qualID')                     # Retrieve query for qualID
@@ -152,7 +159,7 @@ def qualificationView(request):
             all_items = all_items.filter(actions_guarded__icontains=actions_guarded)
 
     # Return the objects that satisfy all search filter
-    return render(request, 'qualification.html', {"all_items": all_items})
+    return render(request, 'qualification.html', {"all_items": all_items['QualificationTypes']})
 
 
 def addQualification(request):
@@ -171,7 +178,7 @@ def addQualification(request):
                 qual_info.append(form.cleaned_data[i])
             create_qualification(qual_info)
             # form.save()
-            # messages.success(request, "Item has been added!")
+            messages.success(request, "Item has been added!")
             return redirect(qualificationView)
         else:
             messages.error(request, "Item was not added")
@@ -182,8 +189,6 @@ def addQualification(request):
 
 def create_qualification(info):
     mturk = mturk_client()
-
-
     response = mturk.create_qualification_type(
         Name= info[0],
         Description= info[1],
