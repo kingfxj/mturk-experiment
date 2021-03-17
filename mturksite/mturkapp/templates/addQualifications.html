@@ -9,22 +9,57 @@
 
 {% block content %}
     <h1 style="text-align:center">Add Qualification</h1>
-
-    <form class="d-flex" method="POST">
+    <form form class="d-flex" method="post">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
             <tr><td>Nickname:</td></tr>  <!-- Qualification nickname -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Nickname"  aria-label="Search" name="nickname"></td>
+                <td><input class="form-control me-2" id="nickname" type="text" name="nickname" maxlength="100" required></td>
+            </tr>
+            <tr><td>Description:</td></tr>  <!-- Qualification desc -->
+            <tr>
+                <td><input class="form-control me-2" id="description" type="text" name="description" maxlength="2000" required></td>
+            </tr>            
+            <tr><td>Comparator:</td></tr>  <!-- Qualification comparator -->
+            <tr>
+                <td><input class="form-control me-2" id="comparator" type="text" name="comparator" maxlength="50" required></td>
+            </tr>
+            <tr><td>Integer Value:</td></tr>  <!-- Qualification int_value -->
+            <tr>
+                <td><input class="form-control me-2" id="int_value" type="number" name="int_value" required></td>
+            </tr>                        
+            <tr><td>Country:</td></tr>  <!-- Qualification country -->
+            <tr>
+                <td><input class="form-control me-2" id="country" type="text" name="country" maxlength="100" required></td>
+            </tr>  
+            <tr><td>Subdivision:</td></tr>  <!-- Qualification subdivision -->
+            <tr>
+                <td><input class="form-control me-2" id="subdivision" type="text" name="subdivision" maxlength="100" required></td>
+            </tr>    
+            <tr> 
+                <td><input type="submit" value="Submit"></td>    <!-- Submit button -->
+            </tr>    
+        </table>
+    </form>
+{% endblock %}
+
+
+{% comment %} <form class="d-flex" method="POST"> {% endcomment %}
+        {% csrf_token %}
+        <table class="table table-bordered table-primary">
+            <tr><td>Nickname:</td></tr>  <!-- Qualification nickname -->
+            <tr>
+                {% comment %} <td><input class="form-control me-2" type="search" placeholder="Nickname"  aria-label="Search" name="nickname"></td> {% endcomment %}
+                <td><input class="form-control me-2" id="nickname" type="text" name="nickname" maxlength="100" required></td>
             </tr>
 
-            <tr><td>QualificationType Id:</td></tr>  <!-- QualificationType id -->
+            {% comment %} <tr><td>QualificationType Id:</td></tr>  <!-- QualificationType id -->
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="QualificationType Id" aria-label="Search" name="qualID"></td>
-            </tr>
+            </tr> {% endcomment %}
 
             <tr><td>Comparator:</td></tr>  <!-- Comparator -->
-            <tr>
+            <tr> 
                 <td><input class="form-control me-2" type="search" placeholder="Comparator" aria-label="Search" name="comparator"></td>
             </tr>
             
@@ -43,14 +78,13 @@
                 <td><input class="form-control me-2" type="search" placeholder="Subdivision" aria-label="Search" name="subdivision"></td>
             </tr>
 
-            <tr><td>Actions Guarded:</td></tr>  <!-- actions guarded -->
+            {% comment %} <tr><td>Actions Guarded:</td></tr>  <!-- actions guarded -->
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Actions Guarded" aria-label="Search" name="actions_guarded"></td>
-            </tr>            
+            </tr>             {% endcomment %}
 
             <tr> 
                 <td><input type="submit" value="Submit"></td>    <!-- Submit button -->
             </tr>
         </table>
     </form>
-{% endblock %}

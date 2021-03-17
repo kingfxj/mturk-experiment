@@ -161,11 +161,17 @@ def addQualification(request):
     :param request
     :return: Redirect to Assignment View page after changes are made
     """
+    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     if request.method == "POST":
         form = qualificationForm(request.POST or None)
+
         if form.is_valid():
-            form.save()
-            messages.success(request, "Item has been added!")
+            qual_info = []
+            for i in qual_fields:
+                qual_info.append(form.cleaned_data[i])
+            print(qual_info)
+            # form.save()
+            # messages.success(request, "Item has been added!")
             return redirect(qualificationView)
         else:
             messages.error(request, "Item was not added")
