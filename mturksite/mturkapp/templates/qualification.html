@@ -21,7 +21,7 @@
             <th scope="col">Nickname</th>
             <th scope="col">QualificationType ID</th>
             <th scope="col">Description</th>
-            {% comment %} <th scope="col">Integer Values</th> {% endcomment %}
+            <th scope="col">Qualification Type Status</th>
             {% comment %} <th scope="col">Country</th> {% endcomment %}
             {% comment %} <th scope="col">Subdivision</th> {% endcomment %}
             {% comment %} <th scope="col">Actions Guarded</th> {% endcomment %}
@@ -34,7 +34,7 @@
                         <td>{{ item.Name }}</td>
                         <td> {{ item.QualificationTypeId }} </td>
                         <td> {{ item.Description }}</td>
-                        {% comment %} <td> {{ item.int_value }} </td> {% endcomment %}
+                        <td> {{ item.QualificationTypeStatus }} </td>
                         {% comment %} <td> {{ item.country }} </td> {% endcomment %}
                         {% comment %} <td> {{ item.subdivision }} </td> {% endcomment %}
                         {% comment %} <td> {{ item.actions_guarded }} </td> {% endcomment %}
@@ -45,4 +45,5 @@
             {% endif %}
         </tbody>
         </table>
+        <p class="font-italic">Qualifications may take some time to appear</p>
 {% endblock %}

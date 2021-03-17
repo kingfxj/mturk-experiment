@@ -128,11 +128,11 @@ def qualificationView(request):
     mturk = mturk_client()
 
     # all_items = Qualification.objects.all()
-    all_items = mturk.list_qualification_types(
+    all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
     )
-    print('all items: ', all_items['QualificationTypes'])
+    # print('all items: ', all_items['QualificationTypes'])  # print check
     if request.method == "POST":
         nickname = request.POST.get('nickname')                 # Retrieve query for nickname
         qualID = request.POST.get('qualID')                     # Retrieve query for qualID
@@ -193,7 +193,7 @@ def create_qualification(info):
         Name= info[0],
         Description= info[1],
         QualificationTypeStatus='Active')
-    print(response)
+    # print(response)
 
 
 def lobbyView(request):
