@@ -5,6 +5,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from .mturk_client import mturk_client
+import xml.dom.minidom
+
 
 # Create your views here.
 @login_required
@@ -85,9 +87,9 @@ def asgmtsCompletedView(request):
     :param request
     :return: Completed assignments page
     """   
-
     mturk = mturk_client()
     assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
+
 
     if request.method == "POST":
         assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
@@ -233,16 +235,13 @@ def hittypeView(request):
     """
     all_items = HITType.objects.all()
     if request.method == "POST":
-        batch = request.POST.get('batch')                   # Retrieve query for batch
         title = request.POST.get('title')                   # Retrieve query for title
         hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
         description = request.POST.get('description')       # Retrieve query for description
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
-        quals = request.POST.get('quals')                   # Retrieve query for quals
+        quals = request.POST.get('quals')                   # Retrieve query for qualifications
         # Filter the objects according to the sort
-        if batch != '' and batch is not None:
-            all_items = all_items.filter(batch__icontains=batch)
         if title != '' and title is not None:
             all_items = all_items.filter(title__icontains=title)
         if hittype_id != '' and hittype_id is not None:
@@ -266,9 +265,31 @@ def addHITType(request):
     :return: Redirect to HITType View page after changes are made
     """
     if request.method == "POST":
-        form = hittypeForm(request.POST or None)
-        if form.is_valid():
-            form.save()
+        form = hittypeForm(request.POST or None)       
+        if form.is_valid():            
+            title = form.cleaned_data.get("title")                   # Retrieve query for title  
+            description = form.cleaned_data.get("description")       # Retrieve query for description
+            keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
+            reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
+            quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
+
+            mturk = mturk_client() 
+            hittypes = mturk.create_hit_type(
+                AssignmentDurationInSeconds = 2345,
+                Reward = reward,
+                Title = title,
+                Keywords = keyword,
+                Description = description )
+            
+            instance = form.save()
+            hittype_id = HITType(hittype_id = hittypes["HITTypeId"], 
+                title = title , 
+                description = description , 
+                keyword = keyword , 
+                reward = reward , 
+                quals = quals)
+            hittype_id.pk = instance.pk
+            hittype_id.save()
             messages.success(request, "Item has been added!")
             return redirect(hittypeView)
         else:
@@ -287,20 +308,20 @@ def hitView(request):
     """
     all_items = HIT.objects.all()
     if request.method == "POST":
-        hit_id = request.POST.get('hit_id')                 # Retrieve query for hit id
-        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
-        assignments = request.POST.get('assignments')       # Retrieve query for assignments number
-        expiry_date = request.POST.get('expiry_date')       # Retrieve query for expiry date
+        hit_id = request.POST.get('hit_id')                         # Retrieve query for hit id
+        hittype_id = request.POST.get('hittype_id')                 # Retrieve query for hittype id
+        max_assignments = request.POST.get('max_assignments')       # Retrieve query for max number of assignments
+        expiry_time = request.POST.get('expiry_time')               # Retrieve query for expiry time
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
             all_items = all_items.filter(hit_id__icontains=hit_id)
         if hittype_id != '' and hittype_id is not None:
             all_items = all_items.filter(hittype_id__icontains=hittype_id)
-        if assignments != '' and assignments is not None:
-            all_items = all_items.filter(assignments__icontains=assignments)
-        if expiry_date != '' and expiry_date is not None:
-            all_items = all_items.filter(expiry_date__icontains=expiry_date)
+        if max_assignments != '' and max_assignments is not None:
+            all_items = all_items.filter(max_assignments__icontains=max_ssignments)
+        if expiry_time != '' and expiry_time is not None:
+            all_items = all_items.filter(expiry_time__icontains=expiry_time)
 
     # Return the objects that satisfy all search filter
     return render(request, 'hit.html', {"all_items": all_items})
@@ -312,10 +333,32 @@ def addHIT(request):
     :param request
     :return: Redirect to HIT View page after changes are made
     """
+    path=r"C:\Users\Jon\Documents\GitHub\mturk-experiment\mturksite\mturkapp\templates\mine.xml"        # set path here 
+    question = open(path).read()
+    hittype_items = HITType.objects.all()    
     if request.method == "POST":
         form = hitForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            maxassignments = form.cleaned_data.get("max_assignments")
+            expiry_time = form.cleaned_data.get("expiry_time")
+            x = form.cleaned_data.get("hittype")
+            hittypes = HITType.objects.get(pk = x)
+    
+            mturk = mturk_client()
+            hit = mturk.create_hit_with_hit_type(
+                HITTypeId = hittypes.hittype_id,
+                MaxAssignments = maxassignments ,
+                LifetimeInSeconds= int(expiry_time),
+                Question =question
+            )
+            instance = form.save()
+            hit_id = HIT(hit_id = hit["HIT"]["HITId"], 
+                hittype_id = hittypes.hittype_id  , 
+                max_assignments = maxassignments , 
+                expiry_time = expiry_time 
+            )
+            hit_id.pk = instance.pk
+            hit_id.save()
             messages.success(request, "Item has been added!")
             return redirect(hitView)
         else:
@@ -323,4 +366,5 @@ def addHIT(request):
             return redirect(hitView)
     else:
         all_items = HIT.objects.all()
-        return render(request, 'addHIT.html', {"all_items": all_items})
+        context = {"hittype_items":hittype_items ,"all_items": all_items}
+        return render(request, 'addHIT.html', context)

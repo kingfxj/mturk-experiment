@@ -10,21 +10,15 @@
 {% block content %}
     <h1 style="text-align:center">Add HITType</h1>
 
-    <form class="d-flex" method="POST">
+    <form class="d-flex" method="POST" name="hittypes"> 
         {% csrf_token %}
         <table class="table table-bordered table-primary">
-            <tr><td>Batch:</td></tr>
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Batch"  aria-label="Search" name="batch"></td>
-            </tr>
+        
             <tr><td>Title:</td></tr>
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Title"  aria-label="Search" name="title"></td>
             </tr>
-            <tr><td>HITType ID:</td></tr>
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id"></td>
-            </tr>
+
             <tr><td>Description:</td></tr>
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="description"></td>
