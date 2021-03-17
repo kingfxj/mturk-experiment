@@ -11,7 +11,7 @@ import xml.dom.minidom
 # Create your views here.
 @login_required
 def login(request):
-    return render(request, 'assignment.html')
+    return render(request, 'asgmtsCompleted.html')
 
 
 def signup(request):
@@ -38,17 +38,20 @@ def homeView(request):
     :param request
     :return: Home page
     """
-    return render(request, 'home.html')
-
-
-def assignmentView(request):
-    """
-    View Assignment
-    :param request
-    :return: Assignment page
-    """   
     mturk = mturk_client()
-    assignments = mturk.list_assignments_for_hit(HITId= hit["HIT"]["HITId"])['Assignments']
+    balance = mturk.get_account_balance()
+
+    return render(request, 'home.html', {"balance": balance})
+
+def asgmtsActiveView(request):
+    """
+    View Active assignment
+    :param request
+    :return: Active assignment page
+    """   
+
+    mturk = mturk_client()
+    assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
 
     if request.method == "POST":
         assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
@@ -75,7 +78,45 @@ def assignmentView(request):
                     assignments.remove(assignment)
 
     # Return the objects that satisfy all search filter
-    return render(request, 'assignment.html', {"assignments": assignments})
+    return render(request, 'asgmtsActive.html', {"assignments": assignments})
+
+
+def asgmtsCompletedView(request):
+    """
+    View Completed assignments
+    :param request
+    :return: Completed assignments page
+    """   
+    mturk = mturk_client()
+    assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
+
+
+    if request.method == "POST":
+        assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
+        workerIdFilter = request.POST.get('workerId')                     # Retrieve query for Worker ID
+        acceptanceTimeFilter = request.POST.get('acceptanceTime')         # Retrieve query for Acceptance Time
+        assignmentStatusFilter = request.POST.get('assignmentStatus')     # Retrieve query for Assignment Status
+        
+        # Filter the objects according to the sort
+        if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            for assignment in assignments:
+                if assignmentIdFilter not in assignment['AssignmentId']:
+                    assignments.remove(assignment)
+        if workerIdFilter != '' and workerIdFilter is not None:
+            for assignment in assignments:
+                if  workerIdFilter not in assignment['WorkerId']:
+                    assignments.remove(assignment)
+        if acceptanceTimeFilter != '' and acceptanceTimeFilter is not None:
+            for assignment in assignments:
+                if acceptanceTimeFilter not in assignment['AcceptTime']:
+                    assignments.remove(assignment)
+        if assignmentStatusFilter != '' and assignmentStatusFilter is not None:
+            for assignment in assignments:
+                if assignmentStatusFilter not in assignment['AssignmentStatus']:
+                    assignments.remove(assignment)
+
+    # Return the objects that satisfy all search filter
+    return render(request, 'asgmtsCompleted.html', {"assignments": assignments})
 
 
 def payBonus(request):
