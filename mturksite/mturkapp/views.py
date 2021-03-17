@@ -169,7 +169,7 @@ def addQualification(request):
             qual_info = []
             for i in qual_fields:
                 qual_info.append(form.cleaned_data[i])
-            print(qual_info)
+            create_qualification(qual_info)
             # form.save()
             # messages.success(request, "Item has been added!")
             return redirect(qualificationView)
@@ -179,6 +179,16 @@ def addQualification(request):
     else:
         all_items = Qualification.objects.all()
         return render(request, 'addQualifications.html', {"all_items": all_items})
+
+def create_qualification(info):
+    mturk = mturk_client()
+
+
+    response = mturk.create_qualification_type(
+        Name= info[0],
+        Description= info[1],
+        QualificationTypeStatus='Active')
+    print(response)
 
 
 def lobbyView(request):
