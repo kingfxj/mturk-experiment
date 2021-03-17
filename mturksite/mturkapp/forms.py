@@ -11,9 +11,10 @@ class SignUpForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
 
 class qualificationForm(forms.ModelForm):
+    description = forms.CharField(max_length=300)
     class Meta:
         model = Qualification 
-        fields = ['nickname', 'qualID', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
+        fields = ['nickname', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
 
 
 class hitForm(forms.ModelForm):

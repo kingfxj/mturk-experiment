@@ -163,18 +163,71 @@ def addQualification(request):
     :param request
     :return: Redirect to Assignment View page after changes are made
     """
+    all_items = Qualification.objects.all() 
     if request.method == "POST":
         form = qualificationForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            nickname = form.cleaned_data.get('nickname')
+            comparator = form.cleaned_data.get('comparator')
+            int_value = form.cleaned_data.get('int_value')
+            description = form.cleaned_data.get('description')               
+            country = form.cleaned_data.get('country')                   
+            subdivision = form.cleaned_data.get('subdivision')           
+            actions_guarded = form.cleaned_data.get('actions_guarded') 
+            
+            mturk = mturk_client()
+            qual = mturk.create_qualification_type(
+               Name= nickname,
+               Description= description,
+               QualificationTypeStatus='Active'                             #,
+                                                                                #RetryDelayInSeconds=123
+            )
+            x = False
+            instance = form.save()
+            if qual["QualificationType"]["QualificationTypeStatus"] == 'Active':
+                x = True
+            qualID = Qualification( qualID= qual["QualificationType"]["QualificationTypeId"], 
+                comparator= comparator  , 
+                int_value = int_value , 
+                country = country,
+                subdivision = subdivision,
+                actions_guarded = actions_guarded,
+                nickname = nickname,
+                Status = x
+            )
+            qualID.pk = instance.pk
+            qualID.save()
             messages.success(request, "Item has been added!")
             return redirect(qualificationView)
         else:
             messages.error(request, "Item was not added")
             return redirect(qualificationView)
     else:
-        all_items = Qualification.objects.all()
-        return render(request, 'addQualifications.html', {"all_items": all_items})
+        context = {"all_items": all_items }
+        return render(request, 'addQualifications.html', context)
+
+def updateQualification(request,List_id):
+    all_items = Qualification.objects.get(pk = List_id) 
+    mturk = mturk_client()
+    if all_items.Status == False:
+        up = mturk.update_qualification_type(
+               QualificationTypeId= all_items.qualID,
+               QualificationTypeStatus='Active'
+              )
+    else:
+        up = mturk.update_qualification_type(
+                QualificationTypeId= all_items.qualID,
+                QualificationTypeStatus='Inactive'
+             )
+    x = False
+    if up["QualificationType"]["QualificationTypeStatus"] == 'Active':
+        x = True
+    
+    all_items.Status = x
+    all_items.save()
+    messages.success(request, "Item has been Edited!")
+    return redirect('qualificationView')
+    
 
 
 def lobbyView(request):
@@ -225,7 +278,7 @@ def addHITType(request):
     :return: Redirect to HITType View page after changes are made
     """
     
-   
+    qual_items = Qualification.objects.all()
     if request.method == "POST":
         form = hittypeForm(request.POST or None)       
         if form.is_valid():            
@@ -235,6 +288,7 @@ def addHITType(request):
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
             quals = form.cleaned_data.get("quals")
 
+            x = Qualification.objects.get(pk = quals)
             mturk = mturk_client() 
             hittypes = mturk.create_hit_type(
                 AssignmentDurationInSeconds = 2345,
@@ -249,9 +303,10 @@ def addHITType(request):
                 description = description , 
                 keyword = keyword , 
                 reward = reward , 
-                quals = quals)
+                quals = x.nickname)
             hittype_id.pk = instance.pk
             hittype_id.save()
+            print(quals)
             messages.success(request, "Item has been added!")
             return redirect(hittypeView)
         else:
@@ -259,7 +314,8 @@ def addHITType(request):
             return redirect(hittypeView)
     else:
         all_items = HITType.objects.all()
-        return render(request, 'addHITType.html', {"all_items": all_items})
+        context = {"all_items": all_items , "qual_items": qual_items}
+        return render(request, 'addHITType.html', context)
 
 
 def hitView(request):

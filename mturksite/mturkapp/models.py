@@ -9,6 +9,7 @@ class Qualification(models.Model):
     country = models.CharField(max_length=100, blank=True, null=True)
     subdivision = models.CharField(max_length=100, blank=True, null=True)
     actions_guarded = models.CharField(max_length=100, blank=True, null=True)
+    Status = models.BooleanField(default= False)
     
     class Meta:
         # Remote database name
