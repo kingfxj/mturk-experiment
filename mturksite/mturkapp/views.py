@@ -47,7 +47,6 @@ def assignmentView(request):
     :param request
     :return: Assignment page
     """   
-
     mturk = mturk_client()
     assignments = mturk.list_assignments_for_hit(HITId= hit["HIT"]["HITId"])['Assignments']
 
@@ -196,11 +195,11 @@ def hittypeView(request):
     all_items = HITType.objects.all()
     if request.method == "POST":
         title = request.POST.get('title')                   # Retrieve query for title
-        hittype_id = request.POST.get('hittype_id')        # Retrieve query for hittype id
+        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
         description = request.POST.get('description')       # Retrieve query for description
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
-        quals = request.POST.get('quals')                   # Retrieve query for quals
+        quals = request.POST.get('quals')                   # Retrieve query for qualifications
         # Filter the objects according to the sort
         if title != '' and title is not None:
             all_items = all_items.filter(title__icontains=title)
@@ -224,8 +223,6 @@ def addHITType(request):
     :param request
     :return: Redirect to HITType View page after changes are made
     """
-    
-   
     if request.method == "POST":
         form = hittypeForm(request.POST or None)       
         if form.is_valid():            
@@ -233,7 +230,7 @@ def addHITType(request):
             description = form.cleaned_data.get("description")       # Retrieve query for description
             keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
-            quals = form.cleaned_data.get("quals")
+            quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
 
             mturk = mturk_client() 
             hittypes = mturk.create_hit_type(
@@ -270,10 +267,10 @@ def hitView(request):
     """
     all_items = HIT.objects.all()
     if request.method == "POST":
-        hit_id = request.POST.get('hit_id')                 # Retrieve query for hit id
-        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
-        max_assignments = request.POST.get('max_assignments')       # Retrieve query for assignments number
-        expiry_time = request.POST.get('expiry_time')       # Retrieve query for expiry date
+        hit_id = request.POST.get('hit_id')                         # Retrieve query for hit id
+        hittype_id = request.POST.get('hittype_id')                 # Retrieve query for hittype id
+        max_assignments = request.POST.get('max_assignments')       # Retrieve query for max number of assignments
+        expiry_time = request.POST.get('expiry_time')               # Retrieve query for expiry time
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
@@ -295,12 +292,12 @@ def addHIT(request):
     :param request
     :return: Redirect to HIT View page after changes are made
     """
-    question = open(r"C:\Users\saman\Desktop\CMPUT401\MTurk\mturk-experiment\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
+    path=r"C:\Users\Jon\Documents\GitHub\mturk-experiment\mturksite\mturkapp\templates\mine.xml"        # set path here 
+    question = open(path).read()
     hittype_items = HITType.objects.all()    
     if request.method == "POST":
         form = hitForm(request.POST or None)
         if form.is_valid():
-
             maxassignments = form.cleaned_data.get("max_assignments")
             expiry_time = form.cleaned_data.get("expiry_time")
             x = form.cleaned_data.get("hittype")

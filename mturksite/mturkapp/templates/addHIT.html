@@ -13,10 +13,10 @@
     <form class="d-flex" method="POST">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
-            <tr><td> HITType:</td></tr>
+            <tr><td>HITType:</td></tr>
             <tr>
             <td><select name="hittype" id="hittype" class="form-control me-2" type="search" placeholder="HITType">
-                <option value="" disabled selected hidden>HITType</option>
+                <option value="" disabled selected hidden>--- Please choose a HITType ---</option>
                   {% for item in hittype_items %}
                           <option value="{{item.pk}}">{{item.title}}</option>
                   {% endfor %} 
@@ -27,7 +27,7 @@
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Max Assignments" aria-label="Search" name="max_assignments"></td>
             </tr>
-            <tr><td>Expiry Time In:</td></tr>
+            <tr><td>Expiry Time:</td></tr>
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Expiry Time" aria-label="Search" name="expiry_time"></td>
             </tr>
