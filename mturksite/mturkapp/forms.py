@@ -1,7 +1,8 @@
-from .models import HIT, HITType, Qualification
+from .models import *
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django_countries.fields import CountryField
 
 
 class SignUpForm(UserCreationForm):
@@ -10,21 +11,20 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-# class qualificationForm(forms.ModelForm):  # deprecated code
-#     # comparator = forms.ChoiceField(max_length=50, widget=forms.Select(choices=comparator_choices),)
-#     # comparator = forms.ModelChoiceField(queryset = Qualification.objects.all(), initial=0)
-#     class Meta:
-#         model = Qualification 
-#         # fields = ['nickname', 'qualID', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
-#         fields = ['nickname', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
-
-class qualificationForm(forms.Form):
-    nickname = forms.CharField(max_length=100)
-    description = forms.CharField(max_length=2000)
-    comparator = forms.CharField(max_length=50)
-    int_value = forms.IntegerField(required=False)
+class qualificationForm(forms.ModelForm):
+    description = forms.CharField(max_length=2000, required=True)
     country = forms.CharField(max_length=100, required=False)
-    subdivision = forms.CharField(max_length=100, required=False)
+    class Meta:
+        model = Qualification 
+        fields = ['nickname', 'description','comparator', 'int_value', 'subdivision']
+
+# class qualificationForm(forms.Form):
+#     nickname = forms.CharField(max_length=100)
+#     description = forms.CharField(max_length=2000)
+#     comparator = forms.CharField(max_length=50)
+#     int_value = forms.IntegerField(required=False)
+#     country = forms.CharField(max_length=100, required=False)
+#     subdivision = forms.CharField(max_length=100, required=False)
         
 class hitForm(forms.ModelForm):
     class Meta:
