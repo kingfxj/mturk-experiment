@@ -19,11 +19,15 @@ class qualificationForm(forms.ModelForm):
         fields = ['nickname', 'description','comparator', 'int_value', 'subdivision']
        
 class hitForm(forms.ModelForm):
+    hittype = forms.CharField(max_length=254)
     class Meta:
         model = HIT
-        fields = ['hit_id', 'hittype_id', 'assignments', 'expiry_date']
+        fields = ['max_assignments', 'expiry_time']
+        
+       
+        
 
 class hittypeForm(forms.ModelForm):
     class Meta:
         model = HITType
-        fields = ['batch', 'title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']
+        fields = ['title','description', 'keyword', 'reward', 'quals']
