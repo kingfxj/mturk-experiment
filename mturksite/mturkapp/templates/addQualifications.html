@@ -23,17 +23,36 @@
             </tr>
             <tr><td>Comparator:</td></tr>  <!-- Comparator -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Comparator" required aria-label="Search" name="comparator"></td>
+                 <td><select name="comparator" id="comparator" class="form-control me-2" type="search" placeholder="Comparator">
+                    <option value="" disabled selected hidden>Select the Comparator</option>
+                    <option value="LessThan">Less Than</option>
+                    <option value="LessThanOrEqualTo">Less Than or Equal To</option>
+                    <option value="GreaterThan">Greater Than</option>
+                    <option value="GreaterThanOrEqualTo">Greater Than or Equal To </option>
+                    <option value="EqualTo">Equal To</option>
+                    <option value="NotEqualTo">Not Equal To</option>
+                    <option value="Exists">Exists</option>
+                    <option value="DoesNotExist">Does not Exist</option>
+                    <option value="In">In</option>
+                    <option value="NotIn">Not In</option>
+                </td>
+                </select>
             </tr>
             
             <tr><td>Integer Values:</td></tr>  <!-- Integer values -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Integer Values"  aria-label="Search" name="int_value"></td>
+               <td><input class="form-control me-2" type="search" placeholder="Integer Values"  aria-label="Search" name="int_value"></td>
             </tr>
             
             <tr><td>Country:</td></tr>  <!-- Country for LocaleValue -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Country" aria-label="Search" name="country"></td>
+                <td><select name="country" id="country" class="form-control me-2" type="search" placeholder="Country">
+                <option value="" disabled selected hidden>Select Country</option>
+                  {% for item in country %}
+                     <option value="{{item}}">{{item}}</option>
+                  {% endfor %} 
+                </td>
+                </select>
             </tr>
             <tr><td>Subdivision:</td></tr>  <!-- subdivision for LocaleValue -->
             <tr>
@@ -42,9 +61,14 @@
 
             <tr><td>Actions Guarded:</td></tr>  <!-- actions guarded -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Actions Guarded" aria-label="Search" name="actions_guarded"></td>
+                 <td><select name="actions_guarded" id="actions_guarded" class="form-control me-2" type="search" placeholder="actions_guarded">
+                    <option value="" disabled selected hidden>Select the Action Guarded</option>
+                    <option value="Accept">Accept</option>
+                    <option value="PreviewAndAccept">PreviewAndAccept</option>
+                    <option value="DiscoverPreviewAndAccept">Discover Preview and Accept</option>
+                </td>
+                </select>
             </tr>            
-
             <tr> 
                 <td><input type="submit" value="Submit"></td>    <!-- Submit button -->
             </tr>

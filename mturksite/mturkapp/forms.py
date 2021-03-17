@@ -2,6 +2,8 @@ from .models import HIT, HITType, Qualification
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django_countries.fields import CountryField
+
 
 
 class SignUpForm(UserCreationForm):
@@ -12,9 +14,10 @@ class SignUpForm(UserCreationForm):
 
 class qualificationForm(forms.ModelForm):
     description = forms.CharField(max_length=300)
+    country = forms.CharField(max_length=100)
     class Meta:
         model = Qualification 
-        fields = ['nickname', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
+        fields = ['nickname', 'comparator', 'int_value', 'subdivision', 'actions_guarded']
 
 
 class hitForm(forms.ModelForm):

@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from .mturk_client import mturk_client
-import xml.dom.minidom
+from django_countries import countries
 
 
 # Create your views here.
@@ -164,6 +164,10 @@ def addQualification(request):
     :return: Redirect to Assignment View page after changes are made
     """
     all_items = Qualification.objects.all() 
+    List2 = []
+    for code,name in list(countries):
+        List2.append(name)
+    print(countries)
     if request.method == "POST":
         form = qualificationForm(request.POST or None)
         if form.is_valid():
@@ -171,7 +175,7 @@ def addQualification(request):
             comparator = form.cleaned_data.get('comparator')
             int_value = form.cleaned_data.get('int_value')
             description = form.cleaned_data.get('description')               
-            country = form.cleaned_data.get('country')                   
+            y = form.cleaned_data.get('country')                   
             subdivision = form.cleaned_data.get('subdivision')           
             actions_guarded = form.cleaned_data.get('actions_guarded') 
             
@@ -184,6 +188,10 @@ def addQualification(request):
             )
             x = False
             instance = form.save()
+            for code,name in list(countries):
+                if name == y:
+                    country = (code)
+
             if qual["QualificationType"]["QualificationTypeStatus"] == 'Active':
                 x = True
             qualID = Qualification( qualID= qual["QualificationType"]["QualificationTypeId"], 
@@ -203,7 +211,7 @@ def addQualification(request):
             messages.error(request, "Item was not added")
             return redirect(qualificationView)
     else:
-        context = {"all_items": all_items }
+        context = {"all_items": all_items , "country": List2  }
         return render(request, 'addQualifications.html', context)
 
 def updateQualification(request,List_id):
@@ -228,7 +236,6 @@ def updateQualification(request,List_id):
     messages.success(request, "Item has been Edited!")
     return redirect('qualificationView')
     
-
 
 def lobbyView(request):
     """
@@ -290,13 +297,14 @@ def addHITType(request):
 
             x = Qualification.objects.get(pk = quals)
             mturk = mturk_client() 
-            hittypes = mturk.create_hit_type(
-                AssignmentDurationInSeconds = 2345,
-                Reward = reward,
-                Title = title,
-                Keywords = keyword,
-                Description = description )
-            
+            if x.int_value is None:
+                hittypes = mturk.create_hit_type(
+                    AssignmentDurationInSeconds = 2345,
+                    Reward = reward,
+                    Title = title,
+                    Keywords = keyword,
+                    Description = description
+                )
             instance = form.save()
             hittype_id = HITType(hittype_id = hittypes["HITTypeId"], 
                 title = title , 
@@ -313,9 +321,9 @@ def addHITType(request):
             messages.error(request, "Item was not added")
             return redirect(hittypeView)
     else:
-        all_items = HITType.objects.all()
-        context = {"all_items": all_items , "qual_items": qual_items}
-        return render(request, 'addHITType.html', context)
+       all_items = HITType.objects.all()
+       context = {"all_items": all_items , "qual_items": qual_items}
+       return render(request, 'addHITType.html', context)
 
 
 def hitView(request):
