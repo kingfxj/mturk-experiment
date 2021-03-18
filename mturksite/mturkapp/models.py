@@ -15,8 +15,8 @@ class Qualification(models.Model):
 class HIT(models.Model):
     hit_id = models.CharField(max_length=100)
     hittype_id = models.CharField(max_length=100)
-    assignments = models.IntegerField()
-    expiry_date = models.CharField(max_length=100)
+    max_assignments = models.IntegerField()
+    expiry_time = models.CharField(max_length=100)
 
     class Meta:
         # Remote database name
@@ -24,7 +24,6 @@ class HIT(models.Model):
 
 
 class HITType(models.Model):
-    batch = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
     hittype_id = models.CharField(max_length=100 , null=False)
     description = models.CharField(max_length=100)

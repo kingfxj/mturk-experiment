@@ -25,12 +25,12 @@
                     <input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id">
                 </td>
                 <td>
-                    Assignments:
-                    <input class="form-control me-2" type="search" placeholder="Assignments" aria-label="Search" name="assignments">
+                    Max Assignments:
+                    <input class="form-control me-2" type="search" placeholder="Assignments" aria-label="Search" name="max_assignments">
                 </td>
                 <td>
-                    Expiry Date:
-                    <input class="form-control me-2" type="search" placeholder="Expiry Date" aria-label="Search" name="expiry_date">
+                    Expiry Time:
+                    <input class="form-control me-2" type="search" placeholder="Expiry Date" aria-label="Search" name="expiry_time">
                 </td>
                 <td>
                     <br>
@@ -43,8 +43,8 @@
                 <tr class="table-secondary">
                     <td><center> {{ item.hit_id }} </center></td>
                     <td><center> {{ item.hittype_id }}</center></td>
-                    <td><center>  {{ item.assignments }}</center></td>
-                    <td><center>  {{ item.expiry_date }}</center></td>
+                    <td><center>  {{ item.max_assignments }}</center></td>
+                    <td><center>  {{ item.expiry_time }}</center></td>
                     <td><center></center></td>
                 </tr>
             {% endfor %}

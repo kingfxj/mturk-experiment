@@ -297,8 +297,8 @@ def lobbyView(request):
     :param request
     :return: Lobby view page
     """
-    all_items = Assignment.objects.all()
-    return render(request, 'lobby.html', {"all_items": all_items})
+    # all_items = Assignment.objects.all()
+    return render(request, 'lobby.html')
 
 
 def hittypeView(request):
@@ -309,7 +309,6 @@ def hittypeView(request):
     """
     all_items = HITType.objects.all()
     if request.method == "POST":
-        batch = request.POST.get('batch')                   # Retrieve query for batch
         title = request.POST.get('title')                   # Retrieve query for title
         hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
         description = request.POST.get('description')       # Retrieve query for description
@@ -317,8 +316,6 @@ def hittypeView(request):
         reward = request.POST.get('reward')                 # Retrieve query for reward
         quals = request.POST.get('quals')                   # Retrieve query for quals
         # Filter the objects according to the sort
-        if batch != '' and batch is not None:
-            all_items = all_items.filter(batch__icontains=batch)
         if title != '' and title is not None:
             all_items = all_items.filter(title__icontains=title)
         if hittype_id != '' and hittype_id is not None:
@@ -396,20 +393,20 @@ def hitView(request):
     """
     all_items = HIT.objects.all()
     if request.method == "POST":
-        hit_id = request.POST.get('hit_id')                 # Retrieve query for hit id
-        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
-        assignments = request.POST.get('assignments')       # Retrieve query for assignments number
-        expiry_date = request.POST.get('expiry_date')       # Retrieve query for expiry date
+        hit_id = request.POST.get('hit_id')                     # Retrieve query for hit id
+        hittype_id = request.POST.get('hittype_id')             # Retrieve query for hittype id
+        max_assignments = request.POST.get('max_assignments')   # Retrieve query for assignments number
+        expiry_time = request.POST.get('expiry_time')           # Retrieve query for expiry date
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
             all_items = all_items.filter(hit_id__icontains=hit_id)
         if hittype_id != '' and hittype_id is not None:
             all_items = all_items.filter(hittype_id__icontains=hittype_id)
-        if assignments != '' and assignments is not None:
-            all_items = all_items.filter(assignments__icontains=assignments)
-        if expiry_date != '' and expiry_date is not None:
-            all_items = all_items.filter(expiry_date__icontains=expiry_date)
+        if max_assignments != '' and max_assignments is not None:
+            all_items = all_items.filter(max_assignments__icontains=max_assignments)
+        if expiry_time != '' and expiry_time is not None:
+            all_items = all_items.filter(expiry_time__icontains=expiry_time)
 
     # Return the objects that satisfy all search filter
     return render(request, 'hit.html', {"all_items": all_items})

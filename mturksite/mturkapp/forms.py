@@ -21,9 +21,9 @@ class qualificationForm(forms.ModelForm):
 class hitForm(forms.ModelForm):
     class Meta:
         model = HIT
-        fields = ['hit_id', 'hittype_id', 'assignments', 'expiry_date']
+        fields = ['hit_id', 'hittype_id', 'max_assignments', 'expiry_time']
 
 class hittypeForm(forms.ModelForm):
     class Meta:
         model = HITType
-        fields = ['batch', 'title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']
+        fields = ['title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']
