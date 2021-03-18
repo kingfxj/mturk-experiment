@@ -39,7 +39,16 @@
             </tr>
             <tr><td>Qualifications:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="quals"></td>
+                <td><select name="quals" id="quals" class="form-control me-2" type="search" placeholder="Qualification" multiple>
+                <option value="" disabled selected hidden>Qualifications</option>
+                  {% for item in qual_items %}
+                        <option value="{{item}}">{{item}}</option>
+                    {% comment %} {% if item.Status %}
+                          <option value="{{item.pk}}">{{item.nickname}}</option>
+                    {% endif %} {% endcomment %}
+                  {% endfor %} 
+            </td>
+            </select>
             </tr>
             <tr>
                 <td><input type="submit" style="float: right;" value="Submit"></td>

@@ -9,48 +9,69 @@
 
 {% block content %}
     <h1 style="text-align:center">Add Qualification</h1>
-
-    <form class="d-flex" method="POST">
+    <form form class="d-flex" method="post">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
-            <tr><td>Nickname:</td></tr>  <!-- Qualification nickname -->
+            <tr><td>Nickname (Required):</td></tr>  <!-- Qualification nickname -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Nickname"  aria-label="Search" name="nickname"></td>
+                <td><input class="form-control me-2" id="nickname" type="text" name="nickname" maxlength="100" required></td>
             </tr>
-
-            <tr><td>QualificationType Id:</td></tr>  <!-- QualificationType id -->
+            <tr><td>Description (Required):</td></tr>  <!-- Qualification desc -->
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="QualificationType Id" aria-label="Search" name="qualID"></td>
-            </tr>
-
-            <tr><td>Comparator:</td></tr>  <!-- Comparator -->
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Comparator" aria-label="Search" name="comparator"></td>
-            </tr>
-            
-            <tr><td>Integer Values:</td></tr>  <!-- Integer values -->
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Integer Values" aria-label="Search" name="int_value"></td>
-            </tr>
-            
-            <tr><td>Country:</td></tr>  <!-- Country for LocaleValue -->
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Country" aria-label="Search" name="country"></td>
-            </tr>
-
-            <tr><td>Subdivision:</td></tr>  <!-- subdivision for LocaleValue -->
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Subdivision" aria-label="Search" name="subdivision"></td>
-            </tr>
-
-            <tr><td>Actions Guarded:</td></tr>  <!-- actions guarded -->
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Actions Guarded" aria-label="Search" name="actions_guarded"></td>
+                <td><input class="form-control me-2" id="description" type="text" name="description" maxlength="2000" required></td>
             </tr>            
+            {% comment %} <tr><td>Comparator (Required):</td></tr>  <!-- Qualification comparator -->
+            <tr>
+                <td><input class="form-control me-2" id="comparator" type="text" name="comparator" maxlength="50" required></td>
+            </tr> {% endcomment %}
+            
+            <tr><td>Comparator (Required):</td></tr>  <!-- Qualification comparator -->
+            <tr>
+                 <td><select name="comparator" id="comparator" class="form-control me-2" type="search" placeholder="Comparator">
+                    <option value="" disabled selected hidden>Select the Comparator</option>
+                    <option value="LessThan">Less Than</option>
+                    <option value="LessThanOrEqualTo">Less Than or Equal To</option>
+                    <option value="GreaterThan">Greater Than</option>
+                    <option value="GreaterThanOrEqualTo">Greater Than or Equal To </option>
+                    <option value="EqualTo">Equal To</option>
+                    <option value="NotEqualTo">Not Equal To</option>
+                    <option value="Exists">Exists</option>
+                    <option value="DoesNotExist">Does not Exist</option>
+                    <option value="In">In</option>
+                    <option value="NotIn">Not In</option>
+                </td>
+                </select>
+            </tr>
 
+            <tr><td>Integer Value:</td></tr>  <!-- Qualification int_value -->
+            <tr>
+                <td><input class="form-control me-2" id="int_value" type="number" name="int_value"></td>
+            </tr>                        
+            {% comment %} <tr><td>Country:</td></tr>  <!-- Qualification country -->
+            <tr>
+                <td><input class="form-control me-2" id="country" type="text" name="country" maxlength="100"></td>
+            </tr>   {% endcomment %}
+
+            <tr><td>Country:</td></tr>  <!-- Qualification country -->
+            <tr>
+                <td><select name="country" id="country" class="form-control me-2" type="search" placeholder="Country">
+                <option value="" disabled selected hidden>Select Country</option>
+                  {% for item in country %}
+                     <option value="{{item}}">{{item}}</option>
+                  {% endfor %} 
+                </td>
+                </select>
+            </tr>
+
+            {% comment %} <tr><td>Subdivision:</td></tr>  <!-- Qualification subdivision -->
+            <tr>
+                <td><input class="form-control me-2" id="subdivision" type="text" name="subdivision" maxlength="100"></td>
+            </tr>   {% endcomment %} 
             <tr> 
                 <td><input type="submit" value="Submit"></td>    <!-- Submit button -->
-            </tr>
+            </tr>     
         </table>
     </form>
+    <tr><p><em> Qualifications may take some time to appear</em></p></tr>
+
 {% endblock %}

@@ -15,7 +15,13 @@
         <table class="table table-bordered table-primary">
             <tr><td>HIT ID:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="HIT ID"  aria-label="Search" name="hit_id"></td>
+            <td><select name="hittype" id="hittype" class="form-control me-2" type="search" placeholder="HITType">
+                <option value="" disabled selected hidden>HITType</option>
+                  {% for item in hittype_items %}
+                          <option value="{{item.pk}}">{{item.title}}( {{item.hittype_id}} )</option>
+                  {% endfor %} 
+            </td>
+            </select>
             </tr>
             <tr><td>HITType ID:</td></tr>
             <tr>

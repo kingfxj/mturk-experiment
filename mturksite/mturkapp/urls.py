@@ -29,4 +29,5 @@ urlpatterns = [
     path('addhittypes/', views.addHITType, name="addHITType"),
     path('hits/', views.hitView, name="hitView"),
     path('addhits/', views.addHIT, name="addHIT"),
+    path('updateQualification/<List_id>' , views.updateQualification , name = 'updateQualification'),
 ]

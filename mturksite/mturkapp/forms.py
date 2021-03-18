@@ -1,7 +1,8 @@
-from .models import HIT, HITType, Qualification
+from .models import *
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django_countries.fields import CountryField
 
 
 class SignUpForm(UserCreationForm):
@@ -11,16 +12,18 @@ class SignUpForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
 
 class qualificationForm(forms.ModelForm):
+    description = forms.CharField(max_length=2000, required=True)
+    country = forms.CharField(max_length=100, required=False)
     class Meta:
         model = Qualification 
-        fields = ['nickname', 'qualID', 'comparator', 'int_value', 'country', 'subdivision', 'actions_guarded']
-        
+        fields = ['nickname', 'description','comparator', 'int_value', 'subdivision']
+       
 class hitForm(forms.ModelForm):
     class Meta:
         model = HIT
-        fields = ['hit_id', 'hittype_id', 'assignments', 'expiry_date']
+        fields = ['hit_id', 'hittype_id', 'max_assignments', 'expiry_time']
 
 class hittypeForm(forms.ModelForm):
     class Meta:
         model = HITType
-        fields = ['batch', 'title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']
+        fields = ['title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']
