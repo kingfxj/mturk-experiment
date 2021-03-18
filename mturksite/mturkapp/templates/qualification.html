@@ -39,13 +39,24 @@
         </tr>
         {%  if all_items %}
             {% for item in all_items %}
-                <tr class="table-secondary">
-                    <td><center> {{ item.Name }} </center></td>
-                    <td><center> {{ item.QualificationTypeId }}</center></td>
-                    <td><center>  {{ item.Description }}</center></td>
-                    <td><center>  {{ item.QualificationTypeStatus }}</center></td>
-                    <td><center></center></td>
-                </tr>
+                {% if item.QualificationTypeStatus == 'Active' %}
+                    <tr class="table-secondary">
+                        <td>{{ item.Name }}</td>
+                        <td> {{ item.QualificationTypeId }} </td>
+                        <td> {{ item.Description }}</td>
+                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-success">Active</button></td></a>
+                        <td><center></center></td>
+                        </tr>
+                
+                {% else %}
+                    <tr class="table-secondary">
+                        <td>{{ item.Name }}</td>
+                        <td> {{ item.QualificationTypeId }} </td>
+                        <td> {{ item.Description }}</td>
+                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-secondary">Inactive</button></td>></a>
+                        <td><center></center></td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         {% endif %}
     </table>

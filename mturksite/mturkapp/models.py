@@ -9,7 +9,7 @@ class Qualification(models.Model):
     int_value = models.IntegerField(blank=True, null=True )
     country =  models.CharField(max_length=100, blank=True, null=True)
     subdivision = models.CharField(max_length=100, blank=True, null=True)
-    Status = models.BooleanField(default= False)
+
 
 
 class HIT(models.Model):
