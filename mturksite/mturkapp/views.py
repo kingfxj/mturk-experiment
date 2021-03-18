@@ -485,28 +485,35 @@ def workersView(request):
     :return: Experiments view page
     """
     mturk = mturk_client()
+    workers_list = []
+    hittypeid_list = ['3DBQWDE4Y74UBEESWMGGSW7IXDHN5K']
     # all_items = HITType.objects.get(hittype_id=)   
     for i in HITType.objects.all():
-        pass
-        # print(i.hittype_id)
+        # print(type(i.hittype_id))
+        hittypeid_list.append(i.hittype_id)
+        # print("hittype ids: ", type(i))
 
-    # hit_ids = HITType.objects.get(pk = hittype_id)
-    # print("HIT IDS: ", all_items)
-    response = mturk.list_assignments_for_hit(
-        HITId='3ZC62PVYDHG527FCEWHITXUKU92XXQ',
-        AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-    # response = mturk.list_assignments_for_hit(HITId='3D9187VUCLP0LZ454XBBRW0STC2IUL')['Assignments']
-    print("RESPONSE: ", response)
-    
+    # response = mturk.list_assignments_for_hit(
+    # HITId='38TZTS8OLOLLVWMMJU4ONQY3AU5U3X',
+    # AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+    # print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
+
+    for id in hittypeid_list:
+        try:
+            response = mturk.list_assignments_for_hit(
+                HITId=id,
+                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+            workers_list.append(response['Assignments'][0]['WorkerId'])
+            print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
+        except:
+            print("Couldn't find", id)
+        
+
+
     if request.method == "POST":
-        # response = mturk.list_assignments_for_hit(
-        #     HITId='3Q1N1EPUSAOF7CHEHSYBWJC4SUSNZF',
-        #     MaxResults=150,
-        #     AssignmentStatuses=['Submitted',])
-        # print("RESPONSE: ", response)
         pass
     else:
         # Return the objects that satisfy all search filter
         all_items = HITType.objects.all()
-        return render(request, 'workers.html', {"all_items": all_items})
+        return render(request, 'workers.html', {"workers": workers_list})
         
