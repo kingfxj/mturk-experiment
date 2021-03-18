@@ -13,6 +13,14 @@
     <form class="d-flex" method="POST">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
+            <tr><td>Batch:</td></tr>
+            <tr>
+            <td><select name="batch" id="batch" class="form-control me-2" type="search" placeholder="Batch">
+                <option value="" disabled selected hidden>Batch</option>
+                  {% for item in experiment_items %}
+                          <option><strong>{{item.title}}</strong> ({{item.batch_id}})</option>
+                  {% endfor %} 
+            </td>
             <tr><td>Title:</td></tr>
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Title"  aria-label="Search" name="title"></td>
@@ -31,7 +39,7 @@
             </tr>
             <tr><td>Qualifications:</td></tr>
             <tr>
-                <td><select name="quals" id="quals" class="form-control me-2" type="search" placeholder="Qualification" multiple>
+                <td><select name="qualifications" id="qualifications" class="form-control me-2" type="search" placeholder="Qualification" multiple>
                         <option value="" disabled selected hidden>Qualifications</option>
                         {% for item in qualifications %}
                             <option value="{{item.Name}}">{{item.Name}}</option>

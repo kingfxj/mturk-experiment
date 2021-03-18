@@ -51,14 +51,18 @@ def hittypesView(request):
     :param request
     :return: Hittype view page
     """
-    hittype_items = Hittype.objects.all()
+    hittype_items = Hittype.objects.all().order_by('-id')
+
     if request.method == "POST":
         title = request.POST.get('title')                   # Retrieve query for title
         hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
         description = request.POST.get('description')       # Retrieve query for description
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
-        quals = request.POST.get('quals')                   # Retrieve query for qualifications
+        qualifications = request.POST.get('qualifications') # Retrieve query for qualifications
+        batch = request.POST.get('batch')             # Retrieve query for qualifications
+
+
         # Filter the objects according to the sort
         if title != '' and title is not None:
             hittype_items = hittype_items.filter(title__icontains=title)
@@ -68,10 +72,10 @@ def hittypesView(request):
             hittype_items = hittype_items.filter(description__icontains=description)
         if keyword != '' and keyword is not None:
             hittype_items = hittype_items.filter(keyword__icontains=keyword)
-        if reward != '' and reward is not None:
-            hittype_items = hittype_items.filter(reward__icontains=reward)
-        if quals != '' and quals is not None:
-            hittype_items = hittype_items.filter(quals__icontains=quals)
+        if qualifications != '' and qualifications is not None:
+            hittype_items = hittype_items.filter(qualifications__icontains=qualifications)
+        if batch != '' and batch is not None:
+            hittype_items = hittype_items.filter(batch__icontains=batch)
     # Return the objects that satisfy all search filter
     return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
 
@@ -87,6 +91,9 @@ def addHittypeView(request):
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
     )
+
+    experiment_items = Experiment.objects.all()
+
     if request.method == "POST":
         form = HittypeForm(request.POST or None)       
         if form.is_valid():            
@@ -94,7 +101,11 @@ def addHittypeView(request):
             description = form.cleaned_data.get("description")       # Retrieve query for description
             keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
-            quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
+            qualifications = form.cleaned_data.get("qualifications") # Retrieve query for qualifications
+            batch = form.cleaned_data.get("batch").split(" ")        # Retrieve query for qualifications
+
+            batch_title = batch[0]           # extract title from batch
+            batch_id = batch[1].strip("()")  # extract id from batch
 
             hittypes = mturk.create_hit_type(
                 AssignmentDurationInSeconds = 2345,
@@ -102,14 +113,17 @@ def addHittypeView(request):
                 Title = title,
                 Keywords = keyword,
                 Description = description
-                )
+            )
             instance = form.save()
             hittype_id = Hittype(hittype_id = hittypes["HITTypeId"], 
                 title = title , 
                 description = description , 
                 keyword = keyword , 
                 reward = reward , 
-                quals = quals)
+                qualifications = qualifications,
+                batch_id = batch_id,
+                batch_title = batch_title
+            )
             hittype_id.pk = instance.pk
             hittype_id.save()
             messages.success(request, "Item has been added!")
@@ -118,7 +132,7 @@ def addHittypeView(request):
             messages.error(request, "Item was not added")
             return redirect(hittypesView)
     else:
-       context = {"qualifications": qualifications['QualificationTypes']}
+       context = {"qualifications": qualifications['QualificationTypes'], "experiment_items": experiment_items}
        return render(request, 'hittypes/addHittype.html', context)
 
 
@@ -128,7 +142,7 @@ def hitsView(request):
     :param request
     :return: Hit view page
     """
-    hit_items = Hit.objects.all()
+    hit_items = Hit.objects.all().order_by('-id')
     if request.method == "POST":
         hit_id = request.POST.get('hit_id')                             # Retrieve query for hit id
         hittype_id = request.POST.get('hittype_id')                     # Retrieve query for hittype id

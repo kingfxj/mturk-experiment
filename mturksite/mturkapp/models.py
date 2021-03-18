@@ -12,7 +12,6 @@ class Qualification(models.Model):
     subdivision = models.CharField(max_length=100, blank=True, null=True)
 
 
-
 class Hit(models.Model):
     hit_id = models.CharField(max_length=100)
     hittype_id = models.CharField(max_length=100)
@@ -25,12 +24,14 @@ class Hit(models.Model):
 
 
 class Hittype(models.Model):
+    batch_id = models.CharField(max_length=100)
+    batch_title = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
     hittype_id = models.CharField(max_length=100 , null=False)
     description = models.CharField(max_length=100)
     keyword = models.CharField(max_length=100)
     reward = models.CharField(max_length=100)
-    quals = models.CharField(max_length=100)
+    qualifications = models.CharField(max_length=100)
 
     class Meta:
         # Remote database name
@@ -39,7 +40,7 @@ class Hittype(models.Model):
 
 class Experiment(models.Model):
     batch_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(_("Name of Event"), blank=True, max_length=255)
+    title = models.CharField(max_length=255)
     
     class Meta:
         # Remote database name
