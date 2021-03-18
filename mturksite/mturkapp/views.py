@@ -268,29 +268,6 @@ def updateQualification(request,List_id):
     return redirect('qualificationView')
     
 
-def updateQualification(request,List_id):
-    all_items = Qualification.objects.get(pk = List_id) 
-    mturk = mturk_client()
-    if all_items.Status == False:
-        up = mturk.update_qualification_type(
-               QualificationTypeId= all_items.qualID,
-               QualificationTypeStatus='Active'
-              )
-    else:
-        up = mturk.update_qualification_type(
-                QualificationTypeId= all_items.qualID,
-                QualificationTypeStatus='Inactive'
-             )
-    x = False
-    if up["QualificationType"]["QualificationTypeStatus"] == 'Active':
-        x = True
-    
-    all_items.Status = x
-    all_items.save()
-    messages.success(request, "Item has been Edited!")
-    return redirect('qualificationView')
-    
-
 def lobbyView(request):
     """
     Lobby View Page
