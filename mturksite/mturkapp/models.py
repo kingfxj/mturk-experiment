@@ -24,12 +24,12 @@ class HIT(models.Model):
 
 
 class HITType(models.Model):
-    title = models.CharField(max_length=100)
-    hittype_id = models.CharField(max_length=100 , null=False)
-    description = models.CharField(max_length=100)
-    keyword = models.CharField(max_length=100)
-    reward = models.CharField(max_length=100)
-    quals = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=False)
+    hittype_id = models.CharField(max_length=100, null=False)
+    description = models.CharField(max_length=100, null=False)
+    keyword = models.CharField(max_length=100, null=True)
+    reward = models.CharField(max_length=100, null=False)
+    quals = models.CharField(max_length=100, null=True)
 
     class Meta:
         # Remote database name

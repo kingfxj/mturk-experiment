@@ -24,6 +24,14 @@ class hitForm(forms.ModelForm):
         fields = ['max_assignments', 'expiry_time']
 
 class hittypeForm(forms.ModelForm):
+    # description = forms.CharField(max_length=100, required=True)
+    # quals = forms.CharField(max_length=100, required=False)
+    # title = forms.CharField(max_length=100, required=True)
+    # keyword = forms.CharField(max_length=100, required=False)
+    # reward = forms.CharField(max_length=100, required=False)
+
+    # hittype_id = models.CharField(max_length=100, null=False)
+    # description = models.CharField(max_length=100, null=False)
     class Meta:
         model = HITType
         fields = ['title', 'description', 'keyword', 'reward', 'quals']

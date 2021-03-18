@@ -317,7 +317,6 @@ def addHITType(request):
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
     )
-    print("QUAL: ", qual_items['QualificationTypes'][0])
     if request.method == "POST":
         form = hittypeForm(request.POST or None)       
         if form.is_valid():            
@@ -325,9 +324,10 @@ def addHITType(request):
             description = form.cleaned_data.get("description")       # Retrieve query for description
             keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
-            quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
+            # quals = form.cleaned_data("quals")                       # Retrieve query for qualifications
 
-            # x = Qualification.objects.get(pk = quals)
+            x = Qualification.objects.get(pk = quals)
+            print("X: ", x)
 
             if x.int_value is None:
                 hittypes = mturk.create_hit_type(
@@ -444,3 +444,18 @@ def addExp(request):
     else:
         all_items = exp.objects.all()
         return render(request, 'addExp.html', {"all_items": all_items})
+
+def workersView(request):
+    """
+    Experiments view Page
+    :param request
+    :return: Experiments view page
+    """
+    if request.method == "POST":
+
+        # Filter the objects according to the sort
+        if title != '' and title is not None:
+            all_items = all_items.filter(title__icontains=title)
+
+    # Return the objects that satisfy all search filter
+    return render(request, 'workers.html')

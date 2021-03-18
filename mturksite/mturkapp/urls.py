@@ -32,5 +32,6 @@ urlpatterns = [
     path('updateQualification/<List_id>' , views.updateQualification , name = 'updateQualification'),
     path('experiments/', views.expView, name="expView"),
     path('addexperiments/', views.addExp, name="addExp"),
+    path('workers/', views.workersView, name="workersView"),
 
 ]
