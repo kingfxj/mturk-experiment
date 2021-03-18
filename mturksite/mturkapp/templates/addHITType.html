@@ -33,12 +33,9 @@
             <tr>
                 <td><select name="quals" id="quals" class="form-control me-2" type="search" placeholder="Qualification" multiple>
                 <option value="" disabled selected hidden>Qualifications</option>
-                  {% for item in qual_items %}
-                        <option value="{{item}}">{{item}}</option>
-                    {% comment %} {% if item.Status %}
-                          <option value="{{item.pk}}">{{item.nickname}}</option>
-                    {% endif %} {% endcomment %}
-                  {% endfor %} 
+                {% for item in qual_items %}
+                    <option value="{{item}}">{{item.Name}}</option>
+                {% endfor %} 
             </td>
             </select>
             </tr>
