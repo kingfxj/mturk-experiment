@@ -324,7 +324,7 @@ def addHITType(request):
             description = form.cleaned_data.get("description")       # Retrieve query for description
             keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
-            # quals = form.cleaned_data("quals")                       # Retrieve query for qualifications
+            quals = form.cleaned_data("quals")                       # Retrieve query for qualifications
 
             x = Qualification.objects.get(pk = quals)
             print("X: ", x)
@@ -451,11 +451,30 @@ def workersView(request):
     :param request
     :return: Experiments view page
     """
+    mturk = mturk_client()
+    # all_items = HITType.objects.get(hittype_id=)   
+    for i in HITType.objects.all():
+        pass
+        # print(i.hittype_id)
+
+    # hit_ids = HITType.objects.get(pk = hittype_id)
+    # print("HIT IDS: ", all_items)
+    response = mturk.list_assignments_for_hit(
+        HITId='3ZC62PVYDHG527FCEWHITXUKU92XXQ',
+        AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+    # response = mturk.list_assignments_for_hit(HITId='3D9187VUCLP0LZ454XBBRW0STC2IUL')['Assignments']
+    print("RESPONSE: ", response)
+    
+
+
     if request.method == "POST":
-
-        # Filter the objects according to the sort
-        if title != '' and title is not None:
-            all_items = all_items.filter(title__icontains=title)
-
-    # Return the objects that satisfy all search filter
-    return render(request, 'workers.html')
+        # response = mturk.list_assignments_for_hit(
+        #     HITId='3Q1N1EPUSAOF7CHEHSYBWJC4SUSNZF',
+        #     MaxResults=150,
+        #     AssignmentStatuses=['Submitted',])
+        # print("RESPONSE: ", response)
+        pass
+    else:
+        # Return the objects that satisfy all search filter
+        all_items = HITType.objects.all()
+        return render(request, 'workers.html', {"all_items": all_items})
