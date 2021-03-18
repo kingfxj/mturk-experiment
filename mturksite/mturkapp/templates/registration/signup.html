@@ -1,11 +1,9 @@
-<center>
-    <h1><a href="{% url 'homeView' %}">Home</a></h1>
-</center>
-
 <h3>
     <form method="post">
         {% csrf_token %}
         {{form.as_p}}
         <input type="submit" value="Sign up">
     </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
 </h3>

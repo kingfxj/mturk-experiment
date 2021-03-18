@@ -89,7 +89,6 @@ DATABASES = {
         'NAME': 'mturksite',
         'USER': 'mturksite',
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
-        #'HOST': '10.2.9.178',
         'HOST': env('HOST'),
         'PORT': '5432',
     }
@@ -148,8 +147,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-LOGIN_REDIRECT_URL = 'homeView'
-LOGOUT_REDIRECT_URL = 'homeView'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

@@ -1,0 +1,81 @@
+{% extends 'base.html' %} 
+
+{% block title %} HITTypes {% endblock %} 
+
+{% block login %}
+    <!-- Data is not shown if they are not logged in -->
+    <h1 style="text-align: center">HITTypes</h1>
+{% endblock %} 
+
+{% block content %}
+    <h1 style="text-align: center">HITTypes</h1>
+    {% include 'messages.html' %}
+    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+        <tr>
+            <form class="d-flex" method="POST">
+                {% csrf_token %}
+                <td>
+                    Title:
+                    <input class="form-control me-2" type="search" placeholder="Title" aria-label="Search" name="title">
+                </td>
+                <td>
+                    HITType ID:
+                    <input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id">
+                </td>
+                <td>
+                    Description:
+                    <input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="description">
+                </td>
+                <td>
+                    Keyword:
+                    <input class="form-control me-2" type="search" placeholder="Keyword" aria-label="Search" name="keyword">
+                </td>
+                <td>
+                    Reward:
+                    <input class="form-control me-2" type="search" placeholder="Reward" aria-label="Search" name="reward">
+                </td>
+                <td>
+                    Qualifications:
+                    <input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="quals">
+                </td>
+                <td>
+                    <br>
+                    <input type="submit" value="Search">
+                </td>
+            </form>
+        </tr>
+        {%  if all_items %}
+            {% for item in all_items %}
+                <tr class="table-secondary">
+                    <td><center> {{ item.title }} </center></td>
+                    <td><center> {{ item.hittype_id }} </center></td>
+                    <td><center> {{ item.description }} </center></td>
+                    <td><center> {{ item.keyword }} </center></td>
+                    <td><center> {{ item.reward }} </center></td>
+                    <td><center> {{ item.quals }} </center></td>
+                    <td><center></center></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+    <a href="{% url 'addHittype' %}"><button type="button" class="btn btn-primary" style="float: right;">New HITType</button></a>
+    <br></br>
+    <!-- {%  if all_items %}
+        {% for item in all_items %}
+            <div class="card">
+                <div class="card-header">
+                    More Info
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Description</h5>
+                    <p class="card-text">{{item.description}}</p>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Qualifications</h5>
+                    <p class="card-text">{{item.quals}}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %} -->
+        
+{% endblock %}
