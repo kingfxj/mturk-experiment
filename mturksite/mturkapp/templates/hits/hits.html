@@ -29,8 +29,8 @@
                     <input class="form-control me-2" type="search" placeholder="Assignments" aria-label="Search" name="max_assignments">
                 </td>
                 <td>
-                    Expiry Time:
-                    <input class="form-control me-2" type="search" placeholder="Expiry Date" aria-label="Search" name="expiry_time">
+                    Lifetime in Seconds:
+                    <input class="form-control me-2" type="search" placeholder="Lifetime (s)" aria-label="Search" name="lifetime">
                 </td>
                 <td>
                     <br>
@@ -38,13 +38,13 @@
                 </td>
             </form>
         </tr>
-        {%  if all_items %}
-            {% for item in all_items %}
+        {%  if hit_items %}
+            {% for item in hit_items %}
                 <tr class="table-secondary">
                     <td><center> {{ item.hit_id }} </center></td>
                     <td><center> {{ item.hittype_id }}</center></td>
                     <td><center>  {{ item.max_assignments }}</center></td>
-                    <td><center>  {{ item.expiry_time }}</center></td>
+                    <td><center>  {{ item.lifetime_in_seconds }}</center></td>
                     <td><center></center></td>
                 </tr>
             {% endfor %}

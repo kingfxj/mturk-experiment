@@ -33,7 +33,7 @@
             <tr>
                 <td><select name="quals" id="quals" class="form-control me-2" type="search" placeholder="Qualification" multiple>
                         <option value="" disabled selected hidden>Qualifications</option>
-                        {% for item in qual_items %}
+                        {% for item in qualifications %}
                             <option value="{{item.Name}}">{{item.Name}}</option>
                         {% endfor %} 
                 </td>
