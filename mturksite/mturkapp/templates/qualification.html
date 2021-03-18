@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %} Qualification {% endblock %}
+{% block title %} Qualifications {% endblock %}
 
 {% block login %}
     <!-- Data is not shown if they are not logged in -->
-    <h1 style="text-align:center">Qualification</h1>
+    <h1 style="text-align:center">Qualifications</h1>
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">Qualification</h1>
+    <h1 style="text-align:center">Qualifications</h1>
     {% include 'messages.html' %}
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        {% comment %} <button type="button" class="btn btn-primary">Add Qualification</button> {% endcomment %}
-      <!--  <a href="{% url 'addQualification' %}">Add Qualification</a>  -->
-    </div>
+    {% comment %} <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="button" class="btn btn-primary">Add Qualification</button>
+        <a href="{% url 'addQualification' %}">Add Qualification</a>
+    </div> {% endcomment %}
     <table class="table table-striped">
         <thead>
             <tr>
@@ -46,7 +46,6 @@
         </tbody>
         </table>
         <a href= "{% url 'addQualification' %}"><button type="button" class="btn btn-primary" style="float: right;">Add Qualification</button></a>
-
         <p><em> Qualifications may take some time to appear</em></p>
 {% endblock %}
 
