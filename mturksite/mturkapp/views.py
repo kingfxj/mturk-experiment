@@ -1,5 +1,5 @@
 from .forms import *
-from .models import HIT, HITType, Qualification, exp
+from .models import Hit, Hittype, Qualification, Experiment
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth import login, authenticate
@@ -51,7 +51,7 @@ def hittypesView(request):
     :param request
     :return: Hittype view page
     """
-    all_items = HITType.objects.all()
+    hittype_items = Hittype.objects.all()
     if request.method == "POST":
         title = request.POST.get('title')                   # Retrieve query for title
         hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
@@ -61,19 +61,19 @@ def hittypesView(request):
         quals = request.POST.get('quals')                   # Retrieve query for qualifications
         # Filter the objects according to the sort
         if title != '' and title is not None:
-            all_items = all_items.filter(title__icontains=title)
+            hittype_items = hittype_items.filter(title__icontains=title)
         if hittype_id != '' and hittype_id is not None:
-            all_items = all_items.filter(hittype_id__icontains=hittype_id)
+            hittype_items = hittype_items.filter(hittype_id__icontains=hittype_id)
         if description != '' and description is not None:
-            all_items = all_items.filter(description__icontains=description)
+            hittype_items = hittype_items.filter(description__icontains=description)
         if keyword != '' and keyword is not None:
-            all_items = all_items.filter(keyword__icontains=keyword)
+            hittype_items = hittype_items.filter(keyword__icontains=keyword)
         if reward != '' and reward is not None:
-            all_items = all_items.filter(reward__icontains=reward)
+            hittype_items = hittype_items.filter(reward__icontains=reward)
         if quals != '' and quals is not None:
-            all_items = all_items.filter(quals__icontains=quals)
+            hittype_items = hittype_items.filter(quals__icontains=quals)
     # Return the objects that satisfy all search filter
-    return render(request, 'hittypes/hittypes.html', {"all_items": all_items})
+    return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
 
 
 def addHittypeView(request):
@@ -83,12 +83,12 @@ def addHittypeView(request):
     :return: Redirect to HITType View page after changes are made
     """
     mturk = mturk_client()
-    qual_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
     )
     if request.method == "POST":
-        form = hittypeForm(request.POST or None)       
+        form = HittypeForm(request.POST or None)       
         if form.is_valid():            
             title = form.cleaned_data.get("title")                   # Retrieve query for title  
             description = form.cleaned_data.get("description")       # Retrieve query for description
@@ -96,7 +96,6 @@ def addHittypeView(request):
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
             quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
 
-            # x = Qualification.objects.get(pk = quals)
             hittypes = mturk.create_hit_type(
                 AssignmentDurationInSeconds = 2345,
                 Reward = reward,
@@ -105,7 +104,7 @@ def addHittypeView(request):
                 Description = description
                 )
             instance = form.save()
-            hittype_id = HITType(hittype_id = hittypes["HITTypeId"], 
+            hittype_id = Hittype(hittype_id = hittypes["HITTypeId"], 
                 title = title , 
                 description = description , 
                 keyword = keyword , 
@@ -119,8 +118,7 @@ def addHittypeView(request):
             messages.error(request, "Item was not added")
             return redirect(hittypesView)
     else:
-       all_items = HITType.objects.all()
-       context = {"all_items": all_items , "qual_items": qual_items['QualificationTypes']}
+       context = {"qualifications": qualifications['QualificationTypes']}
        return render(request, 'hittypes/addHittype.html', context)
 
 
@@ -130,25 +128,25 @@ def hitsView(request):
     :param request
     :return: Hit view page
     """
-    all_items = HIT.objects.all()
+    hit_items = Hit.objects.all()
     if request.method == "POST":
-        hit_id = request.POST.get('hit_id')                     # Retrieve query for hit id
-        hittype_id = request.POST.get('hittype_id')             # Retrieve query for hittype id
-        max_assignments = request.POST.get('max_assignments')   # Retrieve query for assignments number
-        expiry_time = request.POST.get('expiry_time')           # Retrieve query for expiry date
+        hit_id = request.POST.get('hit_id')                             # Retrieve query for hit id
+        hittype_id = request.POST.get('hittype_id')                     # Retrieve query for hittype id
+        max_assignments = request.POST.get('max_assignments')           # Retrieve query for assignments number
+        lifetime_in_seconds = request.POST.get('lifetime_in_seconds')   # Retrieve query for expiry date
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
-            all_items = all_items.filter(hit_id__icontains=hit_id)
+            hit_items = hit_items.filter(hit_id__icontains=hit_id)
         if hittype_id != '' and hittype_id is not None:
-            all_items = all_items.filter(hittype_id__icontains=hittype_id)
+            hit_items = hit_items.filter(hittype_id__icontains=hittype_id)
         if max_assignments != '' and max_assignments is not None:
-            all_items = all_items.filter(max_assignments__icontains=max_assignments)
-        if expiry_time != '' and expiry_time is not None:
-            all_items = all_items.filter(expiry_time__icontains=expiry_time)
+            hit_items = hit_items.filter(max_assignments__icontains=max_assignments)
+        if lifetime_in_seconds != '' and lifetime_in_seconds is not None:
+            hit_items = hit_items.filter(lifetime_in_seconds__icontains=lifetime_in_seconds)
 
     # Return the objects that satisfy all search filter
-    return render(request, 'hits/hits.html', {"all_items": all_items})
+    return render(request, 'hits/hits.html', {"hit_items": hit_items})
 
 
 def addHitView(request):
@@ -160,28 +158,28 @@ def addHitView(request):
     game = str(settings.BASE_DIR) + "/mturkapp/templates/games/mine.xml"
 
     question = open(game).read()
-    hittype_items = HITType.objects.all()    
+    hittype_items = Hittype.objects.all()    
     if request.method == "POST":
-        form = hitForm(request.POST or None)
+        form = HitForm(request.POST or None)
         if form.is_valid():
 
             maxassignments = form.cleaned_data.get("max_assignments")
-            expiry_time = form.cleaned_data.get("expiry_time")
+            lifetime_in_seconds = form.cleaned_data.get("lifetime_in_seconds")
             x = form.cleaned_data.get("hittype")
-            hittypes = HITType.objects.get(pk = x)
+            hittypes = Hittype.objects.get(pk = x)
     
             mturk = mturk_client()
             hit = mturk.create_hit_with_hit_type(
                 HITTypeId = hittypes.hittype_id,
                 MaxAssignments = maxassignments ,
-                LifetimeInSeconds= int(expiry_time),
+                LifetimeInSeconds= int(lifetime_in_seconds),
                 Question =question
             )
             instance = form.save()
-            hit_id = HIT(hit_id = hit["HIT"]["HITId"], 
+            hit_id = Hit(hit_id = hit["HIT"]["HITId"], 
                 hittype_id = hittypes.hittype_id  , 
                 max_assignments = maxassignments , 
-                expiry_time = expiry_time 
+                lifetime_in_seconds = lifetime_in_seconds 
             )
             hit_id.pk = instance.pk
             hit_id.save()
@@ -191,8 +189,7 @@ def addHitView(request):
             messages.error(request, "Item was not added")
             return redirect(hitsView)
     else:
-        all_items = HIT.objects.all()
-        context = {"hittype_items":hittype_items ,"all_items": all_items}
+        context = {"hittype_items":hittype_items}
         return render(request, 'hits/addHit.html', context)
 
 
@@ -205,32 +202,32 @@ def qualificationsView(request):
     mturk = mturk_client()
     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     qual_info = []
-    # all_items = Qualification.objects.all()
-    all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
-        MustBeRequestable= False,
-        MustBeOwnedByCaller= True
+
+    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+        MustBeRequestable=False,
+        MustBeOwnedByCaller=True
     )
-    # print('all items: ', all_items['QualificationTypes'])  # print check
+
     if request.method == "POST":
         for field in qual_fields:
             qual_info.append(request.POST.get(field))
 
         # Filter the objects according to the sort
         if qual_info[0] != '' and qual_info[0] is not None:
-            all_items = all_items.filter(nickname__icontains=qual_info[0])
+            qualifications = qualifications.filter(nickname__icontains=qual_info[0])
         if qual_info[1] != '' and qual_info[1] is not None:
-            all_items = all_items.filter(qualID__icontains=qual_info[1])
+            qualifications = qualifications.filter(qualID__icontains=qual_info[1])
         if qual_info[2] != '' and qual_info[2] is not None:
-            all_items = all_items.filter(comparator__icontains=qual_info[2])
+            qualifications = qualifications.filter(comparator__icontains=qual_info[2])
         if qual_info[3] != '' and qual_info[3] is not None:
-            all_items = all_items.filter(int_value__icontains=qual_info[3])
+            qualifications = qualifications.filter(int_value__icontains=qual_info[3])
         if qual_info[4] != '' and qual_info[4] is not None:
-            all_items = all_items.filter(country__icontains=qual_info[4])
+            qualifications = qualifications.filter(country__icontains=qual_info[4])
         if qual_info[5] != '' and qual_info[5] != None:
-            all_items = all_items.filter(subdivision__icontains=qual_info[5])
+            qualifications = qualifications.filter(subdivision__icontains=qual_info[5])
 
     # Return the objects that satisfy all search filter
-    return render(request, 'qualifications/qualifications.html', {"all_items": all_items['QualificationTypes']})
+    return render(request, 'qualifications/qualifications.html', {"qualifications": qualifications['QualificationTypes']})
 
 
 def addQualificationView(request):
@@ -241,19 +238,13 @@ def addQualificationView(request):
     """
     mturk = mturk_client()
 
-    # all_items = Qualification.objects.all() 
-    all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
-        MustBeRequestable=False,
-        MustBeOwnedByCaller=True,
-    )
-
     country_list = []
     for code, name in list(countries):
         country_list.append(name)
 
     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     if request.method == "POST":
-        form = qualificationForm(request.POST or None)
+        form = QualificationForm(request.POST or None)
 
         if form.is_valid():
             #sorting data from fields
@@ -275,22 +266,20 @@ def addQualificationView(request):
             messages.error(request, "Item was not added")
             return redirect(qualificationsView)
     else:
-        context = {"all_items": all_items['QualificationTypes'], "country": country_list}
+        context = {"country": country_list}
         return render(request, 'qualifications/addQualification.html', context)
 
 
 def updateQualificationView(request,List_id):
-   # all_items = Qualification.objects.get(pk = List_id) 
+
     mturk = mturk_client()
-    #qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
-    #qual_info  []
-    # all_items = Qualification.objects.all()
-    all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+
+    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
     )
     print(List_id)
-    for x in all_items['QualificationTypes']:
+    for x in qualifications['QualificationTypes']:
         x['QualificationTypeId'] = List_id
         if x['QualificationTypeStatus'] == 'Inactive':
             up = mturk.update_qualification_type(
@@ -304,7 +293,7 @@ def updateQualificationView(request,List_id):
                  )
 
     messages.success(request, "Item has been Updated!")
-    return redirect('qualificationView')
+    return redirect('qualifications')
 
 
 def asgmtsActiveView(request):
@@ -441,20 +430,19 @@ def experimentsView(request):
     :param request
     :return: Experiments view page
     """
-    all_items = exp.objects.all()
+    experiment_items = Experiment.objects.all()
     if request.method == "POST":
         title = request.POST.get('title')             # Retrieve query for experiments id
         batch_id = request.POST.get('batch_id') 
 
         # Filter the objects according to the sort
         if title != '' and title is not None:
-            all_items = all_items.filter(title__icontains=title)
+            experiment_items = experiment_items.filter(title__icontains=title)
         if batch_id != '' and batch_id is not None:
-            all_items = all_items.filter(batch_id__icontains=batch_id)
-
+            experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
 
     # Return the objects that satisfy all search filter
-    return render(request, 'experiments/experiments.html', {"all_items": all_items})
+    return render(request, 'experiments/experiments.html', {"experiment_items": experiment_items})
 
 
 def addExperimentView(request):
@@ -463,9 +451,9 @@ def addExperimentView(request):
     :param request
     :return: Redirect to experiment View page after changes are made
     """
-    all_items = exp.objects.all()    
+
     if request.method == "POST":
-        form = expForm(request.POST or None)
+        form = ExperimentForm(request.POST or None)
         if form.is_valid():
             form.save()
             messages.success(request, "Item has been added!")
@@ -474,9 +462,7 @@ def addExperimentView(request):
             messages.error(request, "Item was not added")
             return redirect(experimentsView)
     else:
-        all_items = exp.objects.all()
-        return render(request, 'experiments/addExperiment.html', {"all_items": all_items})
-
+        return render(request, 'experiments/addExperiment.html')
 
 def workersView(request):
     """
@@ -486,9 +472,9 @@ def workersView(request):
     """
     mturk = mturk_client()
     workers_list = []
-    hittypeid_list = ['3DBQWDE4Y74UBEESWMGGSW7IXDHN5K']
+    hittypeid_list = []
     # all_items = HITType.objects.get(hittype_id=)   
-    for i in HITType.objects.all():
+    for i in Hit.objects.all():
         # print(type(i.hittype_id))
         hittypeid_list.append(i.hittype_id)
         # print("hittype ids: ", type(i))
@@ -501,7 +487,7 @@ def workersView(request):
     for id in hittypeid_list:
         try:
             response = mturk.list_assignments_for_hit(
-                HITId=id,
+                HITId='38TZTS8OLOLLVWMMJU4ONQY3AU5U3X',
                 AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
             workers_list.append(response['Assignments'][0]['WorkerId'])
             print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
@@ -510,10 +496,20 @@ def workersView(request):
         
 
 
-    if request.method == "POST":
+    if request.method == "POST" or None:
         pass
+        # for id in hittypeid_list:
+        #     print("ID: ", id)
+        #     try:
+        #         response = mturk.list_assignments_for_hit(
+        #             HITId=id,
+        #             AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+        #         workers_list.append(response['Assignments'][0]['WorkerId'])
+        #         print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
+        #     except:
+        #         print("Couldn't find", id)
     else:
         # Return the objects that satisfy all search filter
-        all_items = HITType.objects.all()
+        # all_items = HITType.objects.all()
         return render(request, 'workers.html', {"workers": workers_list})
-        
+  

@@ -11,26 +11,26 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
-class qualificationForm(forms.ModelForm):
+class QualificationForm(forms.ModelForm):
     description = forms.CharField(max_length=2000, required=True)
     country = forms.CharField(max_length=100, required=False)
     class Meta:
         model = Qualification 
         fields = ['nickname', 'description','comparator', 'int_value', 'subdivision']
        
-class hitForm(forms.ModelForm):
+class HitForm(forms.ModelForm):
     hittype = forms.CharField(max_length=254)
     class Meta:
-        model = HIT
-        fields = ['max_assignments', 'expiry_time']
+        model = Hit
+        fields = ['max_assignments', 'lifetime_in_seconds']
 
-class hittypeForm(forms.ModelForm):
+class HittypeForm(forms.ModelForm):
     quals = forms.CharField(max_length=200)
     class Meta:
-        model = HITType
+        model = Hittype
         fields = ['title', 'description', 'keyword', 'reward']
 
-class expForm(forms.ModelForm):
+class ExperimentForm(forms.ModelForm):
     class Meta:
-        model = exp
+        model = Experiment
         fields = ['title']
