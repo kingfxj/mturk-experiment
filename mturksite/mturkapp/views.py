@@ -477,3 +477,31 @@ def addExperimentView(request):
             return redirect(experimentsView)
     else:
         return render(request, 'experiments/addExperiment.html')
+
+def workersView(request):
+    """
+    Experiments view Page
+    :param request
+    :return: Experiments view page
+    """
+    mturk = mturk_client()
+    workers_list = []
+    hitID_list = []
+    for i in Hit.objects.all():  #retrieve all hit ids and add it to 
+        hitID_list.append(i.hit_id)
+
+    for id in hitID_list:
+        try:
+            response = mturk.list_assignments_for_hit(
+                HITId=id,
+                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+            workers_list.append(response['Assignments'][0])
+            # print("RESPONSE: ", response['Assignments'][0])  # print check
+        except:
+            print("Couldn't find", id)
+        
+    if request.method == "POST" or None:
+        pass  #TODO add assigning qual to workers functionality
+    else:
+        return render(request, 'workers.html', {"workers": workers_list})
+  

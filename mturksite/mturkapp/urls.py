@@ -27,11 +27,11 @@ urlpatterns = [
     path('qualification/', views.qualificationsView, name="qualifications"),
     path('qualification/addQualifications/', views.addQualificationView, name='addQualification'),
     path('qualification/updateQualification/<List_id>' , views.updateQualificationView , name = 'updateQualification'),
+    path('workers/', views.workersView, name="workersView"),
     path('assignments/active/', views.asgmtsActiveView, name='asgmtsActive'),
     path('assignments/completed/', views.asgmtsCompletedView, name='asgmtsCompleted'),
     path('assignments/completed/bonuses/', views.payBonusView, name='payBonus'),
     path('lobby/', views.lobbyView, name="lobby"),
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
-
 ]
