@@ -207,8 +207,8 @@ def qualificationsView(request):
     qual_info = []
     # all_items = Qualification.objects.all()
     all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
-        MustBeRequestable=False,
-        MustBeOwnedByCaller=True,
+        MustBeRequestable= False,
+        MustBeOwnedByCaller= True
     )
     # print('all items: ', all_items['QualificationTypes'])  # print check
     if request.method == "POST":
@@ -443,11 +443,15 @@ def experimentsView(request):
     """
     all_items = exp.objects.all()
     if request.method == "POST":
-        title = request.POST.get('title')             # Retrieve query for experiments id 
+        title = request.POST.get('title')             # Retrieve query for experiments id
+        batch_id = request.POST.get('batch_id') 
 
         # Filter the objects according to the sort
         if title != '' and title is not None:
             all_items = all_items.filter(title__icontains=title)
+        if batch_id != '' and batch_id is not None:
+            all_items = all_items.filter(batch_id__icontains=batch_id)
+
 
     # Return the objects that satisfy all search filter
     return render(request, 'experiments/experiments.html', {"all_items": all_items})
