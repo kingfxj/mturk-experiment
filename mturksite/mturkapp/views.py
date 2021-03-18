@@ -472,39 +472,22 @@ def workersView(request):
     """
     mturk = mturk_client()
     workers_list = []
-    hittypeid_list = []
-    # all_items = HITType.objects.get(hittype_id=)   
-    for i in Hit.objects.all():  #retrieve all hit ids
-        # print(type(i.hit_id))
-        hittypeid_list.append(i.hit_id)
-        # print("hit ids: ", type(i))
+    hitID_list = []
+    for i in Hit.objects.all():  #retrieve all hit ids and add it to 
+        hitID_list.append(i.hit_id)
 
-    for id in hittypeid_list:
+    for id in hitID_list:
         try:
             response = mturk.list_assignments_for_hit(
                 HITId=id,
                 AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-            # workers_list.append(response['Assignments'][0]['WorkerId'])
             workers_list.append(response['Assignments'][0])
-            print("RESPONSE: ", response['Assignments'][0])
+            # print("RESPONSE: ", response['Assignments'][0])  # print check
         except:
             print("Couldn't find", id)
         
-
-
     if request.method == "POST" or None:
-        # for id in hittypeid_list:
-        #     try:
-        #         response = mturk.list_assignments_for_hit(
-        #             HITId=id,
-        #             AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-        #         workers_list.append(response['Assignments'][0]['WorkerId'])
-        #         print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
-        #     except:
-        #         print("Couldn't find", id)
-        pass
+        pass  #TODO add assigning qual to workers functionality
     else:
-        # Return the objects that satisfy all search filter
-        # all_items = HITType.objects.all()
         return render(request, 'workers.html', {"workers": workers_list})
   
