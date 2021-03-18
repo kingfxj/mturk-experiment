@@ -37,8 +37,8 @@
                 </td>
             </form>
         </tr>
-        {%  if all_items %}
-            {% for item in all_items %}
+        {%  if qualifications %}
+            {% for item in qualifications %}
                 {% if item.QualificationTypeStatus == 'Active' %}
                     <tr class="table-secondary">
                         <td>{{ item.Name }}</td>
