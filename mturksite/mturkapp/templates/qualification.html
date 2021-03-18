@@ -48,7 +48,7 @@
                         <td><center></center></td>
                         </tr>
                 
-                {% else %}
+                {% elif item.QualificationTypeStatus == 'Inactive' %}
                     <tr class="table-secondary">
                         <td>{{ item.Name }}</td>
                         <td> {{ item.QualificationTypeId }} </td>
