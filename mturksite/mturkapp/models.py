@@ -5,7 +5,7 @@ class Qualification(models.Model):
     nickname = models.CharField(max_length=100)
     description = models.CharField(max_length=2000, blank=True, null=False)
     qualID = models.CharField(max_length=255)
-    comparator = models.CharField(max_length=50)
+    comparator = models.CharField(max_length=50, blank=True)
     int_value = models.IntegerField(blank=True, null=True )
     country =  models.CharField(max_length=100, blank=True, null=True)
     subdivision = models.CharField(max_length=100, blank=True, null=True)
