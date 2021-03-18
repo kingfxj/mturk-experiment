@@ -15,6 +15,10 @@
             <form class="d-flex" method="POST">
                 {% csrf_token %}
                 <td>
+                    Batch:
+                    <input class="form-control me-2" type="search" placeholder="Batch ID" aria-label="Search" name="batch">
+                </td>
+                <td>
                     Title:
                     <input class="form-control me-2" type="search" placeholder="Title" aria-label="Search" name="title">
                 </td>
@@ -36,7 +40,7 @@
                 </td>
                 <td>
                     Qualifications:
-                    <input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="quals">
+                    <input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="qualifications">
                 </td>
                 <td>
                     <br>
@@ -47,12 +51,13 @@
         {%  if hittype_items %}
             {% for item in hittype_items %}
                 <tr class="table-secondary">
+                    <td><center> <strong>{{ item.batch_title }}</strong> ({{item.batch_id}}) </center></td>
                     <td><center> {{ item.title }} </center></td>
                     <td><center> {{ item.hittype_id }} </center></td>
                     <td><center> {{ item.description }} </center></td>
                     <td><center> {{ item.keyword }} </center></td>
                     <td><center> {{ item.reward }} </center></td>
-                    <td><center> {{ item.quals }} </center></td>
+                    <td><center> {{ item.qualifications }} </center></td>
                     <td><center></center></td>
                 </tr>
             {% endfor %}

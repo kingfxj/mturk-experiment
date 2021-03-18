@@ -25,7 +25,8 @@ class HitForm(forms.ModelForm):
         fields = ['max_assignments', 'lifetime_in_seconds']
 
 class HittypeForm(forms.ModelForm):
-    quals = forms.CharField(max_length=200)
+    qualifications = forms.CharField(max_length=200)
+    batch = forms.CharField(max_length=200)
     class Meta:
         model = Hittype
         fields = ['title', 'description', 'keyword', 'reward']
