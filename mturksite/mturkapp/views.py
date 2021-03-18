@@ -1,6 +1,9 @@
 from .forms import *
 from .models import HIT, HITType, Qualification
 from django.contrib import messages
+
+from django.conf import settings
+
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -295,8 +298,12 @@ def addHITType(request):
     :param request
     :return: Redirect to HITType View page after changes are made
     """
-    
-    qual_items = Qualification.objects.all()
+    mturk = mturk_client()
+    # qual_items = Qualification.objects.all()
+    qual_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+        MustBeRequestable=False,
+        MustBeOwnedByCaller=True,
+    )
     if request.method == "POST":
         form = hittypeForm(request.POST or None)       
         if form.is_valid():            
@@ -306,8 +313,9 @@ def addHITType(request):
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
             quals = form.cleaned_data.get("quals")
 
-            x = Qualification.objects.get(pk = quals)
-            mturk = mturk_client() 
+            # x = Qualification.objects.get(pk = quals)
+
+            # mturk = mturk_client() 
             if x.int_value is None:
                 hittypes = mturk.create_hit_type(
                     AssignmentDurationInSeconds = 2345,
@@ -333,7 +341,7 @@ def addHITType(request):
             return redirect(hittypeView)
     else:
        all_items = HITType.objects.all()
-       context = {"all_items": all_items , "qual_items": qual_items}
+       context = {"all_items": all_items , "qual_items": qual_items['QualificationTypes']}
        return render(request, 'addHITType.html', context)
 
 
@@ -370,7 +378,11 @@ def addHIT(request):
     :param request
     :return: Redirect to HIT View page after changes are made
     """
-    question = open(r"C:\Users\saman\Desktop\CMPUT401\MTurk\mturk-experiment\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
+    # dir_ = str(settings.BASE_DIR) + "mturkapp\templates\mine.xml"
+    # # print("DIRRR: ", dirr)
+    # question = open(dir_).read()
+
+    question = open(r"C:\Users\Paperspace\Documents\GitHub\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
     hittype_items = HITType.objects.all()    
     if request.method == "POST":
         form = hitForm(request.POST or None)
