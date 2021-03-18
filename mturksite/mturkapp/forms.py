@@ -27,3 +27,8 @@ class hittypeForm(forms.ModelForm):
     class Meta:
         model = HITType
         fields = ['title', 'hittype_id', 'description', 'keyword', 'reward', 'quals']
+
+class expForm(forms.ModelForm):
+    class Meta:
+        model = exp
+        fields = ['title']

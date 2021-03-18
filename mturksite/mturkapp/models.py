@@ -34,3 +34,10 @@ class HITType(models.Model):
     class Meta:
         # Remote database name
         db_table = "mturk_app_hittypes"
+
+class exp(models.Model):
+    title = models.CharField(max_length=100)
+
+    class Meta:
+        # Remote database name
+        db_table = "mturk_app_experiments"
