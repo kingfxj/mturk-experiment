@@ -1,11 +1,17 @@
-<center>
-    {% if user.is_authenticated %}
-        <h1>Hi, {{ user.username }}!</h1>
-        <h2><a href="{% url 'assignmentView'%}">Assignment</a></h2>
-        <h3><a href="{% url 'logout' %}">Log Out</a></h3>
-    {% else %}
-        <h1>You are not logged in</h1>
-        <h2><a href="{% url 'login' %}">Log In</a></h2><br>
-        <h3>Don't have an account? <a href="{% url 'signup' %}">Create one</a></h3>
-    {% endif %}
-</center>
+{% extends 'base.html' %}
+
+{% block title %} Account Overview {% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Account Overview</h1>
+
+    <center>
+        {% if user.is_authenticated %}
+            <h4><strong>Current Available Balance: </strong>${{ balance.AvailableBalance }}</h4>
+        {% else %}
+            <h3>You are not logged in</h3>
+            <h4><a href="{% url 'login' %}">Log In</a></h4><br>
+            <h4>Don't have an account? <a href="{% url 'signup' %}">Create one</a></h4>
+        {% endif %}
+    </center>
+{% endblock %}

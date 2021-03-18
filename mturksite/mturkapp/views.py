@@ -14,7 +14,7 @@ from django_countries.fields import CountryField
 # Create your views here.
 @login_required
 def login(request):
-    return render(request, 'assignment.html')
+    return render(request, 'asgmtsCompleted.html')
 
 
 def signup(request):
@@ -41,18 +41,20 @@ def homeView(request):
     :param request
     :return: Home page
     """
-    return render(request, 'home.html')
+    mturk = mturk_client()
+    balance = mturk.get_account_balance()
 
+    return render(request, 'home.html', {"balance": balance})
 
-def assignmentView(request):
+def asgmtsActiveView(request):
     """
-    View Assignment
+    View Active assignment
     :param request
-    :return: Assignment page
+    :return: Active assignment page
     """   
 
     mturk = mturk_client()
-    assignments = mturk.list_assignments_for_hit(HITId= hit["HIT"]["HITId"])['Assignments']
+    assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
 
     if request.method == "POST":
         assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
@@ -79,7 +81,45 @@ def assignmentView(request):
                     assignments.remove(assignment)
 
     # Return the objects that satisfy all search filter
-    return render(request, 'assignment.html', {"assignments": assignments})
+    return render(request, 'asgmtsActive.html', {"assignments": assignments})
+
+
+def asgmtsCompletedView(request):
+    """
+    View Completed assignments
+    :param request
+    :return: Completed assignments page
+    """   
+
+    mturk = mturk_client()
+    assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
+
+    if request.method == "POST":
+        assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
+        workerIdFilter = request.POST.get('workerId')                     # Retrieve query for Worker ID
+        acceptanceTimeFilter = request.POST.get('acceptanceTime')         # Retrieve query for Acceptance Time
+        assignmentStatusFilter = request.POST.get('assignmentStatus')     # Retrieve query for Assignment Status
+        
+        # Filter the objects according to the sort
+        if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            for assignment in assignments:
+                if assignmentIdFilter not in assignment['AssignmentId']:
+                    assignments.remove(assignment)
+        if workerIdFilter != '' and workerIdFilter is not None:
+            for assignment in assignments:
+                if  workerIdFilter not in assignment['WorkerId']:
+                    assignments.remove(assignment)
+        if acceptanceTimeFilter != '' and acceptanceTimeFilter is not None:
+            for assignment in assignments:
+                if acceptanceTimeFilter not in assignment['AcceptTime']:
+                    assignments.remove(assignment)
+        if assignmentStatusFilter != '' and assignmentStatusFilter is not None:
+            for assignment in assignments:
+                if assignmentStatusFilter not in assignment['AssignmentStatus']:
+                    assignments.remove(assignment)
+
+    # Return the objects that satisfy all search filter
+    return render(request, 'asgmtsCompleted.html', {"assignments": assignments})
 
 
 def payBonus(request):
@@ -269,13 +309,16 @@ def hittypeView(request):
     """
     all_items = HITType.objects.all()
     if request.method == "POST":
+        batch = request.POST.get('batch')                   # Retrieve query for batch
         title = request.POST.get('title')                   # Retrieve query for title
-        hittype_id = request.POST.get('hittype_id')        # Retrieve query for hittype id
+        hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
         description = request.POST.get('description')       # Retrieve query for description
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
         quals = request.POST.get('quals')                   # Retrieve query for quals
         # Filter the objects according to the sort
+        if batch != '' and batch is not None:
+            all_items = all_items.filter(batch__icontains=batch)
         if title != '' and title is not None:
             all_items = all_items.filter(title__icontains=title)
         if hittype_id != '' and hittype_id is not None:
@@ -355,18 +398,18 @@ def hitView(request):
     if request.method == "POST":
         hit_id = request.POST.get('hit_id')                 # Retrieve query for hit id
         hittype_id = request.POST.get('hittype_id')         # Retrieve query for hittype id
-        max_assignments = request.POST.get('max_assignments')       # Retrieve query for assignments number
-        expiry_time = request.POST.get('expiry_time')       # Retrieve query for expiry date
+        assignments = request.POST.get('assignments')       # Retrieve query for assignments number
+        expiry_date = request.POST.get('expiry_date')       # Retrieve query for expiry date
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
             all_items = all_items.filter(hit_id__icontains=hit_id)
         if hittype_id != '' and hittype_id is not None:
             all_items = all_items.filter(hittype_id__icontains=hittype_id)
-        if max_assignments != '' and max_assignments is not None:
-            all_items = all_items.filter(max_assignments__icontains=max_ssignments)
-        if expiry_time != '' and expiry_time is not None:
-            all_items = all_items.filter(expiry_time__icontains=expiry_time)
+        if assignments != '' and assignments is not None:
+            all_items = all_items.filter(assignments__icontains=assignments)
+        if expiry_date != '' and expiry_date is not None:
+            all_items = all_items.filter(expiry_date__icontains=expiry_date)
 
     # Return the objects that satisfy all search filter
     return render(request, 'hit.html', {"all_items": all_items})
@@ -387,27 +430,7 @@ def addHIT(request):
     if request.method == "POST":
         form = hitForm(request.POST or None)
         if form.is_valid():
-
-            maxassignments = form.cleaned_data.get("max_assignments")
-            expiry_time = form.cleaned_data.get("expiry_time")
-            x = form.cleaned_data.get("hittype")
-            hittypes = HITType.objects.get(pk = x)
-    
-            mturk = mturk_client()
-            hit = mturk.create_hit_with_hit_type(
-                HITTypeId = hittypes.hittype_id,
-                MaxAssignments = maxassignments ,
-                LifetimeInSeconds= int(expiry_time),
-                Question =question
-            )
-            instance = form.save()
-            hit_id = HIT(hit_id = hit["HIT"]["HITId"], 
-                hittype_id = hittypes.hittype_id  , 
-                max_assignments = maxassignments , 
-                expiry_time = expiry_time 
-            )
-            hit_id.pk = instance.pk
-            hit_id.save()
+            form.save()
             messages.success(request, "Item has been added!")
             return redirect(hitView)
         else:
@@ -415,5 +438,4 @@ def addHIT(request):
             return redirect(hitView)
     else:
         all_items = HIT.objects.all()
-        context = {"hittype_items":hittype_items ,"all_items": all_items}
-        return render(request, 'addHIT.html', context)
+        return render(request, 'addHIT.html', {"all_items": all_items})
