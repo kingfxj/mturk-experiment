@@ -9,4 +9,42 @@
 {% block content %}
     <h1 style="text-align:center">Workers</h1>
     {% include 'messages.html' %}
+
+    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+        <tr>
+            <form class="d-flex" method="POST">
+                {% csrf_token %}
+                <td>
+                    Worker ID:
+                    <input class="form-control me-2" type="search" placeholder="WorkerID" aria-label="Search" name="WorkerID">
+                </td>
+                <td>
+                    HIT ID:
+                    <input class="form-control me-2" type="search" placeholder="HITId" aria-label="Search" name="HITId">
+                </td>
+                <td>
+                    Accepted Time:
+                    <input class="form-control me-2" type="search" placeholder="AcceptTime" aria-label="Search" name="AcceptTime">
+                </td>
+                <td>
+                    Submitted Time:
+                    <input class="form-control me-2" type="search" placeholder="SubmitTime" aria-label="Search" name="SubmitTime">
+                </td>
+                <td>
+                    <br>
+                    <input type="submit" value="Search">
+                </td>
+            </form>
+        </tr>
+        {%  if workers %}
+            <tr class="table-secondary">
+                {% for item in workers %}
+                    <td>{{ item.WorkerId }}</td>
+                    <td>{{ item.HITId }}</td>
+                    <td>{{ item.AcceptTime }}</td>
+                    <td>{{ item.SubmitTime }}</td>
+                    </tr>
+                {% endfor %}    
+        {% endif %}
+
 {% endblock %}

@@ -474,32 +474,26 @@ def workersView(request):
     workers_list = []
     hittypeid_list = []
     # all_items = HITType.objects.get(hittype_id=)   
-    for i in Hit.objects.all():
-        # print(type(i.hittype_id))
-        hittypeid_list.append(i.hittype_id)
-        # print("hittype ids: ", type(i))
-
-    # response = mturk.list_assignments_for_hit(
-    # HITId='38TZTS8OLOLLVWMMJU4ONQY3AU5U3X',
-    # AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-    # print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
+    for i in Hit.objects.all():  #retrieve all hit ids
+        # print(type(i.hit_id))
+        hittypeid_list.append(i.hit_id)
+        # print("hit ids: ", type(i))
 
     for id in hittypeid_list:
         try:
             response = mturk.list_assignments_for_hit(
-                HITId='38TZTS8OLOLLVWMMJU4ONQY3AU5U3X',
+                HITId=id,
                 AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-            workers_list.append(response['Assignments'][0]['WorkerId'])
-            print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
+            # workers_list.append(response['Assignments'][0]['WorkerId'])
+            workers_list.append(response['Assignments'][0])
+            print("RESPONSE: ", response['Assignments'][0])
         except:
             print("Couldn't find", id)
         
 
 
     if request.method == "POST" or None:
-        pass
         # for id in hittypeid_list:
-        #     print("ID: ", id)
         #     try:
         #         response = mturk.list_assignments_for_hit(
         #             HITId=id,
@@ -508,6 +502,7 @@ def workersView(request):
         #         print("RESPONSE: ", response['Assignments'][0]['WorkerId'])
         #     except:
         #         print("Couldn't find", id)
+        pass
     else:
         # Return the objects that satisfy all search filter
         # all_items = HITType.objects.all()
