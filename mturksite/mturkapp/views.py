@@ -1,9 +1,7 @@
 from .forms import *
-from .models import HIT, HITType, Qualification
+from .models import HIT, HITType, Qualification, exp
 from django.contrib import messages
-
 from django.conf import settings
-
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
@@ -413,3 +411,40 @@ def addHIT(request):
     else:
         all_items = HIT.objects.all()
         return render(request, 'addHIT.html', {"all_items": all_items})
+
+def expView(request):
+    """
+    Experiments view Page
+    :param request
+    :return: Experiments view page
+    """
+    all_items = exp.objects.all()
+    if request.method == "POST":
+        title = request.POST.get('title')             # Retrieve query for experiments id 
+
+        # Filter the objects according to the sort
+        if title != '' and title is not None:
+            all_items = all_items.filter(title__icontains=title)
+
+    # Return the objects that satisfy all search filter
+    return render(request, 'exp.html', {"all_items": all_items})
+
+def addExp(request):
+    """
+    Add a new experiment
+    :param request
+    :return: Redirect to experiment View page after changes are made
+    """
+    all_items = exp.objects.all()    
+    if request.method == "POST":
+        form = expForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item has been added!")
+            return redirect(expView)
+        else:
+            messages.error(request, "Item was not added")
+            return redirect(expView)
+    else:
+        all_items = exp.objects.all()
+        return render(request, 'addExp.html', {"all_items": all_items})

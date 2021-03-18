@@ -30,4 +30,7 @@ urlpatterns = [
     path('hits/', views.hitView, name="hitView"),
     path('addhits/', views.addHIT, name="addHIT"),
     path('updateQualification/<List_id>' , views.updateQualification , name = 'updateQualification'),
+    path('experiments/', views.expView, name="expView"),
+    path('addexperiments/', views.addExp, name="addExp"),
+
 ]
