@@ -321,6 +321,7 @@ def addHITType(request):
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
     )
+    print("QUAL: ", qual_items['QualificationTypes'][0])
     if request.method == "POST":
         form = hittypeForm(request.POST or None)       
         if form.is_valid():            
