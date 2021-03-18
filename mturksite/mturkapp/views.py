@@ -226,6 +226,8 @@ def addQualification(request):
             qual_info = []
             for i in qual_fields:
                 qual_info.append(form.cleaned_data[i])
+            
+            print(qual_info)
 
             #api call to create qualification type
             response = mturk.create_qualification_type(
@@ -243,25 +245,30 @@ def addQualification(request):
         return render(request, 'addQualifications.html', context)
 
 def updateQualification(request,List_id):
-    all_items = Qualification.objects.get(pk = List_id) 
+   # all_items = Qualification.objects.get(pk = List_id) 
     mturk = mturk_client()
-    if all_items.Status == False:
-        up = mturk.update_qualification_type(
-               QualificationTypeId= all_items.qualID,
-               QualificationTypeStatus='Active'
-              )
-    else:
-        up = mturk.update_qualification_type(
-                QualificationTypeId= all_items.qualID,
-                QualificationTypeStatus='Inactive'
-             )
-    x = False
-    if up["QualificationType"]["QualificationTypeStatus"] == 'Active':
-        x = True
-    
-    all_items.Status = x
-    all_items.save()
-    messages.success(request, "Item has been Edited!")
+    #qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
+    #qual_info  []
+    # all_items = Qualification.objects.all()
+    all_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+        MustBeRequestable=False,
+        MustBeOwnedByCaller=True,
+    )
+    print(List_id)
+    for x in all_items['QualificationTypes']:
+        x['QualificationTypeId'] = List_id
+        if x['QualificationTypeStatus'] == 'Inactive':
+            up = mturk.update_qualification_type(
+                   QualificationTypeId= List_id,
+                   QualificationTypeStatus='Active'
+                  )
+        else:
+            up = mturk.update_qualification_type(
+                    QualificationTypeId= List_id,
+                    QualificationTypeStatus='Inactive'
+                 )
+
+    messages.success(request, "Item has been Updated!")
     return redirect('qualificationView')
     
 
@@ -327,14 +334,12 @@ def addHITType(request):
             quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
 
             # x = Qualification.objects.get(pk = quals)
-
-            if x.int_value is None:
-                hittypes = mturk.create_hit_type(
-                    AssignmentDurationInSeconds = 2345,
-                    Reward = reward,
-                    Title = title,
-                    Keywords = keyword,
-                    Description = description
+            hittypes = mturk.create_hit_type(
+                AssignmentDurationInSeconds = 2345,
+                Reward = reward,
+                Title = title,
+                Keywords = keyword,
+                Description = description
                 )
             instance = form.save()
             hittype_id = HITType(hittype_id = hittypes["HITTypeId"], 
@@ -342,7 +347,7 @@ def addHITType(request):
                 description = description , 
                 keyword = keyword , 
                 reward = reward , 
-                quals = x.nickname)
+                quals = quals)
             hittype_id.pk = instance.pk
             hittype_id.save()
             messages.success(request, "Item has been added!")
@@ -392,12 +397,32 @@ def addHIT(request):
     # # print("DIRRR: ", dirr)
     # question = open(dir_).read()
 
-    #question = open(r"C:\Users\Jon\Documents\GitHub\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
+    question = open(r"C:\Users\saman\Desktop\CMPUT401\MTurk\mturk-experiment\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
     hittype_items = HITType.objects.all()    
     if request.method == "POST":
         form = hitForm(request.POST or None)
         if form.is_valid():
-            form.save()
+
+            maxassignments = form.cleaned_data.get("max_assignments")
+            expiry_time = form.cleaned_data.get("expiry_time")
+            x = form.cleaned_data.get("hittype")
+            hittypes = HITType.objects.get(pk = x)
+    
+            mturk = mturk_client()
+            hit = mturk.create_hit_with_hit_type(
+                HITTypeId = hittypes.hittype_id,
+                MaxAssignments = maxassignments ,
+                LifetimeInSeconds= int(expiry_time),
+                Question =question
+            )
+            instance = form.save()
+            hit_id = HIT(hit_id = hit["HIT"]["HITId"], 
+                hittype_id = hittypes.hittype_id  , 
+                max_assignments = maxassignments , 
+                expiry_time = expiry_time 
+            )
+            hit_id.pk = instance.pk
+            hit_id.save()
             messages.success(request, "Item has been added!")
             return redirect(hitView)
         else:
@@ -405,7 +430,8 @@ def addHIT(request):
             return redirect(hitView)
     else:
         all_items = HIT.objects.all()
-        return render(request, 'addHIT.html', {"hittype_items": hittype_items})
+        context = {"hittype_items":hittype_items ,"all_items": all_items}
+        return render(request, 'addHIT.html', context)
 
 def expView(request):
     """

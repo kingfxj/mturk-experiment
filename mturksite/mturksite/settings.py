@@ -89,8 +89,8 @@ DATABASES = {
         'NAME': 'mturksite',
         'USER': 'mturksite',
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
-        #'HOST': '10.2.9.178',
-        'HOST': env('HOST'),
+        'HOST': '10.2.9.178',
+       # 'HOST': env('HOST'),
         'PORT': '5432',
     }
 }
