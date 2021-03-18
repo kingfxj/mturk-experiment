@@ -10,43 +10,47 @@
 {% block content %}
     <h1 style="text-align:center">Qualifications</h1>
     {% include 'messages.html' %}
-    {% comment %} <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="button" class="btn btn-primary">Add Qualification</button>
-        <a href="{% url 'addQualification' %}">Add Qualification</a>
-    </div> {% endcomment %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-            {% comment %} <th scope="col">#</th> {% endcomment %}
-            <th scope="col">Nickname</th>
-            <th scope="col">QualificationType ID</th>
-            <th scope="col">Description</th>
-            <th scope="col">Qualification Type Status</th>
-            {% comment %} <th scope="col">Country</th> {% endcomment %}
-            {% comment %} <th scope="col">Subdivision</th> {% endcomment %}
-            {% comment %} <th scope="col">Actions Guarded</th> {% endcomment %}
-            </tr>
-        </thead>
-        <tbody>
-            {%  if all_items %}
-                {% for item in all_items %}
-                    <tr class="table-secondary">
-                        <td>{{ item.Name }}</td>
-                        <td> {{ item.QualificationTypeId }} </td>
-                        <td> {{ item.Description }}</td>
-                        <td> {{ item.QualificationTypeStatus }} </td>
-                        {% comment %} <td> {{ item.country }} </td> {% endcomment %}
-                        {% comment %} <td> {{ item.subdivision }} </td> {% endcomment %}
-                        {% comment %} <td> {{ item.actions_guarded }} </td> {% endcomment %}
-
-                        <td><center></center></td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-        </tbody>
-        </table>
-        <a href= "{% url 'addQualification' %}"><button type="button" class="btn btn-primary" style="float: right;">Add Qualification</button></a>
-        <p><em> Qualifications may take some time to appear</em></p>
+    
+    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+        <tr>
+            <form class="d-flex" method="POST">
+                {% csrf_token %}
+                <td>
+                    Nickname:
+                    <input class="form-control me-2" type="search" placeholder="Nickname" aria-label="Search" name="Name">
+                </td>
+                <td>
+                    Qualification Type ID:
+                    <input class="form-control me-2" type="search" placeholder="Qualification Type ID" aria-label="Search" name="QualificationTypeId">
+                </td>
+                <td>
+                    Description:
+                    <input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="Description">
+                </td>
+                <td>
+                    Qualification Type Status:
+                    <input class="form-control me-2" type="search" placeholder="Qualification Type Status" aria-label="Search" name="QualificationTypeStatus">
+                </td>
+                <td>
+                    <br>
+                    <input type="submit" value="Search">
+                </td>
+            </form>
+        </tr>
+        {%  if all_items %}
+            {% for item in all_items %}
+                <tr class="table-secondary">
+                    <td><center> {{ item.Name }} </center></td>
+                    <td><center> {{ item.QualificationTypeId }}</center></td>
+                    <td><center>  {{ item.Description }}</center></td>
+                    <td><center>  {{ item.QualificationTypeStatus }}</center></td>
+                    <td><center></center></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+    <a href= "{% url 'addQualification' %}"><button type="button" class="btn btn-primary" style="float: right;">Add Qualification</button></a>
+    <p><em> Qualifications may take some time to appear</em></p>
 {% endblock %}
 
 

@@ -13,17 +13,9 @@
     <form class="d-flex" method="POST">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
-            <tr><td>Batch:</td></tr>
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Batch"  aria-label="Search" name="batch"></td>
-            </tr>
             <tr><td>Title:</td></tr>
             <tr>
                 <td><input class="form-control me-2" type="search" placeholder="Title"  aria-label="Search" name="title"></td>
-            </tr>
-            <tr><td>HITType ID:</td></tr>
-            <tr>
-                <td><input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id"></td>
             </tr>
             <tr><td>Description:</td></tr>
             <tr>
@@ -41,12 +33,9 @@
             <tr>
                 <td><select name="quals" id="quals" class="form-control me-2" type="search" placeholder="Qualification" multiple>
                 <option value="" disabled selected hidden>Qualifications</option>
-                  {% for item in qual_items %}
-                        <option value="{{item}}">{{item}}</option>
-                    {% comment %} {% if item.Status %}
-                          <option value="{{item.pk}}">{{item.nickname}}</option>
-                    {% endif %} {% endcomment %}
-                  {% endfor %} 
+                {% for item in qual_items %}
+                    <option value="{{item}}">{{item.Name}}</option>
+                {% endfor %} 
             </td>
             </select>
             </tr>
