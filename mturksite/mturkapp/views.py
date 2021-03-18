@@ -397,7 +397,7 @@ def addHIT(request):
     # # print("DIRRR: ", dirr)
     # question = open(dir_).read()
 
-    question = open(r"C:\Users\Paperspace\Documents\GitHub\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
+    #question = open(r"C:\Users\Jon\Documents\GitHub\mturk-experiment\mturksite\mturkapp\templates\mine.xml").read()
     hittype_items = HITType.objects.all()    
     if request.method == "POST":
         form = hitForm(request.POST or None)
@@ -410,7 +410,7 @@ def addHIT(request):
             return redirect(hitView)
     else:
         all_items = HIT.objects.all()
-        return render(request, 'addHIT.html', {"all_items": all_items})
+        return render(request, 'addHIT.html', {"hittype_items": hittype_items})
 
 def expView(request):
     """
