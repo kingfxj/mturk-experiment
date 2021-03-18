@@ -216,7 +216,6 @@ def addQualification(request):
     country_list = []
     for code, name in list(countries):
         country_list.append(name)
-    # print(countries)
 
     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     if request.method == "POST":
@@ -289,7 +288,7 @@ def hittypeView(request):
         description = request.POST.get('description')       # Retrieve query for description
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
-        quals = request.POST.get('quals')                   # Retrieve query for quals
+        quals = request.POST.get('quals')                   # Retrieve query for qualifications
         # Filter the objects according to the sort
         if title != '' and title is not None:
             all_items = all_items.filter(title__icontains=title)
@@ -314,7 +313,6 @@ def addHITType(request):
     :return: Redirect to HITType View page after changes are made
     """
     mturk = mturk_client()
-    # qual_items = Qualification.objects.all()
     qual_items = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
         MustBeRequestable=False,
         MustBeOwnedByCaller=True,
@@ -326,11 +324,10 @@ def addHITType(request):
             description = form.cleaned_data.get("description")       # Retrieve query for description
             keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
             reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
-            quals = form.cleaned_data.get("quals")
+            quals = form.cleaned_data.get("quals")                   # Retrieve query for qualifications
 
             # x = Qualification.objects.get(pk = quals)
 
-            # mturk = mturk_client() 
             if x.int_value is None:
                 hittypes = mturk.create_hit_type(
                     AssignmentDurationInSeconds = 2345,
@@ -348,7 +345,6 @@ def addHITType(request):
                 quals = x.nickname)
             hittype_id.pk = instance.pk
             hittype_id.save()
-            print(quals)
             messages.success(request, "Item has been added!")
             return redirect(hittypeView)
         else:
@@ -358,7 +354,6 @@ def addHITType(request):
        all_items = HITType.objects.all()
        context = {"all_items": all_items , "qual_items": qual_items['QualificationTypes']}
        return render(request, 'addHITType.html', context)
-
 
 def hitView(request):
     """
