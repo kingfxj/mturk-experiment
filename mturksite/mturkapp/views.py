@@ -373,15 +373,31 @@ def asgmtsCompletedView(request):
     :param request
     :return: Completed assignments page
     """   
+    experimentFilter = request.session['experiment']
+    hittype_items = Hittype.objects.all()
+    hittypes_filtered = []
+    for item in hittype_items:
+        if str(item.batch_id) in experimentFilter:
+            hittypes_filtered.append(str(item.hittype_id))
+
+    hit_items = Hit.objects.all()
+    hits_filtered = []
+    for item in hit_items:
+        if str(item.hittype_id) in hittypes_filtered:
+            hits_filtered.append(str(item.hit_id))
 
     mturk = mturk_client()
-    assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
+    assignments = []
+    for hit_id in hits_filtered:
+        for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
+            assignments.append(assignment)
 
     if request.method == "POST":
-        assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
-        workerIdFilter = request.POST.get('workerId')                     # Retrieve query for Worker ID
-        acceptanceTimeFilter = request.POST.get('acceptanceTime')         # Retrieve query for Acceptance Time
-        assignmentStatusFilter = request.POST.get('assignmentStatus')     # Retrieve query for Assignment Status
+        assignmentIdFilter = request.POST.get('assignmentId')   # Retrieve query for Assignment ID
+        workerIdFilter = request.POST.get('workerId')           # Retrieve query for Worker ID
+        acceptTimeFilter = request.POST.get('acceptanceTime')   # Retrieve query for Acceptance Time
+        submitTimeFilter = request.POST.get('submittedTime')    # Retrieve query for Submitted Time
+        statusFilter = request.POST.get('status')               # Retrieve query for Assignment Status
         
         # Filter the objects according to the sort
         if assignmentIdFilter != '' and assignmentIdFilter is not None:
@@ -392,13 +408,17 @@ def asgmtsCompletedView(request):
             for assignment in assignments:
                 if  workerIdFilter not in assignment['WorkerId']:
                     assignments.remove(assignment)
-        if acceptanceTimeFilter != '' and acceptanceTimeFilter is not None:
+        if acceptTimeFilter != '' and acceptTimeFilter is not None:
             for assignment in assignments:
-                if acceptanceTimeFilter not in assignment['AcceptTime']:
+                if acceptTimeFilter not in assignment['AcceptTime']:
                     assignments.remove(assignment)
-        if assignmentStatusFilter != '' and assignmentStatusFilter is not None:
+        if submitTimeFilter != '' and submitTimeFilter is not None:
             for assignment in assignments:
-                if assignmentStatusFilter not in assignment['AssignmentStatus']:
+                if submitTimeFilter not in assignment['SubmitTime']:
+                    assignments.remove(assignment)
+        if statusFilter != '' and statusFilter is not None:
+            for assignment in assignments:
+                if statusFilter not in assignment['AssignmentStatus']:
                     assignments.remove(assignment)
 
     # Return the objects that satisfy all search filter

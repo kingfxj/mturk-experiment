@@ -18,7 +18,7 @@
                 {% csrf_token %}
                 <tr><td>
                     <select name="batch" id="batch" class="form-control me-2" type="search" placeholder="Batch">
-                    <option value="" disabled selected hidden>Batch</option>
+                    <option value="" disabled selected hidden>Choose batch</option>
                         {% for item in experiment_items %}
                                 <option><strong>{{item.title}}</strong> ({{item.batch_id}})</option>
                         {% endfor %} 
