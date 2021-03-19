@@ -73,7 +73,11 @@
                             <a class="nav-link active text-info" href="{% url 'experimentFilter' %}">Current Experiment filter:&nbsp;</a>
                         </li>
                         <li class="text-right text-danger">
-                            <h5><strong>{{ request.session.experiment }}</strong></h5>
+                            {% if request.session.experiment != None %}
+                                <h5><strong>{{ request.session.experiment }}</strong></h5>
+                            {% else %}
+                                <h5><strong>None Selected</strong></h5>
+                            {% endif %}
                         </li>
                     </ul>
                 </div>
