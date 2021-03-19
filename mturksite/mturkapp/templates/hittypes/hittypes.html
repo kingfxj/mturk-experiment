@@ -16,31 +16,31 @@
                 {% csrf_token %}
                 <td>
                     Batch:
-                    <input class="form-control me-2" type="search" placeholder="Batch ID" aria-label="Search" name="batch">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="batch_title">
                 </td>
                 <td>
                     Title:
-                    <input class="form-control me-2" type="search" placeholder="Title" aria-label="Search" name="title">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="title">
                 </td>
                 <td>
                     HITType ID:
-                    <input class="form-control me-2" type="search" placeholder="HITType ID" aria-label="Search" name="hittype_id">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hittype_id">
                 </td>
                 <td>
                     Description:
-                    <input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="description">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="description">
                 </td>
                 <td>
                     Keyword:
-                    <input class="form-control me-2" type="search" placeholder="Keyword" aria-label="Search" name="keyword">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="keyword">
                 </td>
                 <td>
                     Reward:
-                    <input class="form-control me-2" type="search" placeholder="Reward" aria-label="Search" name="reward">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="reward">
                 </td>
                 <td>
                     Qualifications:
-                    <input class="form-control me-2" type="search" placeholder="Qualifications" aria-label="Search" name="qualifications">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="qualifications">
                 </td>
                 <td>
                     <br>
@@ -56,9 +56,11 @@
                     <td><center> {{ item.hittype_id }} </center></td>
                     <td><center> {{ item.description }} </center></td>
                     <td><center> {{ item.keyword }} </center></td>
-                    <td><center> {{ item.reward }} </center></td>
+                    <td><center> ${{ item.reward }} </center></td>
                     <td><center> {{ item.qualifications }} </center></td>
-                    <td><center></center></td>
+                    <td><center><a href="{% url 'Delete'  item.id %}">
+                          <button class="btn btn-link" style="font-size:24px;color:red"><i class="fas fa-trash-alt"></i></button>
+                    </center></td></a>
                 </tr>
             {% endfor %}
         {% endif %}

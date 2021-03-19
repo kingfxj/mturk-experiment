@@ -16,21 +16,21 @@
         <table class="table table-bordered table-primary">
             <tr><td> HITType:</td></tr>
             <tr>
-            <td><select name="hittype" id="hittype" class="form-control me-2" type="search" placeholder="HITType">
-                <option value="" disabled selected hidden>HITType</option>
+            <td><select name="hittype" id="hittype" class="form-control me-2" type="search" placeholder="Choose HITType">
+                <option value="" disabled selected hidden>Choose HITType</option>
                   {% for item in hittype_items %}
-                          <option value="{{item.pk}}">{{item.title}} (ID: {{item.hittype_id}})</option>
+                          <option value="{{item.pk}}">{{item.title}} ({{item.hittype_id}})</option>
                   {% endfor %} 
             </td>
             </select>
             </tr>
             <tr><td> Max Assignments:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Max Assignments" aria-label="Search" name="max_assignments"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter max assignments" aria-label="Search" name="max_assignments"></td>
             </tr>
             <tr><td>Lifetime in Seconds:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Lifetime (s)" aria-label="Search" name="lifetime_in_seconds"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter Lifetime (in seconds)" aria-label="Search" name="lifetime_in_seconds"></td>
             </tr>
             <tr>
                 <td><input type="submit" style="float: right;" value="Submit"></td>

@@ -34,4 +34,6 @@ urlpatterns = [
     path('lobby/', views.lobbyView, name="lobby"),
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
+    path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
+    path('Delete/<List_id>' , views.Delete , name = 'Delete'),
 ]

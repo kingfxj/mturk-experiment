@@ -22,19 +22,23 @@
                 </td>
                 <td>
                     Assignment ID:
-                    <input class="form-control me-2" type="search" placeholder="Assignment ID" aria-label="Search" name="assignmentId">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assignmentId">
                 </td>
                 <td>
                     Worker ID:
-                    <input class="form-control me-2" type="search" placeholder="Worker ID" aria-label="Search" name="workerId">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="workerId">
                 </td>
                 <td>
-                    Acceptance Time:
-                    <input class="form-control me-2" type="search" placeholder="Acceptance Time" aria-label="Search" name="acceptanceTime">
+                    Accepted:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="acceptanceTime">
                 </td>
                 <td>
-                    Assignment Status:
-                    <input class="form-control me-2" type="search" placeholder="Assignment Status" aria-label="Search" name="assignmentStatus">
+                    Submitted:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="submittedTime">
+                </td>
+                <td>
+                    Status:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="status">
                 </td>
                 <td>
                     <br>
@@ -49,6 +53,7 @@
                         <td> {{ item.AssignmentId }} </td>
                         <td> {{ item.WorkerId }} </td>
                         <td> {{ item.AcceptTime }} </td>
+                        <td> {{ item.SubmitTime }} </td>
                         <td> {{ item.AssignmentStatus }} </td>
                     </tr>
                 {% endfor %}
