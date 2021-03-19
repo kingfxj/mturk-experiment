@@ -16,7 +16,7 @@
                 {% csrf_token %}
                 <td>
                     Batch:
-                    <input class="form-control me-2" type="search" placeholder="Batch ID" aria-label="Search" name="batch">
+                    <input class="form-control me-2" type="search" placeholder="Batch ID" aria-label="Search" name="batch_title">
                 </td>
                 <td>
                     Title:
@@ -56,9 +56,11 @@
                     <td><center> {{ item.hittype_id }} </center></td>
                     <td><center> {{ item.description }} </center></td>
                     <td><center> {{ item.keyword }} </center></td>
-                    <td><center> {{ item.reward }} </center></td>
+                    <td><center> ${{ item.reward }} </center></td>
                     <td><center> {{ item.qualifications }} </center></td>
-                    <td><center></center></td>
+                    <td><center><a href="{% url 'Delete'  item.id %}">
+                          <button class="btn btn-link" style="font-size:24px;color:red"><i class="fas fa-trash-alt"></i></button>
+                    </center></td></a>
                 </tr>
             {% endfor %}
         {% endif %}

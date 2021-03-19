@@ -25,8 +25,10 @@ class HitForm(forms.ModelForm):
         fields = ['max_assignments', 'lifetime_in_seconds']
 
 class HittypeForm(forms.ModelForm):
-    qualifications = forms.CharField(max_length=200)
+    qualifications = forms.CharField(max_length=200, required=True ,widget=forms.CheckboxSelectMultiple)
     batch = forms.CharField(max_length=200)
+    Assignment_Duration_In_Seconds = forms.IntegerField(required=True)
+    Auto_Approval_Delay_In_Seconds = forms.IntegerField(required=True)
     class Meta:
         model = Hittype
         fields = ['title', 'description', 'keyword', 'reward']
