@@ -166,7 +166,7 @@ def hitsView(request):
         hit_id = request.POST.get('hit_id')                             # Retrieve query for hit id
         hittype_id = request.POST.get('hittype_id')                     # Retrieve query for hittype id
         max_assignments = request.POST.get('max_assignments')           # Retrieve query for assignments number
-        lifetime_in_seconds = request.POST.get('lifetime_in_seconds')   # Retrieve query for expiry date
+        lifetime_in_seconds = request.POST.get('lifetime_in_seconds')   # Retrieve query for expiry lifetime
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
@@ -486,9 +486,9 @@ def lobbyView(request):
         except:
             print("Couldn't find", id)
     
-    total_users=len(lobby_list)
+    total_users=len(lobby_list)                             # find total number of users in lobby
     ready_users=0
-    for item in lobby_list:
+    for item in lobby_list:                                 # find number of 'ready' users in lobby
         if item['AssignmentStatus'] == 'Approved':
             ready_users += 1
 

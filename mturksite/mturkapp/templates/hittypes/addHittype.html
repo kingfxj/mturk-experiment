@@ -16,7 +16,7 @@
             <tr><td>Batch:</td></tr>
             <tr><td>
                 <select name="batch" id="batch" class="form-control me-2" type="search" placeholder="Choose batch">
-                <option value="" disabled selected hidden>Choose batch</option>
+                <option value="" disabled selected hidden>--- Choose batch ---</option>
                     {% for item in experiment_items %}
                             <option><strong>{{item.title}}</strong> ({{item.batch_id}})</option>
                     {% endfor %} 
@@ -36,7 +36,7 @@
             </tr>
             <tr><td>Reward:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Enter reward" aria-label="Search" name="reward"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter reward amount" aria-label="Search" name="reward"></td>
             </tr>
             <tr><td>Qualifications:</td></tr>
             <tr>
