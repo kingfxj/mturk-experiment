@@ -98,8 +98,6 @@ def addHittypeView(request):
         MustBeOwnedByCaller=True,
     )
 
-    experiment_items = Experiment.objects.all()
-
     if request.method == "POST":
         form = HittypeForm(request.POST or None)       
         if form.is_valid():            
@@ -108,7 +106,7 @@ def addHittypeView(request):
             keyword = form.cleaned_data.get("keyword")                                                # Retrieve query for keyword
             reward = form.cleaned_data.get("reward")                                                  # Retrieve query for reward
             choice = form.cleaned_data.get("qualifications")                                          # Retrieve query for qualifications
-            batch = form.cleaned_data.get("batch").split(" ")                                         # Retrieve query for batch
+            batch = form.cleaned_data.get("batch")                                                    # Retrieve query for batch
             Assignment_Duration_In_Seconds = form.cleaned_data.get("Assignment_Duration_In_Seconds")  # Retrieve query for Assignment Duration
             Auto_Approval_Delay_In_Seconds = form.cleaned_data.get("Auto_Approval_Delay_In_Seconds")  # Retrieve query for Auto Approval Delay
 
@@ -118,12 +116,14 @@ def addHittypeView(request):
             for word in characters_to_remove:
                 new_string = new_string.replace(word,"")
             qualifications = new_string
-            print( Auto_Approval_Delay_In_Seconds)
-        
 
-            batch_title = batch[0]           # extract title from batch
-            batch_id = batch[1].strip("()")  # extract id from batch
-           
+            experiment_items = Experiment.objects.all()
+            for item in experiment_items:
+                if str(item.batch_id) in batch:
+                    batch_title = item.title
+                    batch_id = item.batch_id
+                    break
+            
             hittypes = mturk.create_hit_type(
                 AutoApprovalDelayInSeconds = Auto_Approval_Delay_In_Seconds,
                 AssignmentDurationInSeconds = Assignment_Duration_In_Seconds ,
@@ -150,8 +150,9 @@ def addHittypeView(request):
             messages.error(request, "Item was not added")
             return redirect(hittypesView)
     else:
-       context = {"qualifications": qualifications['QualificationTypes'], "experiment_items": experiment_items}
-       return render(request, 'hittypes/addHittype.html', context)
+        experiment_items = Experiment.objects.all()
+        context = {"qualifications": qualifications['QualificationTypes'], "experiment_items": experiment_items}
+        return render(request, 'hittypes/addHittype.html', context)
 
 
 def hitsView(request):
@@ -496,11 +497,28 @@ def addExperimentView(request):
     else:
         return render(request, 'experiments/addExperiment.html')
 
+
+def experimentFilterView(request):
+    """
+    Filter application by experiment using session
+    :param request
+    :return: Redirect to previous page after changes are made
+    """
+
+    if request.method == "POST":
+        experiment = request.POST.get('batch')
+        request.session['experiment'] = experiment
+        return redirect(experimentFilterView)
+    
+    else:   
+        experiment_items = Experiment.objects.all() 
+        return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
+
 def workersView(request):
     """
-    Experiments view Page
+    Workers view Page
     :param request
-    :return: Experiments view page
+    :return: Workers view page
     """
     mturk = mturk_client()
     workers_list = []
@@ -521,5 +539,5 @@ def workersView(request):
     if request.method == "POST" or None:
         pass  #TODO add assigning qual to workers functionality
     else:
-        return render(request, 'workers.html', {"workers": workers_list})
+        return render(request, 'workers/workers.html', {"workers": workers_list})
   

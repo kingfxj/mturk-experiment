@@ -14,32 +14,33 @@
         {% csrf_token %}
         <table class="table table-bordered table-primary">
             <tr><td>Batch:</td></tr>
-            <tr>
-            <td><select name="batch" id="batch" class="form-control me-2" type="search" placeholder="Batch">
-                <option value="" disabled selected hidden>Batch</option>
-                  {% for item in experiment_items %}
-                          <option><strong>{{item.title}}</strong> ({{item.batch_id}})</option>
-                  {% endfor %} 
-            </td>
+            <tr><td>
+                <select name="batch" id="batch" class="form-control me-2" type="search" placeholder="Choose batch">
+                <option value="" disabled selected hidden>Choose Batch</option>
+                    {% for item in experiment_items %}
+                            <option><strong>{{item.title}}</strong> ({{item.batch_id}})</option>
+                    {% endfor %} 
+                </select>
+            </td></tr>
             <tr><td>Title:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Title"  aria-label="Search" name="title"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter title"  aria-label="Search" name="title"></td>
             </tr>
             <tr><td>Description:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Description" aria-label="Search" name="description"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter description" aria-label="Search" name="description"></td>
             </tr>
             <tr><td>Keyword:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Keyword" aria-label="Search" name="keyword"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter keyword(s)" aria-label="Search" name="keyword"></td>
             </tr>
             <tr><td>Reward:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Reward" aria-label="Search" name="reward"></td>
+                <td><input class="form-control me-2" type="search" placeholder="Enter reward" aria-label="Search" name="reward"></td>
             </tr>
             <tr><td>Qualifications:</td></tr>
             <tr>
-                <td><select name="qualifications" id="qualifications" class="form-control me-2" type="search" placeholder="Qualification" multiple>
+                <td><select name="qualifications" id="qualifications" class="form-control me-2" type="search" placeholder="Choose qualifications" multiple>
                         <option value="" disabled selected hidden>Qualifications</option>
                         {% for item in qualifications %}
                             <option value="{{item.Name}}">{{item.Name}}</option>
