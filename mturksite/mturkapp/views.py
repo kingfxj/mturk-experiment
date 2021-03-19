@@ -462,18 +462,25 @@ def lobbyView(request):
     :return: Lobby view page
     """
     mturk = mturk_client()
-    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
-        MustBeRequestable=False,
-        MustBeOwnedByCaller=True
-    )
+    lobby_list = []
+    hitID_list = []
+    for i in Hit.objects.all():          #retrieve all hit ids
+        hitID_list.append(i.hit_id)
 
-    total_users=len(qualifications['QualificationTypes'])
+    for id in hitID_list:
+        try:
+            response = mturk.list_assignments_for_hit(HITId=id)
+            lobby_list.append(response['Assignments'][0])
+        except:
+            print("Couldn't find", id)
+    
+    total_users=len(lobby_list)
     ready_users=0
-    for item in qualifications['QualificationTypes']:
-        if item['QualificationTypeStatus'] == 'Active':
+    for item in lobby_list:
+        if item['AssignmentStatus'] == 'Approved':
             ready_users += 1
 
-    return render(request, 'lobby/lobby.html', {"qualifications": qualifications['QualificationTypes'], "total_users": total_users, "ready_users": ready_users})
+    return render(request, 'lobby/lobby.html', {"lobby": lobby_list,"total_users": total_users, "ready_users": ready_users})
 
 
 def experimentsView(request):
