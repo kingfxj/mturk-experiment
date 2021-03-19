@@ -461,7 +461,19 @@ def lobbyView(request):
     :param request
     :return: Lobby view page
     """
-    return render(request, 'lobby/lobby.html')
+    mturk = mturk_client()
+    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+        MustBeRequestable=False,
+        MustBeOwnedByCaller=True
+    )
+
+    total_users=len(qualifications['QualificationTypes'])
+    ready_users=0
+    for item in qualifications['QualificationTypes']:
+        if item['QualificationTypeStatus'] == 'Active':
+            ready_users += 1
+
+    return render(request, 'lobby/lobby.html', {"qualifications": qualifications['QualificationTypes'], "total_users": total_users, "ready_users": ready_users})
 
 
 def experimentsView(request):
