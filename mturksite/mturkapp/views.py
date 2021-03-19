@@ -60,7 +60,7 @@ def hittypesView(request):
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
         qualifications = request.POST.get('qualifications') # Retrieve query for qualifications
-        batch = request.POST.get('batch')             # Retrieve query for qualifications
+        batch = request.POST.get('batch')                   # Retrieve query for batch
 
 
         # Filter the objects according to the sort
@@ -461,7 +461,6 @@ def lobbyView(request):
     :param request
     :return: Lobby view page
     """
-    # all_items = Assignment.objects.all()
     return render(request, 'lobby/lobby.html')
 
 
