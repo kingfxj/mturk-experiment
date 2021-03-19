@@ -79,6 +79,12 @@ def hittypesView(request):
     # Return the objects that satisfy all search filter
     return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
 
+def Delete(request , List_id):
+                item = Hittype.objects.get(pk = List_id)
+                item.delete()
+                messages.success(request , ('HITType has been Deleted'))
+                return redirect('hittypes')
+
 
 def addHittypeView(request):
     """
@@ -97,18 +103,30 @@ def addHittypeView(request):
     if request.method == "POST":
         form = HittypeForm(request.POST or None)       
         if form.is_valid():            
-            title = form.cleaned_data.get("title")                   # Retrieve query for title  
-            description = form.cleaned_data.get("description")       # Retrieve query for description
-            keyword = form.cleaned_data.get("keyword")               # Retrieve query for keyword
-            reward = form.cleaned_data.get("reward")                 # Retrieve query for reward
-            qualifications = form.cleaned_data.get("qualifications") # Retrieve query for qualifications
-            batch = form.cleaned_data.get("batch").split(" ")        # Retrieve query for qualifications
+            title = form.cleaned_data.get("title")                                                    # Retrieve query for title  
+            description = form.cleaned_data.get("description")                                        # Retrieve query for description
+            keyword = form.cleaned_data.get("keyword")                                                # Retrieve query for keyword
+            reward = form.cleaned_data.get("reward")                                                  # Retrieve query for reward
+            choice = form.cleaned_data.get("qualifications")                                          # Retrieve query for qualifications
+            batch = form.cleaned_data.get("batch").split(" ")                                         # Retrieve query for batch
+            Assignment_Duration_In_Seconds = form.cleaned_data.get("Assignment_Duration_In_Seconds")  # Retrieve query for Assignment Duration
+            Auto_Approval_Delay_In_Seconds = form.cleaned_data.get("Auto_Approval_Delay_In_Seconds")  # Retrieve query for Auto Approval Delay
+
+            #Remove special characters that appears when more than one qualification is selected
+            characters_to_remove = "[]''"                    
+            new_string = choice
+            for word in characters_to_remove:
+                new_string = new_string.replace(word,"")
+            qualifications = new_string
+            print( Auto_Approval_Delay_In_Seconds)
+        
 
             batch_title = batch[0]           # extract title from batch
             batch_id = batch[1].strip("()")  # extract id from batch
-
+           
             hittypes = mturk.create_hit_type(
-                AssignmentDurationInSeconds = 2345,
+                AutoApprovalDelayInSeconds = Auto_Approval_Delay_In_Seconds,
+                AssignmentDurationInSeconds = Assignment_Duration_In_Seconds ,
                 Reward = reward,
                 Title = title,
                 Keywords = keyword,
@@ -309,34 +327,7 @@ def updateQualificationView(request,List_id):
     messages.success(request, "Item has been Updated!")
     return redirect('qualifications')
 
-def workersView(request):
-    """
-    Workers view Page
-    :param request
-    :return: Workers view page
-    """
-    mturk = mturk_client()
-    workers_list = []
-    hitID_list = []
-    for i in Hit.objects.all():  #retrieve all hit ids and add it to 
-        hitID_list.append(i.hit_id)
 
-    for id in hitID_list:
-        try:
-            response = mturk.list_assignments_for_hit(
-                HITId=id,
-                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-            workers_list.append(response['Assignments'][0])
-            # print("RESPONSE: ", response['Assignments'][0])  # print check
-        except:
-            print("Couldn't find", id)
-        
-    if request.method == "POST" or None:
-        pass  #TODO add assigning qual to workers functionality
-    else:
-        return render(request, 'workers.html', {"workers": workers_list})
-
-        
 def asgmtsActiveView(request):
     """
     View Active assignment
@@ -505,4 +496,30 @@ def addExperimentView(request):
     else:
         return render(request, 'experiments/addExperiment.html')
 
+def workersView(request):
+    """
+    Experiments view Page
+    :param request
+    :return: Experiments view page
+    """
+    mturk = mturk_client()
+    workers_list = []
+    hitID_list = []
+    for i in Hit.objects.all():  #retrieve all hit ids and add it to 
+        hitID_list.append(i.hit_id)
+
+    for id in hitID_list:
+        try:
+            response = mturk.list_assignments_for_hit(
+                HITId=id,
+                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+            workers_list.append(response['Assignments'][0])
+            # print("RESPONSE: ", response['Assignments'][0])  # print check
+        except:
+            print("Couldn't find", id)
+        
+    if request.method == "POST" or None:
+        pass  #TODO add assigning qual to workers functionality
+    else:
+        return render(request, 'workers.html', {"workers": workers_list})
   
