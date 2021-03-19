@@ -548,7 +548,7 @@ def workersView(request):
 
     for id in hitID_list:
         try:
-            response = mturk.list_assignments_for_hit(
+            response = mturk.list_assignments_for_hit(  # api call to retrieve all assignments based on hit ID
                 HITId=id,
                 AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
             workers_list.append(response['Assignments'][0])
