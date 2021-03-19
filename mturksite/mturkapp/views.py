@@ -484,14 +484,14 @@ def experimentsView(request):
     """
     experiment_items = Experiment.objects.all()
     if request.method == "POST":
-        title = request.POST.get('title')             # Retrieve query for experiments id
-        batch_id = request.POST.get('batch_id') 
+        batch_id = request.POST.get('batch_id')         # Retrieve query for batch id 
+        title = request.POST.get('title')               # Retrieve query for experiment title
 
         # Filter the objects according to the sort
-        if title != '' and title is not None:
-            experiment_items = experiment_items.filter(title__icontains=title)
         if batch_id != '' and batch_id is not None:
             experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
+        if title != '' and title is not None:
+            experiment_items = experiment_items.filter(title__icontains=title)
 
     # Return the objects that satisfy all search filter
     return render(request, 'experiments/experiments.html', {"experiment_items": experiment_items})
