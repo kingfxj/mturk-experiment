@@ -244,7 +244,7 @@ def qualificationsView(request):
         print("API Service Fault")
     except mturk.exceptions.RequestError:
         print("Unable to get qualification types")
-
+    # print(qualifications)
     if request.method == "POST":
         for field in qual_fields:
             qual_info.append(request.POST.get(field))
@@ -288,15 +288,30 @@ def addQualificationView(request):
                 qual_info.append(form.cleaned_data[i])
 
             try:
-                mturk.create_qualification_type(  # api call to create qualification type
+                response = mturk.create_qualification_type(  # api call to create qualification type
                     Name= qual_info[0],
                     Description= qual_info[1],
-                    QualificationTypeStatus='Active'|'Inactive')
+                    QualificationTypeStatus='Active')
             except mturk.exceptions.ServiceFault:  # error handling for ServiceFault, RequestError
                 print("API Service Fault")
             except mturk.exceptions.RequestError:
                 print("Failed to create qualification type")
 
+
+            # response['QualificationType']['QualificationTypeId']
+            new_qualification = Qualification(
+                response['QualificationType']['Name'],
+                response['QualificationType']['Description'],
+                response['QualificationType']['QualificationTypeId'],
+                qual_fields[2],
+                qual_fields[3],
+                qual_fields[4],
+                qual_fields[5],
+                response['QualificationType']['QualificationTypeStatus'],
+            )
+            instance = form.save()
+            new_qualification.pk = instance.pk
+            new_qualification.save()
             messages.success(request, "Item has been added!")
             return redirect(qualificationsView)
         else:
@@ -319,7 +334,7 @@ def updateQualificationView(request,List_id):
     except mturk.exceptions.RequestError:
         print("Unable to get qualification types")
 
-    print("LIST ID: ", List_id)
+    # print("LIST ID: ", List_id)  # print check
 
     for x in qualifications['QualificationTypes']:
         x['QualificationTypeId'] = List_id
