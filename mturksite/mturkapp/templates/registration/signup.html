@@ -1,9 +1,11 @@
-<h3>
-    <form method="post">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Sign up">
-    </form>
+<body style="background-color:rgb(226, 241, 248);">
+    <h3>
+        <form method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Sign up">
+        </form>
 
-    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
-</h3>
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </h3>
+</body>
