@@ -268,7 +268,7 @@ def addQualificationView(request):
     # set all fields
     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     if request.method == "POST":
-        # qualifiction form
+        # qualification form
         form = QualificationForm(request.POST or None)
         if form.is_valid():
             # sorting data from given fields
