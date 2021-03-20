@@ -9,9 +9,7 @@
 
 {% block content %}
     <h1 style="text-align:center">Completed Assignments</h1>
-
-     {% include 'messages.html' %}
-
+    {% include 'messages.html' %}
     <form name="assignment" method="POST">
         {% csrf_token %}
         <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
@@ -45,7 +43,6 @@
                     <input type="submit" value="Search">
                 </td>
             </tr>
-
             {%  if assignments %}
                 {% for item in assignments %}
                     <tr class="table-info">
@@ -59,9 +56,7 @@
                     </tr>
                 {% endfor %}
             {% endif %}
-
         </table>
-
         <input type="submit" class="btn btn-info" style="float: left;" onclick="{% url 'payBonus' %}" value="Pay Bonus for selected"/>
     </form>
 {% endblock %}
