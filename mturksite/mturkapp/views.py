@@ -1,5 +1,5 @@
 from .forms import *
-from .models import Hit, Hittype, Qualification, Experiment
+from .models import *
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth import login, authenticate
@@ -9,11 +9,9 @@ from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 
-# Create your views here.
 @login_required
 def loginView(request):
     return render(request, 'asgmtsCompleted.html')
-
 
 def signupView(request):
     if request.method == 'POST':
