@@ -17,6 +17,10 @@
         <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
             <tr>
                 <td>
+                    Select all<br>
+                    <input type="checkbox" name="payBonus" value="all"/>
+                </td>
+                <td>
                     Assignment ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assignmentId">
                 </td>
@@ -25,12 +29,16 @@
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="workerId">
                 </td>
                 <td>
-                    Acceptance Time:
+                    Accepted:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="acceptanceTime">
                 </td>
                 <td>
-                    Assignment Status:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assignmentStatus">
+                    Submitted:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="submittedTime">
+                </td>
+                <td>
+                    Status:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="status">
                 </td>
                 <td>
                     <br>
@@ -45,7 +53,9 @@
                         <td> {{ item.AssignmentId }} </td>
                         <td> {{ item.WorkerId }} </td>
                         <td> {{ item.AcceptTime }} </td>
+                        <td> {{ item.SubmitTime }} </td>
                         <td> {{ item.AssignmentStatus }} </td>
+                        <td><center></center></td>
                     </tr>
                 {% endfor %}
             {% endif %}
