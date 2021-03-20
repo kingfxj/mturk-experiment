@@ -34,10 +34,10 @@
         </title>
     </head> 
 
-    <body>
+    <body style="background-color:rgb(226, 241, 248);">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <h5><a class="navbar-brand text-success">Mturk</a></h5>
+                <h5 class="navbar-brand text-success"><strong>Mturk</strong></h5>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -72,11 +72,11 @@
                         <li class="text-right text-info">
                             <a class="nav-link active text-info" href="{% url 'experimentFilter' %}">Current Experiment filter:&nbsp;</a>
                         </li>
-                        <li class="text-right text-danger">
+                        <li>
                             {% if request.session.experiment != None %}
-                                <h5><strong>{{ request.session.experiment }}</strong></h5>
+                                <h5 class="text-right text-success"><strong>{{ request.session.experiment }}</strong></h5>
                             {% else %}
-                                <h5><strong>None Selected</strong></h5>
+                                <h5 class="text-right text-danger"><strong>None Selected</strong></h5>
                             {% endif %}
                         </li>
                     </ul>

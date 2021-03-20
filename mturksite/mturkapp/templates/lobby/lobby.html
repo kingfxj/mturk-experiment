@@ -20,7 +20,7 @@
     </p>
     <p style="text-align:center">
         {{ ready_users }}
-        <span style="color: green" font-weight="bold"><strong>ready</strong></span> 
+        <span style="color: rgb(29, 161, 29)" font-weight="bold"><strong>ready</strong></span> 
         {% if ready_users == 1 %}
             user
         {% else %}
@@ -28,9 +28,9 @@
         {% endif %}
         currently in lobby.
     </p>
-    <a href="{% url 'lobby' %}"><button type="button" class="btn btn-warning" style="float: right;">Trigger Lobby Event</button></a>
+    <a href="{% url 'lobby' %}"><button type="button" class="btn btn-info" style="float: right;">Trigger Lobby Event</button></a>
     <br></br>
-    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+    <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
             <form class="d-flex" method="POST">
                 {% csrf_token %}
@@ -50,7 +50,7 @@
         </tr>
         {%  if lobby %}
             {% for item in lobby %}
-                <tr class="table-secondary">
+                <tr class="table-info">
                     <td><center> {{ item.WorkerId }} </center></td>
                     <td><center> {{ item.AssignmentStatus }} </center></td>
                     <td><center></center></td>

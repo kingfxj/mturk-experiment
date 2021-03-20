@@ -1,5 +1,5 @@
 from .forms import *
-from .models import Hit, Hittype, Qualification, Experiment
+from .models import *
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth import login, authenticate
@@ -9,7 +9,6 @@ from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 
-# Create your views here.
 def signupView(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -74,7 +73,6 @@ def hittypesView(request):
             hittype_items = hittype_items.filter(batch__icontains=batch)
     # Return the objects that satisfy all search filter
     return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
-
 
 def addHittypeView(request):
     """

@@ -12,7 +12,7 @@
 
     {% include 'messages.html' %}
 
-    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+    <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
             <form class="d-flex" method="POST">
                 {% csrf_token %}
@@ -32,7 +32,7 @@
         </tr>
         {%  if experiment_items %}
             {% for item in experiment_items %}
-                <tr class="table-secondary">
+                <tr class="table-info">
                     <td><center> {{ item.batch_id }} </center></td>
                     <td><center> {{ item.title }} </center></td>
                     <td><center></center></td>
@@ -40,5 +40,5 @@
             {% endfor %}
         {% endif %}
     </table>
-    <a href="{% url 'addExperiment' %}"><button type="button" class="btn btn-primary" style="float: right;">New Experiment</button></a>
+    <a href="{% url 'addExperiment' %}"><button type="button" class="btn btn-info" style="float: right;">New Experiment</button></a>
 {% endblock %}

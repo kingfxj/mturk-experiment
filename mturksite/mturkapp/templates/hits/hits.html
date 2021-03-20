@@ -12,7 +12,7 @@
 
     {% include 'messages.html' %}
 
-    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+    <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
             <form class="d-flex" method="POST">
                 {% csrf_token %}
@@ -40,7 +40,7 @@
         </tr>
         {%  if hit_items %}
             {% for item in hit_items %}
-                <tr class="table-secondary">
+                <tr class="table-info">
                     <td><center> {{ item.hit_id }} </center></td>
                     <td><center> {{ item.hittype_id }}</center></td>
                     <td><center>  {{ item.max_assignments }}</center></td>
@@ -50,5 +50,5 @@
             {% endfor %}
         {% endif %}
     </table>
-    <a href="{% url 'addHit' %}"><button type="button" class="btn btn-primary" style="float: right;">New HIT</button></a>
+    <a href="{% url 'addHit' %}"><button type="button" class="btn btn-info" style="float: right;">New HIT</button></a>
 {% endblock %}
