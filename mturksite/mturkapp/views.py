@@ -606,12 +606,44 @@ def workersView(request):
             print("Could not retrieve", id)
         except mturk.exceptions.ServiceFault:
             messages.error(request, "API Service Fault")
-    # print(workers_list)  # print check
-    if request.method == "POST" or None:
-        pass  #TODO add assigning qual to workers functionality
-    else:
-        return render(request, 'workers/workers.html', {"workers": workers_list})
+
+    return render(request, 'workers/workers.html', {"workers": workers_list})
   
 def workerAssignQualView(request, worker_id):
-    print(worker_id)
-    return redirect('/workers')
+    """
+    Workers Assign qualifications view Page
+    :param request, worker_id
+    :return: Workers view page
+    """
+    mturk = mturk_client()
+    try:  # api call gets all qualifications created by the admin
+        qualifications_api = mturk.list_qualification_types(  
+            MustBeRequestable=False,
+            MustBeOwnedByCaller=True)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to get qualification types")
+
+    # api call to assign selected qual need to be in a loop
+    try:
+        response = mturk.associate_qualification_with_worker(
+            QualificationTypeId='string',
+            WorkerId='string',
+            IntegerValue=123,
+            SendNotification=True|False)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to assign qualifications")
+    except:
+        messages.error(request, "Unable to assign qualifications")
+
+    if request.method == "POST":
+        # form = AssignQualForm(request.POST or None)
+        # if form.is_valid():
+            # qual = form.cleaned_data.get("qualifications")\
+        pass
+    else:
+        # return render(request, '/workers')
+        return redirect('/workers')

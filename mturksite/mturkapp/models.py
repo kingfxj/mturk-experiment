@@ -48,3 +48,7 @@ class Experiment(models.Model):
     class Meta:
         # Remote database name
         db_table = "mturk_app_experiments"
+
+class AssignQualification(models.Model):
+    worker_id = models.CharField(max_length=100)
+    qualifications = models.CharField(max_length=100)

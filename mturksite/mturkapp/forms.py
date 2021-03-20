@@ -36,3 +36,9 @@ class ExperimentForm(forms.ModelForm):
     class Meta:
         model = Experiment
         fields = ['title']
+
+class AssignQualForm(forms.Form):
+    qualifications = forms.CharField(max_length=200, required=True ,widget=forms.CheckboxSelectMultiple)
+    class Meta:
+        model = AssignQualification
+        fields = ['worker_id', 'qualifications']
