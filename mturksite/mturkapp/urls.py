@@ -28,6 +28,7 @@ urlpatterns = [
     path('qualification/addQualifications/', views.addQualificationView, name='addQualification'),
     path('qualification/updateQualification/<List_id>' , views.updateQualificationView , name = 'updateQualification'),
     path('workers/', views.workersView, name="workersView"),
+    path('workers/workerAssignQualification/<worker_id>' , views.workerAssignQualView , name = 'workerAssignQualView'),
     path('assignments/active/', views.asgmtsActiveView, name='asgmtsActive'),
     path('assignments/completed/', views.asgmtsCompletedView, name='asgmtsCompleted'),
     path('assignments/completed/bonuses/', views.payBonusView, name='payBonus'),

@@ -608,10 +608,12 @@ def workersView(request):
             print("Could not retrieve", id)
         except mturk.exceptions.ServiceFault:
             messages.error(request, "API Service Fault")
-    
-
+    # print(workers_list)  # print check
     if request.method == "POST" or None:
         pass  #TODO add assigning qual to workers functionality
     else:
         return render(request, 'workers/workers.html', {"workers": workers_list})
   
+def workerAssignQualView(request, worker_id):
+    print(worker_id)
+    return redirect('/workers')

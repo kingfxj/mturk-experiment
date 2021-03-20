@@ -16,14 +16,11 @@
             <tr>
                 <td><input class="form-control me-2" id="nickname" type="text" placeholder="Enter nickname" name="nickname" maxlength="100" required></td>
             </tr>
+
             <tr><td>Description (Required):</td></tr>  <!-- Qualification desc -->
             <tr>
                 <td><input class="form-control me-2" id="description" type="text" placeholder="Enter description" name="description" maxlength="2000" required></td>
             </tr>            
-            {% comment %} <tr><td>Comparator (Required):</td></tr>  <!-- Qualification comparator -->
-            <tr>
-                <td><input class="form-control me-2" id="comparator" type="text" name="comparator" maxlength="50" required></td>
-            </tr> {% endcomment %}
             
             <tr><td>Comparator:</td></tr>  <!-- Qualification comparator -->
             <tr>
@@ -46,11 +43,7 @@
             <tr><td>Integer Value:</td></tr>  <!-- Qualification int_value -->
             <tr>
                 <td><input class="form-control me-2" id="int_value" type="number" placeholder="Enter integer value for comparator" name="int_value"></td>
-            </tr>                        
-            {% comment %} <tr><td>Country:</td></tr>  <!-- Qualification country -->
-            <tr>
-                <td><input class="form-control me-2" id="country" type="text" name="country" maxlength="100"></td>
-            </tr>   {% endcomment %}
+            </tr>        
 
             <tr><td>Country:</td></tr>  <!-- Qualification country -->
             <tr>
@@ -63,10 +56,6 @@
                 </select>
             </tr>
 
-            {% comment %} <tr><td>Subdivision:</td></tr>  <!-- Qualification subdivision -->
-            <tr>
-                <td><input class="form-control me-2" id="subdivision" type="text" name="subdivision" maxlength="100"></td>
-            </tr>   {% endcomment %} 
             <tr> 
                 <td><input type="submit" style="float: right;" value="Submit"></td>    <!-- Submit button -->
             </tr>     

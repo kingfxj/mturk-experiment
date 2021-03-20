@@ -40,9 +40,11 @@
             <tr class="table-secondary">
                 {% for item in workers %}
                     <td>{{ item.WorkerId }}</td>
-                    <td>{{ item.HITId }}</td>
+                    <td>{{ item.AssignmentId }}</td>
                     <td>{{ item.AcceptTime }}</td>
                     <td>{{ item.SubmitTime }}</td>
+                    <td><a href="{% url 'workerAssignQualView' item.WorkerId %}"><button type="button" class="btn btn-secondary">Assign Qualifications</button></td>></a>
+
                     </tr>
                 {% endfor %}    
         {% endif %}
