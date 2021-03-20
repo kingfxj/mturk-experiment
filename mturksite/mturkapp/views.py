@@ -60,7 +60,7 @@ def hittypesView(request):
         keyword = request.POST.get('keyword')               # Retrieve query for keyword
         reward = request.POST.get('reward')                 # Retrieve query for reward
         qualifications = request.POST.get('qualifications') # Retrieve query for qualifications
-        batch = request.POST.get('batch')             # Retrieve query for qualifications
+        batch = request.POST.get('batch')                   # Retrieve query for batch
 
 
         # Filter the objects according to the sort
@@ -166,7 +166,7 @@ def hitsView(request):
         hit_id = request.POST.get('hit_id')                             # Retrieve query for hit id
         hittype_id = request.POST.get('hittype_id')                     # Retrieve query for hittype id
         max_assignments = request.POST.get('max_assignments')           # Retrieve query for assignments number
-        lifetime_in_seconds = request.POST.get('lifetime_in_seconds')   # Retrieve query for expiry date
+        lifetime_in_seconds = request.POST.get('lifetime_in_seconds')   # Retrieve query for expiry lifetime
 
         # Filter the objects according to the sort
         if hit_id != '' and hit_id is not None:
@@ -497,8 +497,26 @@ def lobbyView(request):
     :param request
     :return: Lobby view page
     """
-    # all_items = Assignment.objects.all()
-    return render(request, 'lobby/lobby.html')
+    mturk = mturk_client()
+    lobby_list = []
+    hitID_list = []
+    for i in Hit.objects.all():          #retrieve all hit ids
+        hitID_list.append(i.hit_id)
+
+    for id in hitID_list:
+        try:
+            response = mturk.list_assignments_for_hit(HITId=id)
+            lobby_list.append(response['Assignments'][0])
+        except:
+            print("Couldn't find", id)
+    
+    total_users=len(lobby_list)                             # find total number of users in lobby
+    ready_users=0
+    for item in lobby_list:                                 # find number of 'ready' users in lobby
+        if item['AssignmentStatus'] == 'Approved':
+            ready_users += 1
+
+    return render(request, 'lobby/lobby.html', {"lobby": lobby_list,"total_users": total_users, "ready_users": ready_users})
 
 
 def experimentsView(request):
@@ -509,14 +527,14 @@ def experimentsView(request):
     """
     experiment_items = Experiment.objects.all()
     if request.method == "POST":
-        title = request.POST.get('title')             # Retrieve query for experiments id
-        batch_id = request.POST.get('batch_id') 
+        batch_id = request.POST.get('batch_id')         # Retrieve query for batch id 
+        title = request.POST.get('title')               # Retrieve query for experiment title
 
         # Filter the objects according to the sort
-        if title != '' and title is not None:
-            experiment_items = experiment_items.filter(title__icontains=title)
         if batch_id != '' and batch_id is not None:
             experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
+        if title != '' and title is not None:
+            experiment_items = experiment_items.filter(title__icontains=title)
 
     # Return the objects that satisfy all search filter
     return render(request, 'experiments/experiments.html', {"experiment_items": experiment_items})
