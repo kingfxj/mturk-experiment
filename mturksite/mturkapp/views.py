@@ -236,10 +236,14 @@ def qualificationsView(request):
     qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     qual_info = []
 
-    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
-        MustBeRequestable=False,
-        MustBeOwnedByCaller=True
-    )
+    try:
+        qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
+            MustBeRequestable=False,
+            MustBeOwnedByCaller=True)
+    except mturk.exceptions.ServiceFault:
+        print("API Service Fault")
+    except mturk.exceptions.RequestError:
+        print("Unable to get qualification types")
 
     if request.method == "POST":
         for field in qual_fields:
@@ -271,28 +275,28 @@ def addQualificationView(request):
     """
     mturk = mturk_client()
 
-    country_list = []
-    for code, name in list(countries):
+    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']  # init list of qualification fields
+    country_list = []  # init country list
+    for name in list(countries):
         country_list.append(name)
 
-    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
     if request.method == "POST":
         form = QualificationForm(request.POST or None)
-
         if form.is_valid():
-            #sorting data from fields
-            qual_info = []
+            qual_info = []  # init field data list
             for i in qual_fields:
                 qual_info.append(form.cleaned_data[i])
-            
-            print(qual_info)
 
-            #api call to create qualification type
-            response = mturk.create_qualification_type(
-                Name= qual_info[0],
-                Description= qual_info[1],
-                QualificationTypeStatus='Active')
-            print("QUALIFICATION: ", response)
+            try:
+                mturk.create_qualification_type(  # api call to create qualification type
+                    Name= qual_info[0],
+                    Description= qual_info[1],
+                    QualificationTypeStatus='Active'|'Inactive')
+            except mturk.exceptions.ServiceFault:  # error handling for ServiceFault, RequestError
+                print("API Service Fault")
+            except mturk.exceptions.RequestError:
+                print("Failed to create qualification type")
+
             messages.success(request, "Item has been added!")
             return redirect(qualificationsView)
         else:
@@ -304,14 +308,19 @@ def addQualificationView(request):
 
 
 def updateQualificationView(request,List_id):
-
     mturk = mturk_client()
 
-    qualifications = mturk.list_qualification_types(  # api call gets all qualifications created by the admin
-        MustBeRequestable=False,
-        MustBeOwnedByCaller=True,
-    )
-    print(List_id)
+    try: 
+        qualifications = mturk.list_qualification_types(  # api call retrieves all qualifications created by the admin
+            MustBeRequestable=False,
+            MustBeOwnedByCaller=True,)
+    except mturk.exceptions.ServiceFault:  # error handling for ServiceFault, RequestError
+        print("API Service Fault")
+    except mturk.exceptions.RequestError:
+        print("Unable to get qualification types")
+
+    print("LIST ID: ", List_id)
+
     for x in qualifications['QualificationTypes']:
         x['QualificationTypeId'] = List_id
         if x['QualificationTypeStatus'] == 'Inactive':
@@ -553,8 +562,10 @@ def workersView(request):
                 AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
             workers_list.append(response['Assignments'][0])
             # print("RESPONSE: ", response['Assignments'][0])  # print check
-        except:
-            print("Couldn't find", id)
+        except mturk.exceptions.RequestError:  # exception raised if hit id not found
+            print("Request Error for", id)
+        except mturk.exceptions.ServiceFault:
+            print("API Service Fault")
         
     if request.method == "POST" or None:
         pass  #TODO add assigning qual to workers functionality
