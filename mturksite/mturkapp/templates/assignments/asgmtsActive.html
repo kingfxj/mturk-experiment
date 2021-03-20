@@ -14,7 +14,7 @@
 
     <form name="assignment" method="POST">
         {% csrf_token %}
-        <table id="assignment" class="table table-striped table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
+        <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
             <tr>
                 <td>
                     Assignment ID:
@@ -40,7 +40,7 @@
 
             {%  if assignments %}
                 {% for item in assignments %}
-                    <tr class="table-secondary">
+                    <tr class="table-info">
                         <td><input type="checkbox" name="payBonus" value="{{ item.id }}"/></td>
                         <td> {{ item.AssignmentId }} </td>
                         <td> {{ item.WorkerId }} </td>
