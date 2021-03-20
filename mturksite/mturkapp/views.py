@@ -9,10 +9,6 @@ from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 
-@login_required
-def loginView(request):
-    return render(request, 'asgmtsCompleted.html')
-
 def signupView(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -25,9 +21,10 @@ def signupView(request):
             user.is_superuser = True
             user.save()
             login(request, user)
-            return redirect('homeView')
+            return redirect('login')
     else:
         form = SignUpForm()
+        
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -76,13 +73,6 @@ def hittypesView(request):
             hittype_items = hittype_items.filter(batch__icontains=batch)
     # Return the objects that satisfy all search filter
     return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
-
-def Delete(request , List_id):
-    item = Hittype.objects.get(pk = List_id)
-    item.delete()
-    messages.success(request , ('HITType has been Deleted'))
-    return redirect('hittypes')
-
 
 def addHittypeView(request):
     """
@@ -327,6 +317,34 @@ def updateQualificationView(request,List_id):
     return redirect('qualifications')
 
 
+def workersView(request):
+    """
+    Workers view Page
+    :param request
+    :return: Workers view page
+    """
+    mturk = mturk_client()
+    workers_list = []
+    hitID_list = []
+    for i in Hit.objects.all():  #retrieve all hit ids and add it to 
+        hitID_list.append(i.hit_id)
+
+    for id in hitID_list:
+        try:
+            response = mturk.list_assignments_for_hit(
+                HITId=id,
+                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+            workers_list.append(response['Assignments'][0])
+            # print("RESPONSE: ", response['Assignments'][0])  # print check
+        except:
+            print("Couldn't find", id)
+        
+    if request.method == "POST" or None:
+        pass  #TODO add assigning qual to workers functionality
+    else:
+        return render(request, 'workers/workers.html', {"workers": workers_list})
+
+
 def asgmtsActiveView(request):
     """
     View Active assignment
@@ -334,14 +352,31 @@ def asgmtsActiveView(request):
     :return: Active assignment page
     """   
 
+    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    hittype_items = Hittype.objects.all()
+    hittypes_filtered = []
+    for item in hittype_items:
+        if str(item.batch_id) in experimentFilter:
+            hittypes_filtered.append(str(item.hittype_id))
+
+    hit_items = Hit.objects.all()
+    hits_filtered = []
+    for item in hit_items:
+        if str(item.hittype_id) in hittypes_filtered:
+            hits_filtered.append(str(item.hit_id))
+
     mturk = mturk_client()
-    assignments = mturk.list_assignments_for_hit(HITId='3G3AJKPCXLNWBAVG53KG569HGW24YI')['Assignments']
+    assignments = []
+    for hit_id in hits_filtered:
+        for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
+            assignments.append(assignment)
 
     if request.method == "POST":
-        assignmentIdFilter = request.POST.get('assignmentId')             # Retrieve query for Assignment ID
-        workerIdFilter = request.POST.get('workerId')                     # Retrieve query for Worker ID
-        acceptanceTimeFilter = request.POST.get('acceptanceTime')         # Retrieve query for Acceptance Time
-        assignmentStatusFilter = request.POST.get('assignmentStatus')     # Retrieve query for Assignment Status
+        assignmentIdFilter = request.POST.get('assignmentId')   # Retrieve query for Assignment ID
+        workerIdFilter = request.POST.get('workerId')           # Retrieve query for Worker ID
+        acceptTimeFilter = request.POST.get('acceptanceTime')   # Retrieve query for Acceptance Time
+        submitTimeFilter = request.POST.get('submittedTime')    # Retrieve query for Submitted Time
+        statusFilter = request.POST.get('status')               # Retrieve query for Assignment Status
         
         # Filter the objects according to the sort
         if assignmentIdFilter != '' and assignmentIdFilter is not None:
@@ -352,13 +387,17 @@ def asgmtsActiveView(request):
             for assignment in assignments:
                 if  workerIdFilter not in assignment['WorkerId']:
                     assignments.remove(assignment)
-        if acceptanceTimeFilter != '' and acceptanceTimeFilter is not None:
+        if acceptTimeFilter != '' and acceptTimeFilter is not None:
             for assignment in assignments:
-                if acceptanceTimeFilter not in assignment['AcceptTime']:
+                if acceptTimeFilter not in assignment['AcceptTime']:
                     assignments.remove(assignment)
-        if assignmentStatusFilter != '' and assignmentStatusFilter is not None:
+        if submitTimeFilter != '' and submitTimeFilter is not None:
             for assignment in assignments:
-                if assignmentStatusFilter not in assignment['AssignmentStatus']:
+                if submitTimeFilter not in assignment['SubmitTime']:
+                    assignments.remove(assignment)
+        if statusFilter != '' and statusFilter is not None:
+            for assignment in assignments:
+                if statusFilter not in assignment['AssignmentStatus']:
                     assignments.remove(assignment)
 
     # Return the objects that satisfy all search filter
@@ -371,7 +410,7 @@ def asgmtsCompletedView(request):
     :param request
     :return: Completed assignments page
     """   
-    experimentFilter = request.session['experiment']
+    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
     hittype_items = Hittype.objects.all()
     hittypes_filtered = []
     for item in hittype_items:
@@ -428,41 +467,42 @@ def payBonusView(request):
     Pay Bonus
     :param request
     :return:
+    NOT IMPLEMENTED
     """
     # Retrieve the IDs' of the assignment
-    selectPayment = request.session.get('payBonus', None)
-    if not selectPayment:
-        selectPayment = []
+    # selectPayment = request.session.get('payBonus', None)
+    # if not selectPayment:
+    #     selectPayment = []
 
-    all_items = Assignment.objects.filter(id__in=selectPayment)
+    # all_items = Assignment.objects.filter(id__in=selectPayment)
 
-    if request.method == "POST":
-        name = request.POST.get('name')             # Retrieve query for name
-        surname = request.POST.get('surname')       # Retrieve query for surname
-        birthYear = request.POST.get('birthYear')   # Retrieve query for Birth Year
-        birthCity = request.POST.get('birthCity')   # Retrieve query for Birth City
-        active = request.POST.get('active')         # Retrieve query for active
-        # Remove that id from the payment
-        for key in request.POST.keys():
-            if key.startswith('deletePayment'):
-                action = key[14:]
-                selectPayment.remove(action)
-                request.session['payBonus'] = selectPayment
-                all_items = Assignment.objects.filter(id__in=selectPayment)
+    # if request.method == "POST":
+    #     name = request.POST.get('name')             # Retrieve query for name
+    #     surname = request.POST.get('surname')       # Retrieve query for surname
+    #     birthYear = request.POST.get('birthYear')   # Retrieve query for Birth Year
+    #     birthCity = request.POST.get('birthCity')   # Retrieve query for Birth City
+    #     active = request.POST.get('active')         # Retrieve query for active
+    #     # Remove that id from the payment
+    #     for key in request.POST.keys():
+    #         if key.startswith('deletePayment'):
+    #             action = key[14:]
+    #             selectPayment.remove(action)
+    #             request.session['payBonus'] = selectPayment
+    #             all_items = Assignment.objects.filter(id__in=selectPayment)
 
-        # Filter the objects according to the sort
-        if name != '' and name is not None:
-            all_items = all_items.filter(name__icontains=name)
-        if surname != '' and surname is not None:
-            all_items = all_items.filter(surname__icontains=surname)
-        if birthYear != '' and birthYear is not None:
-            all_items = all_items.filter(birthYear__icontains=birthYear)
-        if birthCity != '' and birthCity is not None:
-            all_items = all_items.filter(birthCity__icontains=birthCity)
-        if active != '' and active is not None:
-            all_items = all_items.filter(active__icontains=active)
+    #     # Filter the objects according to the sort
+    #     if name != '' and name is not None:
+    #         all_items = all_items.filter(name__icontains=name)
+    #     if surname != '' and surname is not None:
+    #         all_items = all_items.filter(surname__icontains=surname)
+    #     if birthYear != '' and birthYear is not None:
+    #         all_items = all_items.filter(birthYear__icontains=birthYear)
+    #     if birthCity != '' and birthCity is not None:
+    #         all_items = all_items.filter(birthCity__icontains=birthCity)
+    #     if active != '' and active is not None:
+    #         all_items = all_items.filter(active__icontains=active)
 
-    return render(request, 'assignments/payBonuses.html', {"all_items": all_items})
+    # return render(request, 'assignments/payBonuses.html', {"all_items": all_items})
     
 
 def lobbyView(request):
@@ -550,30 +590,4 @@ def experimentFilterView(request):
         experiment_items = Experiment.objects.all() 
         return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
 
-def workersView(request):
-    """
-    Workers view Page
-    :param request
-    :return: Workers view page
-    """
-    mturk = mturk_client()
-    workers_list = []
-    hitID_list = []
-    for i in Hit.objects.all():  #retrieve all hit ids and add it to 
-        hitID_list.append(i.hit_id)
-
-    for id in hitID_list:
-        try:
-            response = mturk.list_assignments_for_hit(
-                HITId=id,
-                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-            workers_list.append(response['Assignments'][0])
-            # print("RESPONSE: ", response['Assignments'][0])  # print check
-        except:
-            print("Couldn't find", id)
-        
-    if request.method == "POST" or None:
-        pass  #TODO add assigning qual to workers functionality
-    else:
-        return render(request, 'workers/workers.html', {"workers": workers_list})
   
