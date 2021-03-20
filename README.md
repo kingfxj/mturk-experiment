@@ -10,7 +10,14 @@ Then, activate the virtual environment (assuming venv is the name of your virtua
 **Windows:** `./venv/Scripts/activate`<br><br>
 Then, while the venv is active, install dependencies from requirements.txt<br>
 `pip install -r requirements.txt`<br><br>
-After, create `.env` file under `mturksite/mturksite` folder and set the following variables: - AWS_ACCESS_KEY_ID - AWS_SECRET_ACCESS_KEY - AWS_REGION_NAME - AWS_ENDPOINT_URL - HOST
+After, create `.env` file under `mturksite/mturksite` folder and set the following variables:<br>
+
+        - AWS_ACCESS_KEY_ID<br>
+        - AWS_SECRET_ACCESS_KEY<br>
+        - AWS_REGION_NAME<br>
+        - AWS_ENDPOINT_URL<br>
+        - HOST<br>
+
 **_Remember to set your editor/IDE to use this virtual environment and have it activated when necessary while developing_**
 
 # PostgreSQL
