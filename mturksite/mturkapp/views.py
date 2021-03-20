@@ -80,10 +80,10 @@ def hittypesView(request):
     return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
 
 def Delete(request , List_id):
-                item = Hittype.objects.get(pk = List_id)
-                item.delete()
-                messages.success(request , ('HITType has been Deleted'))
-                return redirect('hittypes')
+    item = Hittype.objects.get(pk = List_id)
+    item.delete()
+    messages.success(request , ('HITType has been Deleted'))
+    return redirect('hittypes')
 
 
 def addHittypeView(request):
