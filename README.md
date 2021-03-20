@@ -18,7 +18,7 @@ After, create `.env` file under `mturksite/mturksite` folder and set the followi
         - AWS_ENDPOINT_URL
         - HOST
 
-When that's done, finally run `python manage.py runserver` to start up our web app.<br>
+When that's done, finally run `python manage.py runserver` to start up our web app.<br><br>
 **_Remember to set your editor/IDE to use this virtual environment and have it activated when necessary while developing_**
 
 # PostgreSQL
