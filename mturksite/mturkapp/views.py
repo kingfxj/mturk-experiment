@@ -308,9 +308,9 @@ def addQualificationView(request):
                 messages.success(request, "Item has been added!")
 
             except mturk.exceptions.ServiceFault:  # error handling for ServiceFault, RequestError
-                messages.error(request, "API Service Fault")
+                messages.error(request, "API Service Fault. Please try again later")
             except mturk.exceptions.RequestError:
-                messages.error(request, "Failed to create qualification type")
+                messages.error(request, "Failed to create qualification type. Please try again.")
             except:
                 messages.error(request, "Unexpected Error")
 
