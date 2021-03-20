@@ -244,7 +244,13 @@ def qualificationsView(request):
         messages.error(request, "API Service Fault")
     except mturk.exceptions.RequestError:
         messages.error(request, "Unable to get qualification types")
-    # print(qualifications)
+    
+    # TODO show both active/inactive qual types
+    # print("API: ", qualifications['QualificationTypes'])
+    # qual_objects = Qualification.objects.all()
+    # for item in qual_objects:
+    #     print("OBJECT: ", item)
+
     if request.method == "POST":
         for field in qual_fields:
             qual_info.append(request.POST.get(field))
@@ -595,13 +601,15 @@ def workersView(request):
             response = mturk.list_assignments_for_hit(  # api call to retrieve all assignments based on hit ID
                 HITId=id,
                 AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-            workers_list.append(response['Assignments'][0])
+            for item in response['Assignments']:
+                workers_list.append(item)
             # print("RESPONSE: ", response['Assignments'][0])  # print check
         except mturk.exceptions.RequestError:  # exception raised if hit id not found
-            messages.error(request, "Request Error for", id)
+            print("Could not retrieve", id)
         except mturk.exceptions.ServiceFault:
             messages.error(request, "API Service Fault")
-        
+    
+
     if request.method == "POST" or None:
         pass  #TODO add assigning qual to workers functionality
     else:
