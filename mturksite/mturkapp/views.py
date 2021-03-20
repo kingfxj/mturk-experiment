@@ -241,9 +241,9 @@ def qualificationsView(request):
             MustBeRequestable=False,
             MustBeOwnedByCaller=True)
     except mturk.exceptions.ServiceFault:
-        print("API Service Fault")
+        messages.error(request, "API Service Fault")
     except mturk.exceptions.RequestError:
-        print("Unable to get qualification types")
+        messages.error(request, "Unable to get qualification types")
     # print(qualifications)
     if request.method == "POST":
         for field in qual_fields:
@@ -292,27 +292,29 @@ def addQualificationView(request):
                     Name= qual_info[0],
                     Description= qual_info[1],
                     QualificationTypeStatus='Active')
+
+                new_qualification = Qualification(  # create qualification object and store on db
+                    nickname = response['QualificationType']['Name'],
+                    description = response['QualificationType']['Description'],
+                    QualificationTypeId = response['QualificationType']['QualificationTypeId'],
+                    comparator = qual_info[2],
+                    int_value = qual_info[3],
+                    country = qual_info[4],
+                    subdivision = qual_info[5],
+                    status = response['QualificationType']['QualificationTypeStatus'])
+
+                instance = form.save()
+                new_qualification.pk = instance.pk
+                new_qualification.save()
+                messages.success(request, "Item has been added!")
+
             except mturk.exceptions.ServiceFault:  # error handling for ServiceFault, RequestError
-                print("API Service Fault")
+                messages.error(request, "API Service Fault")
             except mturk.exceptions.RequestError:
-                print("Failed to create qualification type")
+                messages.error(request, "Failed to create qualification type")
+            except:
+                messages.error(request, "Unexpected Error")
 
-
-            # response['QualificationType']['QualificationTypeId']
-            new_qualification = Qualification(
-                response['QualificationType']['Name'],
-                response['QualificationType']['Description'],
-                response['QualificationType']['QualificationTypeId'],
-                qual_fields[2],
-                qual_fields[3],
-                qual_fields[4],
-                qual_fields[5],
-                response['QualificationType']['QualificationTypeStatus'],
-            )
-            instance = form.save()
-            new_qualification.pk = instance.pk
-            new_qualification.save()
-            messages.success(request, "Item has been added!")
             return redirect(qualificationsView)
         else:
             messages.error(request, "Item was not added")
@@ -322,7 +324,7 @@ def addQualificationView(request):
         return render(request, 'qualifications/addQualification.html', context)
 
 
-def updateQualificationView(request,List_id):
+def updateQualificationView(request, List_id):
     mturk = mturk_client()
 
     try: 
@@ -330,9 +332,9 @@ def updateQualificationView(request,List_id):
             MustBeRequestable=False,
             MustBeOwnedByCaller=True,)
     except mturk.exceptions.ServiceFault:  # error handling for ServiceFault, RequestError
-        print("API Service Fault")
+        messages.error(request, "API Service Fault")
     except mturk.exceptions.RequestError:
-        print("Unable to get qualification types")
+        messages.error(request, "Unable to get qualification types")
 
     # print("LIST ID: ", List_id)  # print check
 
@@ -596,9 +598,9 @@ def workersView(request):
             workers_list.append(response['Assignments'][0])
             # print("RESPONSE: ", response['Assignments'][0])  # print check
         except mturk.exceptions.RequestError:  # exception raised if hit id not found
-            print("Request Error for", id)
+            messages.error(request, "Request Error for", id)
         except mturk.exceptions.ServiceFault:
-            print("API Service Fault")
+            messages.error(request, "API Service Fault")
         
     if request.method == "POST" or None:
         pass  #TODO add assigning qual to workers functionality
