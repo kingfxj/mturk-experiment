@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">Workers</h1>
+    <h1 style="text-align: center">Workers</h1>
     {% include 'messages.html' %}
     <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
@@ -15,11 +15,11 @@
                 {% csrf_token %}
                 <td>
                     Worker ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="WorkerID">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="WorkerId">
                 </td>
                 <td>
-                    HIT ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="HITId">
+                    Assignment ID:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="AssignmentId">
                 </td>
                 <td>
                     Accepted Time:
@@ -39,10 +39,10 @@
             <tr class="table-info">
                 {% for item in workers %}
                     <td>{{ item.WorkerId }}</td>
-                    <td>{{ item.HITId }}</td>
+                    <td>{{ item.AssignmentId }}</td>
                     <td>{{ item.AcceptTime }}</td>
                     <td>{{ item.SubmitTime }}</td>
-                    <td><center></center></td>
+                    {% comment %} <td><a href="{% url 'workerAssignQualView' item.WorkerId %}"><button type="button" class="btn btn-secondary">Assign Qualifications</button></td>></a> {% endcomment %}
                     </tr>
                 {% endfor %}    
         {% endif %}
