@@ -8,5 +8,4 @@ def mturk_client():
         region_name = settings.AWS_REGION_NAME,
         endpoint_url = settings.AWS_ENDPOINT_URL
     )
-
     return mturk

@@ -10,7 +10,7 @@
 {% block content %}
     <h1 style="text-align: center">HITTypes</h1>
     {% include 'messages.html' %}
-    <table class="table table-striped table-bordered table-primary" style="text-align: center">
+    <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
             <form class="d-flex" method="POST">
                 {% csrf_token %}
@@ -50,8 +50,8 @@
         </tr>
         {%  if hittype_items %}
             {% for item in hittype_items %}
-                <tr class="table-secondary">
-                    <td><center> <strong>{{ item.batch_title }}</strong> ({{item.batch_id}}) </center></td>
+                <tr class="table-info">
+                    <td><center> <strong>{{ item.batch_title }}</strong><br></br>(ID: {{item.batch_id}}) </center></td>
                     <td><center> {{ item.title }} </center></td>
                     <td><center> {{ item.hittype_id }} </center></td>
                     <td><center> {{ item.description }} </center></td>
@@ -59,12 +59,12 @@
                     <td><center> ${{ item.reward }} </center></td>
                     <td><center> {{ item.qualifications }} </center></td>
                     <td><center><a href="{% url 'Delete'  item.id %}">
-                          <button class="btn btn-link" style="font-size:24px;color:red"><i class="fas fa-trash-alt"></i></button>
-                    </center></td></a>
+                          <button class="btn btn-link" style="font-size:20px;color:red"><i class="fas fa-trash-alt"></i></button>
+                    </a></center></td>
                 </tr>
             {% endfor %}
         {% endif %}
     </table>
-    <a href="{% url 'addHittype' %}"><button type="button" class="btn btn-primary" style="float: right;">New HITType</button></a>
+    <a href="{% url 'addHittype' %}"><button type="button" class="btn btn-info" style="float: right;">New HITType</button></a>
         
 {% endblock %}
