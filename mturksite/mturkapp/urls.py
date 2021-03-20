@@ -18,7 +18,6 @@ from django.urls import path
 
 urlpatterns = [
     path('signup/', views.signupView, name='signup'),
-    path('login/', views.loginView, name="login"),
     path('', views.homeView, name='home'),
     path('hittypes/', views.hittypesView, name="hittypes"),
     path('hittypes/addhittype/', views.addHittypeView, name="addHittype"),
@@ -27,7 +26,7 @@ urlpatterns = [
     path('qualification/', views.qualificationsView, name="qualifications"),
     path('qualification/addQualifications/', views.addQualificationView, name='addQualification'),
     path('qualification/updateQualification/<List_id>' , views.updateQualificationView , name = 'updateQualification'),
-    path('workers/', views.workersView, name="workersView"),
+    path('workers/', views.workersView, name="workers"),
     path('assignments/active/', views.asgmtsActiveView, name='asgmtsActive'),
     path('assignments/completed/', views.asgmtsCompletedView, name='asgmtsCompleted'),
     path('assignments/completed/bonuses/', views.payBonusView, name='payBonus'),
@@ -35,5 +34,4 @@ urlpatterns = [
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
     path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
-    path('Delete/<List_id>' , views.Delete , name = 'Delete'),
 ]
