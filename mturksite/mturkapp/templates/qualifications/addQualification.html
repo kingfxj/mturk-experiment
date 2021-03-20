@@ -12,17 +12,15 @@
     <form form class="d-flex" method="post">
         {% csrf_token %}
         <table class="table table-bordered table-primary">
-            <tr><td>Nickname (Required):</td></tr>  <!-- Qualification nickname -->
+            <tr><td>Nickname (Required):</td></tr>  
             <tr>
                 <td><input class="form-control me-2" id="nickname" type="text" placeholder="Enter nickname" name="nickname" maxlength="100" required></td>
             </tr>
-
-            <tr><td>Description (Required):</td></tr>  <!-- Qualification desc -->
+            <tr><td>Description (Required):</td></tr>  
             <tr>
                 <td><input class="form-control me-2" id="description" type="text" placeholder="Enter description" name="description" maxlength="2000" required></td>
             </tr>            
-            
-            <tr><td>Comparator:</td></tr>  <!-- Qualification comparator -->
+            <tr><td>Comparator:</td></tr>  
             <tr>
                  <td><select name="comparator" id="comparator" class="form-control me-2" type="search" placeholder="Comparator">
                     <option value="" disabled selected hidden>--- Select the Comparator ---</option>
@@ -39,13 +37,11 @@
                 </td>
                 </select>
             </tr>
-
-            <tr><td>Integer Value:</td></tr>  <!-- Qualification int_value -->
+            <tr><td>Integer Value:</td></tr> 
             <tr>
                 <td><input class="form-control me-2" id="int_value" type="number" placeholder="Enter integer value for comparator" name="int_value"></td>
-            </tr>        
-
-            <tr><td>Country:</td></tr>  <!-- Qualification country -->
+            </tr>                        
+            <tr><td>Country:</td></tr>  
             <tr>
                 <td><select name="country" id="country" class="form-control me-2" type="search" placeholder="Country">
                 <option value="" disabled selected hidden>--- Select Country ---</option>
@@ -55,12 +51,10 @@
                 </td>
                 </select>
             </tr>
-
             <tr> 
-                <td><input type="submit" style="float: right;" value="Submit"></td>    <!-- Submit button -->
+                <td><input type="submit" style="float: right;" value="Submit"></td>   
             </tr>     
         </table>
     </form>
     <tr><p><em> Note: Qualifications may take some time to appear!</em></p></tr>
-
 {% endblock %}
