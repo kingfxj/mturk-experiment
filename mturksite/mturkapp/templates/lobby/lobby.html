@@ -28,7 +28,6 @@
         {% endif %}
         currently in lobby.
     </p>
-    <a href="{% url 'lobby' %}"><button type="button" class="btn btn-info" style="float: right;">Trigger Lobby Event</button></a>
     <br></br>
     <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
@@ -58,4 +57,5 @@
             {% endfor %}
         {% endif %}
     </table>
+    <a href="{% url 'lobby' %}"><button type="button" class="btn btn-info" style="float: right;">Trigger Lobby Event</button></a>
 {% endblock %}

@@ -15,10 +15,6 @@
         <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
             <tr>
                 <td>
-                    Select all<br>
-                    <input type="checkbox" name="payBonus" value="all"/>
-                </td>
-                <td>
                     Assignment ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assignmentId">
                 </td>
@@ -46,7 +42,6 @@
             {%  if assignments %}
                 {% for item in assignments %}
                     <tr class="table-info">
-                        <td><input type="checkbox" name="payBonus" value="{{ item.id }}"/></td>
                         <td> {{ item.AssignmentId }} </td>
                         <td> {{ item.WorkerId }} </td>
                         <td> {{ item.AcceptTime }} </td>

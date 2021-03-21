@@ -36,14 +36,15 @@
             </form>
         </tr>
         {%  if workers %}
-            <tr class="table-info">
-                {% for item in workers %}
+            {% for item in workers %}
+                <tr class="table-info">
                     <td>{{ item.WorkerId }}</td>
                     <td>{{ item.AssignmentId }}</td>
                     <td>{{ item.AcceptTime }}</td>
                     <td>{{ item.SubmitTime }}</td>
                     {% comment %} <td><a href="{% url 'workerAssignQualView' item.WorkerId %}"><button type="button" class="btn btn-secondary">Assign Qualifications</button></td>></a> {% endcomment %}
-                    </tr>
-                {% endfor %}    
+                    <td><center></center></td>
+                </tr>
+            {% endfor %}    
         {% endif %}
 {% endblock %}

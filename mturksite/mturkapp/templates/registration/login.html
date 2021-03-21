@@ -1,13 +1,11 @@
 <body style="background-color:rgb(226, 241, 248);">
     <center>
         <h1>Login</h1>
-
         <form method="post">
             {% csrf_token %}
             <center><h3>{{ form.as_p }}</h3></center>
             <center><button type="submit">Login</button></center>
         </form>
-
         <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
     </center>
 </body>
