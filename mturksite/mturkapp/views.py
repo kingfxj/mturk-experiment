@@ -238,16 +238,17 @@ def qualificationsView(request):
     except mturk.exceptions.RequestError:
         messages.error(request, "Unable to get qualification types")
     
-    # TODO show both active/inactive qual types
+    # retreive inactive qual types from db and cross reference with mturk api call (data check)
     qual_objects = Qualification.objects.filter(status='Inactive')
     for item in qual_objects:
-        response = mturk.get_qualification_type(
-            QualificationTypeId=item.QualificationTypeId
-        )
-        # print("OBJECT: ", item.QualificationTypeId , item.status)
+        try:
+            response = mturk.get_qualification_type(
+                QualificationTypeId=item.QualificationTypeId)
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to get qualification types")
         qualifications['QualificationTypes'].append(response['QualificationType'])
-        # print('RES: ', response['QualificationType'])
-    # print("API+DB: ", qualifications['QualificationTypes'])
 
     if request.method == "POST":
         # append selected fields
@@ -329,11 +330,16 @@ def addQualificationView(request):
 # updating qualifications
 def updateQualificationView(request, List_id):
     mturk = mturk_client()
-
     # retrieve the qualification in the database
     db_qual = Qualification.objects.get(QualificationTypeId=List_id)
+
     # cross reference with mturk with an api call (data integrity check)
-    qual = mturk.get_qualification_type(QualificationTypeId=db_qual.QualificationTypeId)
+    try:
+        qual = mturk.get_qualification_type(QualificationTypeId=db_qual.QualificationTypeId)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to update qualification")
 
     # update active/inactive status
     if qual['QualificationType']['QualificationTypeStatus'] == 'Inactive':

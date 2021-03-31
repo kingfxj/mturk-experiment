@@ -43,7 +43,6 @@
                         <td>{{ item.Name }}</td>
                         <td>{{ item.QualificationTypeId }}</td>
                         <td> {{ item.Description }}</td>
-                        {% comment %} <td> {{ item.QualificationTypeStatus }}</td> {% endcomment %}
                         <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-success">Active</button></td></a>
                         <td><center></center></td>
                         </tr>
@@ -52,7 +51,6 @@
                         <td>{{ item.Name }}</td>
                         <td> {{ item.QualificationTypeId }} </td>
                         <td> {{ item.Description }}</td>
-                        {% comment %} <td> {{ item.QualificationTypeStatus }}</td> {% endcomment %}
                         <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-secondary">Inactive</button></td>></a>
                         <td><center></center></td>
                     </tr>
