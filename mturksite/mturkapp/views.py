@@ -238,11 +238,17 @@ def qualificationsView(request):
     except mturk.exceptions.RequestError:
         messages.error(request, "Unable to get qualification types")
     
-    # TODO show both active/inactive qual types
-    # print("API: ", qualifications['QualificationTypes'])
-    # qual_objects = Qualification.objects.all()
-    # for item in qual_objects:
-    #     print("OBJECT: ", item)
+    # retreive inactive qual types from db and cross reference with mturk api call (data check)
+    qual_objects = Qualification.objects.filter(status='Inactive')
+    for item in qual_objects:
+        try:
+            response = mturk.get_qualification_type(
+                QualificationTypeId=item.QualificationTypeId)
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to get qualification types")
+        qualifications['QualificationTypes'].append(response['QualificationType'])
 
     if request.method == "POST":
         # append selected fields
@@ -324,29 +330,45 @@ def addQualificationView(request):
 # updating qualifications
 def updateQualificationView(request, List_id):
     mturk = mturk_client()
-    # api call - retrieves all qualifications created by admin
-    try: 
-        qualifications = mturk.list_qualification_types(  
-            MustBeRequestable=False,
-            MustBeOwnedByCaller=True,)
-    # error handling for ServiceFault, RequestError
-    except mturk.exceptions.ServiceFault:  
+    # retrieve the qualification in the database
+    db_qual = Qualification.objects.get(QualificationTypeId=List_id)
+
+    # cross reference with mturk with an api call (data integrity check)
+    try:
+        qual = mturk.get_qualification_type(QualificationTypeId=db_qual.QualificationTypeId)
+    except mturk.exceptions.ServiceFault:
         messages.error(request, "API Service Fault")
     except mturk.exceptions.RequestError:
-        messages.error(request, "Unable to get qualification types")
+        messages.error(request, "Unable to update qualification")
+
     # update active/inactive status
-    for x in qualifications['QualificationTypes']:
-        x['QualificationTypeId'] = List_id
-        if x['QualificationTypeStatus'] == 'Inactive':
-            up = mturk.update_qualification_type(
-                   QualificationTypeId= List_id,
-                   QualificationTypeStatus='Active'
-                  )
-        else:
-            up = mturk.update_qualification_type(
-                    QualificationTypeId= List_id,
-                    QualificationTypeStatus='Inactive'
-                 )
+    if qual['QualificationType']['QualificationTypeStatus'] == 'Inactive':
+        try:
+            # api call - update qualification type on mturk
+            mturk.update_qualification_type(
+                QualificationTypeId= List_id,
+                QualificationTypeStatus='Active')
+            # database - update qualification status on db
+            db_qual.status = 'Active'
+            db_qual.save()
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to update qualification")
+    else:
+        try:
+            # api call - updates the qualification type
+            mturk.update_qualification_type(
+                QualificationTypeId= List_id,
+                QualificationTypeStatus='Inactive')
+            # database - update qualification status on db
+            db_qual.status = 'Inactive'
+            db_qual.save()
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to update qualification")
+
     messages.success(request, "Item has been Updated!")
     return redirect('qualifications')
 

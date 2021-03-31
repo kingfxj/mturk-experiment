@@ -43,8 +43,7 @@
                         <td>{{ item.Name }}</td>
                         <td>{{ item.QualificationTypeId }}</td>
                         <td> {{ item.Description }}</td>
-                        <td> {{ item.QualificationTypeStatus }}</td>
-                        {% comment %} <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-success">Active</button></td></a> {% endcomment %}
+                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-success">Active</button></td></a>
                         <td><center></center></td>
                         </tr>
                 {% elif item.QualificationTypeStatus == 'Inactive' %}
@@ -52,8 +51,7 @@
                         <td>{{ item.Name }}</td>
                         <td> {{ item.QualificationTypeId }} </td>
                         <td> {{ item.Description }}</td>
-                        <td> {{ item.QualificationTypeStatus }}</td>
-                        {% comment %} <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-secondary">Inactive</button></td>></a> {% endcomment %}
+                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-secondary">Inactive</button></td>></a>
                         <td><center></center></td>
                     </tr>
                 {% endif %}
