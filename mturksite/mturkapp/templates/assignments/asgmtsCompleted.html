@@ -15,8 +15,7 @@
         <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
             <tr>
                 <td>
-                    Select all<br>
-                    <input type="checkbox" name="payBonus" value="all"/>
+                    Select all<br><br><input type="checkbox" value="all"/>
                 </td>
                 <td>
                     Assignment ID:
@@ -46,17 +45,18 @@
             {%  if assignments %}
                 {% for item in assignments %}
                     <tr class="table-info">
-                        <td><input type="checkbox" name="payBonus" value="{{ item.id }}"/></td>
+                        <td><input type="checkbox" name="chosen" value="{{ item.AssignmentId }}"/></td>
                         <td> {{ item.AssignmentId }} </td>
                         <td> {{ item.WorkerId }} </td>
                         <td> {{ item.AcceptTime }} </td>
                         <td> {{ item.SubmitTime }} </td>
                         <td> {{ item.AssignmentStatus }} </td>
-                        <td><center></center></td>
                     </tr>
                 {% endfor %}
             {% endif %}
         </table>
-        <input type="submit" class="btn btn-info" style="float: right;" onclick="{% url 'payBonus' %}" value="Pay Bonus for selected"/>
+        <div class="float-left mr-1"><input type="submit" class="btn btn-success" onclick="{% url 'payBonus' %}" value="Approve Selected Assignments"/></div>
+        <div class="float-left"><input type="submit" class="btn btn-danger" onclick="{% url 'payBonus' %}" value="Reject Selected Assignments"/></div>
+        <div class="float-right"><input type="submit" class="btn btn-warning" onclick="{% url 'payBonus' %}" value="Pay Bonuses for Selected"/></div>
     </form>
 {% endblock %}
