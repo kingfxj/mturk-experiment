@@ -60,6 +60,29 @@
     </table>
     <a href= "{% url 'addQualification' %}"><button type="button" class="btn btn-info" style="float: right;">New Qualification</button></a>
     <p><em> Note: Qualifications may take some time to appear!</em></p>
+    <br></br>
+    <br></br>
+    <ul class="pagination pagination-sm justify-content-center">
+        <div class="btn-group" role="group">
+            {% if qualifications.has_previous %}
+                <a class="btn btn-primary btn-sm" href="?page=1">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ qualifications.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+
+        &emsp;{{ qualifications.number }} of {{ qualifications.paginator.num_pages }}&emsp;
+
+        <div class="btn-group" role="group">
+            {% if qualifications.has_next %}
+                <a class="btn btn-primary btn-sm" href="?page={{ qualifications.next_page_number }}">Next</a>
+                <a class="btn btn-primary btn-sm" href="?page={{ qualifications.paginator.num_pages }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            {% endif %}
+        </div>
+    </ul>
 {% endblock %}
 
 

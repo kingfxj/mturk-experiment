@@ -53,4 +53,27 @@
             {% endif %}
         </table>
     </form>
+    <br></br>
+    <br></br>
+    <ul class="pagination pagination-sm justify-content-center">
+        <div class="btn-group" role="group">
+            {% if assignments.has_previous %}
+                <a class="btn btn-primary btn-sm" href="?page=1">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ assignments.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+
+        &emsp;{{ assignments.number }} of {{ assignments.paginator.num_pages }}&emsp;
+
+        <div class="btn-group" role="group">
+            {% if assignments.has_next %}
+                <a class="btn btn-primary btn-sm" href="?page={{ assignments.next_page_number }}">Next</a>
+                <a class="btn btn-primary btn-sm" href="?page={{ assignments.paginator.num_pages }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            {% endif %}
+        </div>
+    </ul>
 {% endblock %}

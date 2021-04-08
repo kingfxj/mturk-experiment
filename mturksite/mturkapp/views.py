@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
+from django.core.paginator import Paginator
 
 # display signup page
 def signupView(request):
@@ -72,8 +73,12 @@ def hittypesView(request):
             hittype_items = hittype_items.filter(qualifications__icontains=qualifications)
         if batch != '' and batch is not None:
             hittype_items = hittype_items.filter(batch__icontains=batch)
+    # paginate by 5
+    paginator = Paginator(hittype_items, 5)
+    page_number = request.GET.get('page')
+    hittype_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
+    return render(request, 'hittypes/hittypes.html', {"hittypes" : hittype_page})
 
 # display add hittype form page
 def addHittypeView(request):
@@ -169,8 +174,12 @@ def hitsView(request):
             hit_items = hit_items.filter(max_assignments__icontains=max_assignments)
         if lifetime_in_seconds != '' and lifetime_in_seconds is not None:
             hit_items = hit_items.filter(lifetime_in_seconds__icontains=lifetime_in_seconds)
+    # paginate by 10
+    paginator = Paginator(hit_items, 10)
+    page_number = request.GET.get('page')
+    hit_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'hits/hits.html', {"hit_items": hit_items})
+    return render(request, 'hits/hits.html', {"hits": hit_page})
 
 # display add hits form page 
 def addHitView(request):
@@ -267,8 +276,12 @@ def qualificationsView(request):
             qualifications = qualifications.filter(country__icontains=qual_info[4])
         if qual_info[5] != '' and qual_info[5] != None:
             qualifications = qualifications.filter(subdivision__icontains=qual_info[5])
+    # paginate by 10
+    paginator = Paginator(qualifications['QualificationTypes'], 10)
+    page_number = request.GET.get('page')
+    qualification_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'qualifications/qualifications.html', {"qualifications": qualifications['QualificationTypes']})
+    return render(request, 'qualifications/qualifications.html', {"qualifications": qualification_page})
 
 # display add qualifiction form page
 def addQualificationView(request):
@@ -399,7 +412,11 @@ def workersView(request):
             print("Could not retrieve", id)
         except mturk.exceptions.ServiceFault:
             messages.error(request, "API Service Fault")
-    return render(request, 'workers/workers.html', {"workers": workers_list})
+    # paginate by 10
+    paginator = Paginator(workers_list, 10)
+    page_number = request.GET.get('page')
+    worker_page = paginator.get_page(page_number)
+    return render(request, 'workers/workers.html', {"workers": worker_page})
 
 # assign qualifications to worker
 def workerAssignQualView(request, worker_id):
@@ -496,8 +513,12 @@ def asgmtsActiveView(request):
             for assignment in assignments:
                 if statusFilter not in assignment['AssignmentStatus']:
                     assignments.remove(assignment)
+    # paginate by 10
+    paginator = Paginator(assignments, 10)
+    page_number = request.GET.get('page')
+    assignment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'assignments/asgmtsActive.html', {"assignments": assignments})
+    return render(request, 'assignments/asgmtsActive.html', {"assignments": assignment_page})
 
 # display completed assignments table 
 def asgmtsCompletedView(request):
@@ -554,8 +575,12 @@ def asgmtsCompletedView(request):
             for assignment in assignments:
                 if statusFilter not in assignment['AssignmentStatus']:
                     assignments.remove(assignment)
+    # paginate by 10
+    paginator = Paginator(assignments, 10)
+    page_number = request.GET.get('page')
+    assignment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'assignments/asgmtsCompleted.html', {"assignments": assignments})
+    return render(request, 'assignments/asgmtsCompleted.html', {"assignments": assignment_page})
 
 # pay bonuses
 def payBonusView(request):
@@ -624,7 +649,11 @@ def lobbyView(request):
     for item in lobby_list:                                 
         if item['AssignmentStatus'] == 'Approved':
             ready_users += 1
-    return render(request, 'lobby/lobby.html', {"lobby": lobby_list,"total_users": total_users, "ready_users": ready_users})
+    # paginate by 10
+    paginator = Paginator(lobby_list, 10)
+    page_number = request.GET.get('page')
+    lobby_page = paginator.get_page(page_number)
+    return render(request, 'lobby/lobby.html', {"lobby": lobby_page,"total_users": total_users, "ready_users": ready_users})
 
 # display experiments table
 def experimentsView(request):
@@ -644,8 +673,12 @@ def experimentsView(request):
             experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
         if title != '' and title is not None:
             experiment_items = experiment_items.filter(title__icontains=title)
+    # paginate by 10
+    paginator = Paginator(experiment_items, 10)
+    page_number = request.GET.get('page')
+    experiment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'experiments/experiments.html', {"experiment_items": experiment_items})
+    return render(request, 'experiments/experiments.html', {"experiments": experiment_page})
 
 # display add experiment form page
 def addExperimentView(request):
