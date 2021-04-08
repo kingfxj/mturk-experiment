@@ -32,12 +32,12 @@
                 </td>
                 <td>
                     <br>
-                    <input type="submit" value="Search">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </form>
         </tr>
-        {%  if hit_items %}
-            {% for item in hit_items %}
+        {%  if hits %}
+            {% for item in hits %}
                 <tr class="table-info">
                     <td><center> {{ item.hit_id }} </center></td>
                     <td><center> {{ item.hittype_id }}</center></td>
@@ -49,4 +49,27 @@
         {% endif %}
     </table>
     <a href="{% url 'addHit' %}"><button type="button" class="btn btn-info" style="float: right;">New HIT</button></a>
+    <br></br>
+    <br></br>
+    <ul class="pagination pagination-sm justify-content-center">
+        <div class="btn-group" role="group">
+            {% if hits.has_previous %}
+                <a class="btn btn-primary btn-sm" href="?page=1">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ hits.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+
+        &emsp;{{ hits.number }} of {{ hits.paginator.num_pages }}&emsp;
+
+        <div class="btn-group" role="group">
+            {% if hits.has_next %}
+                <a class="btn btn-primary btn-sm" href="?page={{ hits.next_page_number }}">Next</a>
+                <a class="btn btn-primary btn-sm" href="?page={{ hits.paginator.num_pages }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            {% endif %}
+        </div>
+    </ul>
 {% endblock %}

@@ -24,12 +24,12 @@
                 </td>
                 <td>
                     <br>
-                    <input type="submit" value="Search">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </form>
         </tr>
-        {%  if experiment_items %}
-            {% for item in experiment_items %}
+        {%  if experiments %}
+            {% for item in experiments %}
                 <tr class="table-info">
                     <td><center> {{ item.batch_id }} </center></td>
                     <td><center> {{ item.title }} </center></td>
@@ -39,4 +39,27 @@
         {% endif %}
     </table>
     <a href="{% url 'addExperiment' %}"><button type="button" class="btn btn-info" style="float: right;">New Experiment</button></a>
+    <br></br>
+    <br></br>
+    <ul class="pagination pagination-sm justify-content-center">
+        <div class="btn-group" role="group">
+            {% if experiments.has_previous %}
+                <a class="btn btn-primary btn-sm" href="?page=1">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ experiments.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+
+        &emsp;{{ experiments.number }} of {{ experiments.paginator.num_pages }}&emsp;
+
+        <div class="btn-group" role="group">
+            {% if experiments.has_next %}
+                <a class="btn btn-primary btn-sm" href="?page={{ experiments.next_page_number }}">Next</a>
+                <a class="btn btn-primary btn-sm" href="?page={{ experiments.paginator.num_pages }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            {% endif %}
+        </div>
+    </ul>
 {% endblock %}
