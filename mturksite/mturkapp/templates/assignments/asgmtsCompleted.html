@@ -39,7 +39,7 @@
                 </td>
                 <td>
                     <br>
-                    <input type="submit" value="Search">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </tr>
             {%  if assignments %}
@@ -57,7 +57,7 @@
         </table>
         <div class="float-left mr-1"><input type="submit" class="btn btn-success" onclick="{% url 'payBonus' %}" value="Approve Selected Assignments"/></div>
         <div class="float-left"><input type="submit" class="btn btn-danger" onclick="{% url 'payBonus' %}" value="Reject Selected Assignments"/></div>
-        <div class="float-right"><input type="submit" class="btn btn-warning" onclick="{% url 'payBonus' %}" value="Pay Bonuses for Selected"/></div>
+        <div class="float-right"><input type="submit" class="btn btn-info" onclick="{% url 'payBonus' %}" value="Pay Bonuses for Selected"/></div>
     </form>
     <br></br>
     <br></br>

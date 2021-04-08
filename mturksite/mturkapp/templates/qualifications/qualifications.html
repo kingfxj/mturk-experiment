@@ -32,7 +32,7 @@
                 </td>
                 <td>
                     <br>
-                    <input type="submit" value="Search">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </form>
         </tr>
@@ -43,7 +43,7 @@
                         <td>{{ item.Name }}</td>
                         <td>{{ item.QualificationTypeId }}</td>
                         <td> {{ item.Description }}</td>
-                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-success">Active</button></td></a>
+                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-success btn-sm">Active</button></td></a>
                         <td><center></center></td>
                         </tr>
                 {% elif item.QualificationTypeStatus == 'Inactive' %}
@@ -51,7 +51,7 @@
                         <td>{{ item.Name }}</td>
                         <td> {{ item.QualificationTypeId }} </td>
                         <td> {{ item.Description }}</td>
-                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-secondary">Inactive</button></td>></a>
+                        <td><a href="{% url 'updateQualification' item.QualificationTypeId %}"><button type="button" class="btn btn-secondary btn-sm">Inactive</button></td>></a>
                         <td><center></center></td>
                     </tr>
                 {% endif %}
@@ -59,7 +59,7 @@
         {% endif %}
     </table>
     <a href= "{% url 'addQualification' %}"><button type="button" class="btn btn-info" style="float: right;">New Qualification</button></a>
-    <p><em> Note: Qualifications may take some time to appear!</em></p>
+    <p><em><u>Note</u>: Qualifications may take some time to appear!</em></p>
     <br></br>
     <br></br>
     <ul class="pagination pagination-sm justify-content-center">
