@@ -9,6 +9,7 @@ from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 from django.core.paginator import Paginator
+import random
 
 # display signup page
 def signupView(request):
@@ -518,25 +519,35 @@ def asgmtsActiveView(request):
         statusFilter = request.POST.get('status')             
         # filter the objects according to the sort
         if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if assignmentIdFilter not in assignment['AssignmentId']:
-                    assignments.remove(assignment)
+                if assignmentIdFilter.lower() in assignment['AssignmentId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if workerIdFilter != '' and workerIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if  workerIdFilter not in assignment['WorkerId']:
-                    assignments.remove(assignment)
+                if  workerIdFilter.lower() in assignment['WorkerId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if acceptTimeFilter != '' and acceptTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if acceptTimeFilter not in assignment['AcceptTime']:
-                    assignments.remove(assignment)
+                if acceptTimeFilter.lower() in assignment['AcceptTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if submitTimeFilter != '' and submitTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if submitTimeFilter not in assignment['SubmitTime']:
-                    assignments.remove(assignment)
+                if submitTimeFilter.lower() in assignment['SubmitTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if statusFilter != '' and statusFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if statusFilter not in assignment['AssignmentStatus']:
-                    assignments.remove(assignment)
+                if statusFilter.lower() in assignment['AssignmentStatus'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
     # paginate by 10
     paginator = Paginator(assignments, 10)
     page_number = request.GET.get('page')
@@ -571,34 +582,67 @@ def asgmtsCompletedView(request):
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             assignments.append(assignment)
+    # append/create bonus information for assignments
+    for assignment in assignments:
+        bonus = Bonus.objects.filter(assignment_id=assignment['AssignmentId'])
+        if bonus:
+            assignment['Amount'] = bonus[0].amount
+            assignment['BonusStatus'] = bonus[0].status
+        else:
+            amount = round(random.uniform(0.5,5.0),2)
+            bonus_item = Bonus.objects.create(
+                assignment_id=assignment['AssignmentId'], 
+                worker_id=assignment['WorkerId'], 
+                amount=amount, 
+                status='Unpaid'
+            )
+            assignment['Amount'] = bonus_item.amount
+            assignment['BonusStatus'] = bonus_item.status
     # retrieve queries for all assignment fields
     if request.method == "POST":
         assignmentIdFilter = request.POST.get('assignmentId')  
         workerIdFilter = request.POST.get('workerId')          
         acceptTimeFilter = request.POST.get('acceptanceTime')  
         submitTimeFilter = request.POST.get('submittedTime')   
-        statusFilter = request.POST.get('status')              
+        statusFilter = request.POST.get('status')
+        bonusFilter = request.POST.get('bonus')                 
         # filter the objects according to the sort
         if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if assignmentIdFilter not in assignment['AssignmentId']:
-                    assignments.remove(assignment)
+                if assignmentIdFilter.lower() in assignment['AssignmentId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if workerIdFilter != '' and workerIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if  workerIdFilter not in assignment['WorkerId']:
-                    assignments.remove(assignment)
+                if  workerIdFilter.lower() in assignment['WorkerId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if acceptTimeFilter != '' and acceptTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if acceptTimeFilter not in assignment['AcceptTime']:
-                    assignments.remove(assignment)
+                if acceptTimeFilter.lower() in assignment['AcceptTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if submitTimeFilter != '' and submitTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if submitTimeFilter not in assignment['SubmitTime']:
-                    assignments.remove(assignment)
+                if submitTimeFilter.lower() in assignment['SubmitTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if statusFilter != '' and statusFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if statusFilter not in assignment['AssignmentStatus']:
-                    assignments.remove(assignment)
+                if statusFilter.lower() in assignment['AssignmentStatus'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
+        if bonusFilter != '' and bonusFilter is not None:
+            temp_assignments = []
+            for assignment in assignments:
+                if bonusFilter.lower() in assignment['BonusStatus'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
     # paginate by 10
     paginator = Paginator(assignments, 10)
     page_number = request.GET.get('page')
