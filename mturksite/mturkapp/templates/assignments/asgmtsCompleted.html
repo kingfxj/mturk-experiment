@@ -56,7 +56,7 @@
                         <td> {{ item.AcceptTime }} </td>
                         <td> {{ item.SubmitTime }} </td>
                         <td> {{ item.AssignmentStatus }} </td>
-                        <td> ${{ item.Amount }} ({% if item.Status == 'Paid' %}<i style="color: green">{{item.Status}}</i>{% else %}<i style="color: red">{{item.Status}}</i>{% endif %})</td>
+                        <td> ${{ item.Amount }} ({% if item.BonusStatus == 'Paid' %}<i style="color: green">{{item.BonusStatus}}</i>{% else %}<i style="color: red">{{item.BonusStatus}}</i>{% endif %})</td>
                     </tr>
                 {% endfor %}
             {% endif %}
