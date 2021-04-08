@@ -52,6 +52,15 @@ def hittypesView(request):
     """
     # retrieve all hittype objects
     hittype_items = Hittype.objects.all().order_by('-id')
+    # filter by experiment
+    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    print(experimentFilter)
+    # select all hittype objects accordingly
+    hittypes_filtered = []
+    for item in hittype_items:
+        if str(item.batch_id) in experimentFilter:
+            hittypes_filtered.append(item)
+    hittype_items = hittypes_filtered
     # retrieve queries for all hittype fields
     if request.method == "POST":
         title = request.POST.get('title')               
@@ -160,6 +169,21 @@ def hitsView(request):
     """
     # retrieve all hit objects and sort
     hit_items = Hit.objects.all().order_by('-id')
+    # filter by experiment
+    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    # select all hittype objects accordingly
+    hittype_items = Hittype.objects.all()
+    hittypes_filtered = []
+    for item in hittype_items:
+        if str(item.batch_id) in experimentFilter:
+            hittypes_filtered.append(str(item.hittype_id))
+    # select all hit objects accordingly
+    hit_items = Hit.objects.all()
+    hits_filtered = []
+    for item in hit_items:
+        if str(item.hittype_id) in hittypes_filtered:
+            hits_filtered.append(item)
+    hit_items = hits_filtered
     # retrieve queries for all hit fields
     if request.method == "POST":
         hit_id = request.POST.get('hit_id')                          
