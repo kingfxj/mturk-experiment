@@ -9,6 +9,7 @@ from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 from django.core.paginator import Paginator
+import random
 
 # display signup page
 def signupView(request):
@@ -547,6 +548,22 @@ def asgmtsCompletedView(request):
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             assignments.append(assignment)
+    # append/create bonus information for assignments
+    for assignment in assignments:
+        bonus = Bonus.objects.filter(assignment_id=assignment['AssignmentId'])
+        if bonus:
+            assignment['Amount'] = bonus[0].amount
+            assignment['Status'] = bonus[0].status
+        else:
+            amount = round(random.uniform(0.5,5.0),2)
+            bonus_item = Bonus.objects.create(
+                assignment_id=assignment['AssignmentId'], 
+                worker_id=assignment['WorkerId'], 
+                amount=amount, 
+                status='Unpaid'
+            )
+            assignment['Amount'] = bonus_item.amount
+            assignment['Status'] = bonus_item.status
     # retrieve queries for all assignment fields
     if request.method == "POST":
         assignmentIdFilter = request.POST.get('assignmentId')  
