@@ -53,7 +53,8 @@ class AssignQualification(models.Model):
     worker_id = models.CharField(max_length=100)
     qualifications = models.CharField(max_length=100)
 
-class Bonuses(models.Model):
+class Bonus(models.Model):
     assignment_id = models.CharField(max_length=100)
     worker_id = models.CharField(max_length=100)
-    amount = models.CharField(max_length=10)
+    amount = models.FloatField()
+    status = models.CharField(max_length=25)
