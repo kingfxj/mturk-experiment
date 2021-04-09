@@ -60,9 +60,9 @@
                 <a class="btn btn-primary btn-sm" href="?page={{ hits.previous_page_number }}">Previous</a>
             {% endif %}
         </div>
-
-        &emsp;{{ hits.number }} of {{ hits.paginator.num_pages }}&emsp;
-
+        <div style="font-size: 16px; margin-top: auto; margin-bottom: auto;">
+            &emsp;{{ hits.number }} of {{ hits.paginator.num_pages }}&emsp;
+        </div>
         <div class="btn-group" role="group">
             {% if hits.has_next %}
                 <a class="btn btn-primary btn-sm" href="?page={{ hits.next_page_number }}">Next</a>

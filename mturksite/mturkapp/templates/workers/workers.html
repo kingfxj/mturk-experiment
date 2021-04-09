@@ -59,9 +59,9 @@
                 <a class="btn btn-primary btn-sm" href="?page={{ workers.previous_page_number }}">Previous</a>
             {% endif %}
         </div>
-
-        &emsp;{{ workers.number }} of {{ workers.paginator.num_pages }}&emsp;
-
+        <div style="font-size: 16px; margin-top: auto; margin-bottom: auto;">
+            &emsp;{{ workers.number }} of {{ workers.paginator.num_pages }}&emsp;
+        </div>
         <div class="btn-group" role="group">
             {% if workers.has_next %}
                 <a class="btn btn-primary btn-sm" href="?page={{ workers.next_page_number }}">Next</a>

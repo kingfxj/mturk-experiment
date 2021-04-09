@@ -50,9 +50,9 @@
                 <a class="btn btn-primary btn-sm" href="?page={{ experiments.previous_page_number }}">Previous</a>
             {% endif %}
         </div>
-
-        &emsp;{{ experiments.number }} of {{ experiments.paginator.num_pages }}&emsp;
-
+        <div style="font-size: 16px; margin-top: auto; margin-bottom: auto;">
+            &emsp;{{ experiments.number }} of {{ experiments.paginator.num_pages }}&emsp;
+        </div>
         <div class="btn-group" role="group">
             {% if experiments.has_next %}
                 <a class="btn btn-primary btn-sm" href="?page={{ experiments.next_page_number }}">Next</a>

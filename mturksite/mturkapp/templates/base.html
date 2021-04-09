@@ -73,13 +73,16 @@
                     </ul>
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
                         <li class="text-right text-info">
-                            <a class="nav-link active text-info" href="{% url 'experimentFilter' %}">Current Experiment filter &nbsp;=</a>
+                            <a class="nav-link active text-info" href="{% url 'experimentFilter' %}">Current Experiment filter &nbsp;&nbsp;=</a>
                         </li>
                         <li>
                             {% if request.session.experiment != None %}
-                                <span class="nav-link active text-success"><strong>{{ request.session.experiment }}</strong></span>
+                                <span class="nav-link active text-info"><strong>{{ request.session.experiment }}</strong></span>
                             {% else %}
-                                <span class="navbar-brand mb-0 h1" style="color: red"><strong>None Selected *</strong></span>
+                                <span class="navbar-brand mb-0 h1" style="color: red"><strong>&nbsp;&nbsp;None Selected</strong></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red" class="bi bi-exclamation-circle-fill" viewBox="0 0 20 20">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
                             {% endif %}
                         </li>
                     </ul>

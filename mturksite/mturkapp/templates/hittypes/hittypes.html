@@ -75,9 +75,9 @@
                 <a class="btn btn-primary btn-sm" href="?page={{ hittypes.previous_page_number }}">Previous</a>
             {% endif %}
         </div>
-
-        &emsp;{{ hittypes.number }} of {{ hittypes.paginator.num_pages }}&emsp;
-
+        <div style="font-size: 16px; margin-top: auto; margin-bottom: auto;">
+            &emsp;{{ hittypes.number }} of {{ hittypes.paginator.num_pages }}&emsp;
+        </div>
         <div class="btn-group" role="group">
             {% if hittypes.has_next %}
                 <a class="btn btn-primary btn-sm" href="?page={{ hittypes.next_page_number }}">Next</a>
