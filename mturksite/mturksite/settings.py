@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_countries',
     'django_extensions',
     'mturkapp',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mturksite.wsgi.application'
+ASGI_APPLICATION = 'mturksite.asgi.application'
 
 
 # Database
@@ -95,6 +97,14 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND":"channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost" , 6379)],
+        },
+    },
+}
 
 # AWS Connection Information
 # https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.views.decorators.clickjacking import xframe_options_exempt
 from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
@@ -783,3 +784,46 @@ def experimentFilterView(request):
     else:   
         experiment_items = Experiment.objects.all() 
         return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
+
+
+@xframe_options_exempt
+def ticView(request , hit_id):
+    player = request.GET.get ('worker_id')
+    number = AssignStatModel.objects.latest('worker_id')
+    name =""
+    if number == player:
+        name = 'X'
+    else:
+        name ='O'
+    context = {"player": player , "hit_id":hit_id,"name":name}
+    return render(request, 'games/tic.html',context)
+
+
+def  please(request):
+    hit_id = request.GET.get('hitId')
+    worker_id = request.GET.get('workerId')
+    assign_id = request.GET.get('assignmentId')
+    if assign_id:
+        assignment = AssignStatModel.objects.create(assign_id=assign_id, hit_id=hit_id, worker_id=worker_id)
+        assign = AssignStatModel.objects.filter(hit_id= hit_id)
+        duplicates = AssignStatModel.objects.values('worker_id')
+        duplicates = duplicates.order_by()
+        duplicates = duplicates.annotate(
+            min_id=models.Min("id"), count_id=models.Count("id")
+        )
+        duplicates = duplicates.filter(count_id__gt=1)
+        for duplicate in duplicates:
+            to_delete = AssignStatModel.objects.filter(worker_id=worker_id)
+            to_delete = to_delete.exclude(id=duplicate["min_id"])
+            to_delete.delete()
+
+        if (assign.count() == 2):
+           
+            player = worker_id
+            return redirect( '/tic/' + hit_id + '?worker_id=' + player)
+        else:
+            return render(request, 'games/please.html',{})
+
+    else:
+        messages.error(request,"Invalid Assignment ID")
+        return render(request, 'games/please.html',{})

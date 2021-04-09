@@ -35,4 +35,6 @@ urlpatterns = [
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
     path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
+    path('please/', views.please, name='please'),
+    path('tic/<hit_id>', views.ticView, name='tic'),
 ]

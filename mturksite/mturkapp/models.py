@@ -58,3 +58,12 @@ class Bonus(models.Model):
     worker_id = models.CharField(max_length=100)
     amount = models.FloatField()
     status = models.CharField(max_length=25)
+
+class AssignStatModel(models.Model):   
+    assign_id = models.CharField(max_length=100, blank=True)
+    hit_id = models.CharField(max_length=100, blank=True)
+    worker_id = models.CharField(max_length=100, blank=True)
+    
+    class Meta:
+        # Remote database name
+        db_table = "games_assignstatmodel"
