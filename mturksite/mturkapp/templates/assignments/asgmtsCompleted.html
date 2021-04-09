@@ -16,7 +16,7 @@
         <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align:center; vertical-align:middle; white-space:nowrap;">
             <tr>
                 <td>
-                    Select all<br><br><input type="checkbox" value="all"/>
+                    Select all<br><br><input type="checkbox" onClick="toggle(this)" value="all"/>
                 </td>
                 <td>
                     Assignment ID:
@@ -90,4 +90,12 @@
             {% endif %}
         </div>
     </ul>
+
+<script language="JavaScript">
+    function toggle(source) {
+        checkboxes = document.getElementsByName('chosen_assignments');
+        for(var i in checkboxes)
+            checkboxes[i].checked = source.checked;
+    }
+</script>
 {% endblock %}
