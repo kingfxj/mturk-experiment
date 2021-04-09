@@ -789,22 +789,31 @@ def experimentFilterView(request):
 @xframe_options_exempt
 def ticView(request , hit_id):
     player = request.GET.get ('worker_id')
-    number = AssignStatModel.objects.latest('worker_id')
+    number = AssignStatModel.objects.filter(worker_id = player)
     name =""
-    if number == player:
-        name = 'X'
-    else:
-        name ='O'
+    for x in number:
+        if x.flag == 1:
+            name = 'X'
+        else:
+            name ='O'
+
     context = {"player": player , "hit_id":hit_id,"name":name}
     return render(request, 'games/tic.html',context)
 
+def deleteassign(request , worker_id):
+    item = AssignStatModel.objects.get(worker_id = worker_id)
+    print(item)
+    item.delete()
+    return redirect('../')
 
+#@xframe_options_exempt
 def  please(request):
     hit_id = request.GET.get('hitId')
     worker_id = request.GET.get('workerId')
     assign_id = request.GET.get('assignmentId')
+    flag = 0
     if assign_id:
-        assignment = AssignStatModel.objects.create(assign_id=assign_id, hit_id=hit_id, worker_id=worker_id)
+        assignment = AssignStatModel.objects.create(assign_id=assign_id, hit_id=hit_id, worker_id=worker_id,flag = flag)
         assign = AssignStatModel.objects.filter(hit_id= hit_id)
         duplicates = AssignStatModel.objects.values('worker_id')
         duplicates = duplicates.order_by()
@@ -818,8 +827,14 @@ def  please(request):
             to_delete.delete()
 
         if (assign.count() == 2):
-           
+            
             player = worker_id
+            first_assign = AssignStatModel.objects.filter(hit_id=hit_id).first()
+            first_assign.flag =1
+            first_assign.save()
+            
+            #first_assign.save()
+
             return redirect( '/tic/' + hit_id + '?worker_id=' + player)
         else:
             return render(request, 'games/please.html',{})

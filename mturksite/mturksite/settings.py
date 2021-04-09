@@ -33,7 +33,7 @@ SECRET_KEY = 'h=m$mqzkwwi#atoz3hjo2%ala9d9qs4&wl03j@(pdfg(%3e2wv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'mturkapp',
     'channels',
+    'sslserver',
 ]
 
 MIDDLEWARE = [

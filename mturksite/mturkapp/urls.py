@@ -15,6 +15,7 @@ Including another URLconf
 """
 from . import views
 from django.urls import path
+from js_urls.views import JsUrlsView
 
 urlpatterns = [
     path('signup/', views.signupView, name='signup'),
@@ -37,4 +38,5 @@ urlpatterns = [
     path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
     path('please/', views.please, name='please'),
     path('tic/<hit_id>', views.ticView, name='tic'),
+    path('deleteassign/<worker_id>', views.deleteassign , name= 'deleteassign')
 ]
