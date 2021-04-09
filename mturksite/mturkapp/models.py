@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 class Qualification(models.Model):   
     nickname = models.CharField(max_length=100)
     description = models.CharField(max_length=2000, blank=True, null=False)
-    QualificationTypeId = models.CharField(max_length=255)
+    qualificationTypeId = models.CharField(max_length=255)
     comparator = models.CharField(max_length=50, blank=True)
     int_value = models.IntegerField(blank=True, null=True )
     country =  models.CharField(max_length=100, blank=True, null=True)
@@ -52,3 +52,9 @@ class Experiment(models.Model):
 class AssignQualification(models.Model):
     worker_id = models.CharField(max_length=100)
     qualifications = models.CharField(max_length=100)
+
+class Bonus(models.Model):
+    assignment_id = models.CharField(max_length=100)
+    worker_id = models.CharField(max_length=100)
+    amount = models.FloatField()
+    status = models.CharField(max_length=25)

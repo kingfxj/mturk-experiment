@@ -8,6 +8,8 @@ from django.shortcuts import redirect, render
 from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
+from django.core.paginator import Paginator
+import random
 
 # display signup page
 def signupView(request):
@@ -50,6 +52,15 @@ def hittypesView(request):
     """
     # retrieve all hittype objects
     hittype_items = Hittype.objects.all().order_by('-id')
+    # filter by experiment
+    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    print(experimentFilter)
+    # select all hittype objects accordingly
+    hittypes_filtered = []
+    for item in hittype_items:
+        if str(item.batch_id) in experimentFilter:
+            hittypes_filtered.append(item)
+    hittype_items = hittypes_filtered
     # retrieve queries for all hittype fields
     if request.method == "POST":
         title = request.POST.get('title')               
@@ -72,8 +83,12 @@ def hittypesView(request):
             hittype_items = hittype_items.filter(qualifications__icontains=qualifications)
         if batch != '' and batch is not None:
             hittype_items = hittype_items.filter(batch__icontains=batch)
+    # paginate by 5
+    paginator = Paginator(hittype_items, 5)
+    page_number = request.GET.get('page')
+    hittype_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'hittypes/hittypes.html', {"hittype_items": hittype_items})
+    return render(request, 'hittypes/hittypes.html', {"hittypes" : hittype_page})
 
 # display add hittype form page
 def addHittypeView(request):
@@ -154,6 +169,21 @@ def hitsView(request):
     """
     # retrieve all hit objects and sort
     hit_items = Hit.objects.all().order_by('-id')
+    # filter by experiment
+    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    # select all hittype objects accordingly
+    hittype_items = Hittype.objects.all()
+    hittypes_filtered = []
+    for item in hittype_items:
+        if str(item.batch_id) in experimentFilter:
+            hittypes_filtered.append(str(item.hittype_id))
+    # select all hit objects accordingly
+    hit_items = Hit.objects.all()
+    hits_filtered = []
+    for item in hit_items:
+        if str(item.hittype_id) in hittypes_filtered:
+            hits_filtered.append(item)
+    hit_items = hits_filtered
     # retrieve queries for all hit fields
     if request.method == "POST":
         hit_id = request.POST.get('hit_id')                          
@@ -169,8 +199,12 @@ def hitsView(request):
             hit_items = hit_items.filter(max_assignments__icontains=max_assignments)
         if lifetime_in_seconds != '' and lifetime_in_seconds is not None:
             hit_items = hit_items.filter(lifetime_in_seconds__icontains=lifetime_in_seconds)
+    # paginate by 10
+    paginator = Paginator(hit_items, 10)
+    page_number = request.GET.get('page')
+    hit_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'hits/hits.html', {"hit_items": hit_items})
+    return render(request, 'hits/hits.html', {"hits": hit_page})
 
 # display add hits form page 
 def addHitView(request):
@@ -268,8 +302,12 @@ def qualificationsView(request):
             qualifications = qualifications.filter(country__icontains=qual_info[4])
         if qual_info[5] != '' and qual_info[5] != None:
             qualifications = qualifications.filter(subdivision__icontains=qual_info[5])
+    # paginate by 10
+    paginator = Paginator(qualifications['QualificationTypes'], 10)
+    page_number = request.GET.get('page')
+    qualification_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'qualifications/qualifications.html', {"qualifications": qualifications['QualificationTypes']})
+    return render(request, 'qualifications/qualifications.html', {"qualifications": qualification_page})
 
 # display add qualifiction form page
 def addQualificationView(request):
@@ -400,7 +438,11 @@ def workersView(request):
             print("Could not retrieve", id)
         except mturk.exceptions.ServiceFault:
             messages.error(request, "API Service Fault")
-    return render(request, 'workers/workers.html', {"workers": workers_list})
+    # paginate by 10
+    paginator = Paginator(workers_list, 10)
+    page_number = request.GET.get('page')
+    worker_page = paginator.get_page(page_number)
+    return render(request, 'workers/workers.html', {"workers": worker_page})
 
 # assign qualifications to worker
 def workerAssignQualView(request, worker_id):
@@ -478,27 +520,41 @@ def asgmtsActiveView(request):
         statusFilter = request.POST.get('status')             
         # filter the objects according to the sort
         if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if assignmentIdFilter not in assignment['AssignmentId']:
-                    assignments.remove(assignment)
+                if assignmentIdFilter.lower() in assignment['AssignmentId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if workerIdFilter != '' and workerIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if  workerIdFilter not in assignment['WorkerId']:
-                    assignments.remove(assignment)
+                if  workerIdFilter.lower() in assignment['WorkerId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if acceptTimeFilter != '' and acceptTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if acceptTimeFilter not in assignment['AcceptTime']:
-                    assignments.remove(assignment)
+                if acceptTimeFilter.lower() in assignment['AcceptTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if submitTimeFilter != '' and submitTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if submitTimeFilter not in assignment['SubmitTime']:
-                    assignments.remove(assignment)
+                if submitTimeFilter.lower() in assignment['SubmitTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if statusFilter != '' and statusFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if statusFilter not in assignment['AssignmentStatus']:
-                    assignments.remove(assignment)
+                if statusFilter.lower() in assignment['AssignmentStatus'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
+    # paginate by 10
+    paginator = Paginator(assignments, 10)
+    page_number = request.GET.get('page')
+    assignment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'assignments/asgmtsActive.html', {"assignments": assignments})
+    return render(request, 'assignments/asgmtsActive.html', {"assignments": assignment_page})
 
 # display completed assignments table 
 def asgmtsCompletedView(request):
@@ -527,36 +583,73 @@ def asgmtsCompletedView(request):
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             assignments.append(assignment)
+    # append/create bonus information for assignments
+    for assignment in assignments:
+        bonus = Bonus.objects.filter(assignment_id=assignment['AssignmentId'])
+        if bonus:
+            assignment['Amount'] = bonus[0].amount
+            assignment['BonusStatus'] = bonus[0].status
+        else:
+            amount = round(random.uniform(0.5,5.0),2)
+            bonus_item = Bonus.objects.create(
+                assignment_id=assignment['AssignmentId'], 
+                worker_id=assignment['WorkerId'], 
+                amount=amount, 
+                status='Unpaid'
+            )
+            assignment['Amount'] = bonus_item.amount
+            assignment['BonusStatus'] = bonus_item.status
     # retrieve queries for all assignment fields
     if request.method == "POST":
         assignmentIdFilter = request.POST.get('assignmentId')  
         workerIdFilter = request.POST.get('workerId')          
         acceptTimeFilter = request.POST.get('acceptanceTime')  
         submitTimeFilter = request.POST.get('submittedTime')   
-        statusFilter = request.POST.get('status')              
+        statusFilter = request.POST.get('status')
+        bonusFilter = request.POST.get('bonus')                 
         # filter the objects according to the sort
         if assignmentIdFilter != '' and assignmentIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if assignmentIdFilter not in assignment['AssignmentId']:
-                    assignments.remove(assignment)
+                if assignmentIdFilter.lower() in assignment['AssignmentId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if workerIdFilter != '' and workerIdFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if  workerIdFilter not in assignment['WorkerId']:
-                    assignments.remove(assignment)
+                if  workerIdFilter.lower() in assignment['WorkerId'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if acceptTimeFilter != '' and acceptTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if acceptTimeFilter not in assignment['AcceptTime']:
-                    assignments.remove(assignment)
+                if acceptTimeFilter.lower() in assignment['AcceptTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if submitTimeFilter != '' and submitTimeFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if submitTimeFilter not in assignment['SubmitTime']:
-                    assignments.remove(assignment)
+                if submitTimeFilter.lower() in assignment['SubmitTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
         if statusFilter != '' and statusFilter is not None:
+            temp_assignments = []
             for assignment in assignments:
-                if statusFilter not in assignment['AssignmentStatus']:
-                    assignments.remove(assignment)
+                if statusFilter.lower() in assignment['AssignmentStatus'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
+        if bonusFilter != '' and bonusFilter is not None:
+            temp_assignments = []
+            for assignment in assignments:
+                if bonusFilter.lower() in assignment['BonusStatus'].lower():
+                    temp_assignments.append(assignment)
+            assignments = temp_assignments
+    # paginate by 10
+    paginator = Paginator(assignments, 10)
+    page_number = request.GET.get('page')
+    assignment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'assignments/asgmtsCompleted.html', {"assignments": assignments})
+    return render(request, 'assignments/asgmtsCompleted.html', {"assignments": assignment_page})
 
 # pay bonuses
 def payBonusView(request):
@@ -625,7 +718,11 @@ def lobbyView(request):
     for item in lobby_list:                                 
         if item['AssignmentStatus'] == 'Approved':
             ready_users += 1
-    return render(request, 'lobby/lobby.html', {"lobby": lobby_list,"total_users": total_users, "ready_users": ready_users})
+    # paginate by 10
+    paginator = Paginator(lobby_list, 10)
+    page_number = request.GET.get('page')
+    lobby_page = paginator.get_page(page_number)
+    return render(request, 'lobby/lobby.html', {"lobby": lobby_page,"total_users": total_users, "ready_users": ready_users})
 
 # display experiments table
 def experimentsView(request):
@@ -645,8 +742,12 @@ def experimentsView(request):
             experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
         if title != '' and title is not None:
             experiment_items = experiment_items.filter(title__icontains=title)
+    # paginate by 10
+    paginator = Paginator(experiment_items, 10)
+    page_number = request.GET.get('page')
+    experiment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'experiments/experiments.html', {"experiment_items": experiment_items})
+    return render(request, 'experiments/experiments.html', {"experiments": experiment_page})
 
 # display add experiment form page
 def addExperimentView(request):

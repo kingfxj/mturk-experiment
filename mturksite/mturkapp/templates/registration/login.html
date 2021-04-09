@@ -1,11 +1,50 @@
-<body style="background-color:rgb(226, 241, 248);">
-    <center>
-        <h1>Login</h1>
-        <form method="post">
-            {% csrf_token %}
-            <center><h3>{{ form.as_p }}</h3></center>
-            <center><button type="submit">Login</button></center>
-        </form>
-        <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
-    </center>
-</body>
+{% load static %}
+
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/05e688d0b5.js" crossorigin="anonymous"></script>
+
+        <!-- JS, Popper.js, and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+        <style>
+            h1 {
+              text-align: center;
+              padding-bottom: 50px;
+            }
+            h5 {
+                vertical-align: middle;
+                padding-top: 6px;
+            }
+        </style>
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+    </head> 
+
+    <body style="background-color:rgb(226, 241, 248);">
+        <center>
+            <svg xmlns="http://www.w3.org/2000/svg" width="150" height="250" fill="teal" class="bi bi-person-square" viewBox="0 0 16 16">
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/>
+            </svg>
+            <form method="post">
+                {% csrf_token %}
+                <table>{{ form.as_table }}</table>
+                <br>
+                <button class="btn btn-info btn-lg" type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a class="btn btn-success btn-sm" href="{% url 'signup' %}" role="button">Sign Up!</a></p>
+        </center>
+    </body>

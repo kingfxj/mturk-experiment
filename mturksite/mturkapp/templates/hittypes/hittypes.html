@@ -10,7 +10,7 @@
 {% block content %}
     <h1 style="text-align: center">HITTypes</h1>
     {% include 'messages.html' %}
-    <table class="table table-hover table-bordered table-primary" style="text-align: center">
+    <table class="table table-hover table-bordered table-primary" style="text-align:center">
         <tr>
             <form class="d-flex" method="POST">
                 {% csrf_token %}
@@ -44,12 +44,12 @@
                 </td>
                 <td>
                     <br>
-                    <input type="submit" value="Search">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </form>
         </tr>
-        {%  if hittype_items %}
-            {% for item in hittype_items %}
+        {%  if hittypes %}
+            {% for item in hittypes %}
                 <tr class="table-info">
                     <td><center> <strong>{{ item.batch_title }}</strong><br></br>(ID: {{item.batch_id}}) </center></td>
                     <td><center> {{ item.title }} </center></td>
@@ -64,4 +64,27 @@
         {% endif %}
     </table>
     <a href="{% url 'addHittype' %}"><button type="button" class="btn btn-info" style="float: right;">New HITType</button></a>
+    <br></br>
+    <br></br>
+    <ul class="pagination pagination-sm justify-content-center">
+        <div class="btn-group" role="group">
+            {% if hittypes.has_previous %}
+                <a class="btn btn-primary btn-sm" href="?page=1">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ hittypes.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+        <div style="font-size: 16px; margin-top: auto; margin-bottom: auto;">
+            &emsp;{{ hittypes.number }} of {{ hittypes.paginator.num_pages }}&emsp;
+        </div>
+        <div class="btn-group" role="group">
+            {% if hittypes.has_next %}
+                <a class="btn btn-primary btn-sm" href="?page={{ hittypes.next_page_number }}">Next</a>
+                <a class="btn btn-primary btn-sm" href="?page={{ hittypes.paginator.num_pages }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            {% endif %}
+        </div>
+    </ul>
 {% endblock %}

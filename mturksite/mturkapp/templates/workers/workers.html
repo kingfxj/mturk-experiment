@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <br>
-                    <input type="submit" value="Search">
+                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </form>
         </tr>
@@ -47,4 +47,28 @@
                 </tr>
             {% endfor %}    
         {% endif %}
+    </table>
+    <br></br>
+    <br></br>
+    <ul class="pagination pagination-sm justify-content-center">
+        <div class="btn-group" role="group">
+            {% if workers.has_previous %}
+                <a class="btn btn-primary btn-sm" href="?page=1">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ workers.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+        <div style="font-size: 16px; margin-top: auto; margin-bottom: auto;">
+            &emsp;{{ workers.number }} of {{ workers.paginator.num_pages }}&emsp;
+        </div>
+        <div class="btn-group" role="group">
+            {% if workers.has_next %}
+                <a class="btn btn-primary btn-sm" href="?page={{ workers.next_page_number }}">Next</a>
+                <a class="btn btn-primary btn-sm" href="?page={{ workers.paginator.num_pages }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            {% endif %}
+        </div>
+    </ul>
 {% endblock %}

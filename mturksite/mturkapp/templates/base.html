@@ -36,7 +36,7 @@
     <body style="background-color:rgb(226, 241, 248);">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <h5 class="navbar-brand text-success"><strong>Mturk</strong></h5>
+                <span class="navbar-brand mb-0 h1 text-success"><strong>MTurk</strong></span>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
@@ -66,19 +66,23 @@
                         <li class="nav-item">
                             <a class="nav-link active text-info" href="{% url 'asgmtsActive' %}">Active Assignments</a>
                         </li>
+                        <li class="nav-link active text-light"><strong>|</strong></li>
                         <li class="nav-item">
                             <a class="nav-link active text-info" href="{% url 'lobby' %}">Lobby</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
                         <li class="text-right text-info">
-                            <a class="nav-link active text-info" href="{% url 'experimentFilter' %}">Current Experiment filter =&nbsp;</a>
+                            <a class="nav-link active text-info" href="{% url 'experimentFilter' %}">Current Experiment filter &nbsp;&nbsp;=</a>
                         </li>
                         <li>
                             {% if request.session.experiment != None %}
-                                <h5 class="text-right text-success"><strong>{{ request.session.experiment }}</strong></h5>
+                                <span class="nav-link active text-info"><strong>{{ request.session.experiment }}</strong></span>
                             {% else %}
-                                <h5 class="text-right text-danger"><strong>None Selected *</strong></h5>
+                                <span class="navbar-brand mb-0 h1" style="color: red"><strong>&nbsp;&nbsp;None Selected</strong></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red" class="bi bi-exclamation-circle-fill" viewBox="0 0 20 20">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
                             {% endif %}
                         </li>
                     </ul>
@@ -94,7 +98,7 @@
                 <!-- Data is not shown if they are not logged in -->
                 {% block login %}
                 {% endblock %}
-                <center><h2>Please <a href="{% url 'login' %}">login</a> to view.</h2></center><br>
+                <center><h2>Please <a href="{% url 'login' %}">login</a> to continue.</h2></center><br>
             {% endif %}
         </div>
     </body>

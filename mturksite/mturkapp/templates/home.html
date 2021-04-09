@@ -3,10 +3,17 @@
 {% block title %} Account Overview {% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">Account Overview</h1>
     <center>
         {% if user.is_authenticated %}
-            <h4><strong>Current Available Balance: </strong>${{ balance.AvailableBalance }}</h4>
+            <div class="jumbotron" style="background-color:rgb(226, 241, 248);">
+                <h1 class="display-4">Welcome {{ user.username }}!</h1>
+                <p class="lead">The Mechanical Turk Experiment Framework is a software development project that involves building a web application that integrates with the Amazon Mechanical Turk API.</p>
+                <hr class="my-4">
+                <h4><strong>Current Available Balance: </strong>${{ balance.AvailableBalance }}</h4>
+                <br></br>
+                <p><em><u>Note</u>: Start by clicking "Experiments" above and create your very own experiment or <a class="btn btn-info btn-sm" href="{% url 'experiments' %}" role="button">Click Here!</a></em></p>
+                <p><em>If you do not wish to create your own and instead want to choose an existing one, click on "Current Experiment Filter" above or <a class="btn btn-success btn-sm" href="{% url 'experimentFilter' %}" role="button">Click Here Instead!</a></em></p>
+          </div>
         {% else %}
             <h3>You are not logged in</h3>
             <h4><a href="{% url 'login' %}">Log In</a></h4><br>
