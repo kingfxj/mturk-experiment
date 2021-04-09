@@ -561,7 +561,19 @@ def asgmtsCompletedView(request):
     View Completed assignments
     :param request
     :return: Completed assignments page
-    """   
+    """
+    mturk = mturk_client()
+    # approve chosen assigments if approve button pressed
+    if request.method == "POST" and request.POST.get("approve"):
+        chosen_asgmts = request.POST.getlist('chosen_assignments')
+        for assignmentId in chosen_asgmts:
+            mturk.approve_assignment(AssignmentId=str(assignmentId))
+    # reject chosen assigments if reject button pressed
+    if request.method == "POST" and request.POST.get("reject"):
+        chosen_asgmts = request.POST.getlist('chosen_assignments')
+        for assignmentId in chosen_asgmts:
+            mturk.reject_assignment(AssignmentId=str(assignmentId), RequesterFeedback="rejected")
+
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
     # select all hittype objects accordingly
@@ -577,11 +589,12 @@ def asgmtsCompletedView(request):
         if str(item.hittype_id) in hittypes_filtered:
             hits_filtered.append(str(item.hit_id))
     # select all assignments (from api call) accordingly
-    mturk = mturk_client()
     assignments = []
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             assignments.append(assignment)
+    # sort assignments based on time submitted
+    assignments.sort(key=lambda item:item['SubmitTime'], reverse=True)
     # append/create bonus information for assignments
     for assignment in assignments:
         bonus = Bonus.objects.filter(assignment_id=assignment['AssignmentId'])
