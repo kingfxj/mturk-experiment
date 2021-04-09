@@ -50,7 +50,7 @@
             {%  if assignments %}
                 {% for item in assignments %}
                     <tr class="table-info">
-                        <td><input type="checkbox" name="chosen" value="{{ item.AssignmentId }}"/></td>
+                        <td><input type="checkbox" name="chosen_assignments" value="{{ item.AssignmentId }}"/></td>
                         <td> {{ item.AssignmentId }} </td>
                         <td> {{ item.WorkerId }} </td>
                         <td> {{ item.AcceptTime }} </td>
@@ -62,9 +62,9 @@
                 {% endfor %}
             {% endif %}
         </table>
-        <div class="float-left mr-1"><input type="submit" class="btn btn-success" onclick="{% url 'payBonus' %}" value="Approve Selected Assignments"/></div>
-        <div class="float-left"><input type="submit" class="btn btn-danger" onclick="{% url 'payBonus' %}" value="Reject Selected Assignments"/></div>
-        <div class="float-right"><input type="submit" class="btn btn-info" onclick="{% url 'payBonus' %}" value="Pay Bonuses for Selected"/></div>
+        <div class="float-left mr-1"><input type="submit" class="btn btn-success" name="approve" value="Approve Selected Assignments"/></div>
+        <div class="float-left"><input type="submit" class="btn btn-danger" name="reject" value="Reject Selected Assignments"/></div>
+        <div class="float-right"><input type="submit" class="btn btn-info" name="pay_bonuses" onclick="{% url 'payBonus' %}" value="Pay Bonuses for Selected"/></div>
     </form>
     </div>
     <br></br>
