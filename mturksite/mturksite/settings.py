@@ -33,7 +33,7 @@ SECRET_KEY = 'h=m$mqzkwwi#atoz3hjo2%ala9d9qs4&wl03j@(pdfg(%3e2wv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django_countries',
     'django_extensions',
     'mturkapp',
+    'channels',
+    'sslserver',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mturksite.urls'
+
 
 TEMPLATES = [
     {
@@ -79,6 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mturksite.wsgi.application'
+ASGI_APPLICATION = 'mturksite.asgi.application'
 
 
 # Database
@@ -95,6 +99,14 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND":"channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost" , 6379)],
+        },
+    },
+}
 
 # AWS Connection Information
 # https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html
