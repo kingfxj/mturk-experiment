@@ -15,12 +15,12 @@
             <form class="d-flex" method="POST">
                 {% csrf_token %}
                 <td>
-                    Batch ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="batch_id">
-                </td>
-                <td>
                     Title:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="title">
+                </td>
+                <td>
+                    Batch ID:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="batch_id">
                 </td>
                 <td>
                     <br>
@@ -31,8 +31,8 @@
         {%  if experiments %}
             {% for item in experiments %}
                 <tr class="table-info">
-                    <td><center> {{ item.batch_id }} </center></td>
                     <td><center> {{ item.title }} </center></td>
+                    <td><center> {{ item.batch_id }} </center></td>
                     <td><center></center></td>
                 </tr>
             {% endfor %}

@@ -56,7 +56,6 @@ def hittypesView(request):
     hittype_items = Hittype.objects.all().order_by('-id')
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
-    print(experimentFilter)
     # select all hittype objects accordingly
     hittypes_filtered = []
     for item in hittype_items:
@@ -508,23 +507,19 @@ def asgmtsActiveView(request):
     for item in hit_items:
         if str(item.hittype_id) in hittypes_filtered:
             hits_filtered.append(str(item.hit_id))
-    print(hits_filtered)
     # select all active assignments accordingly
     activeassign_items = AssignStatModel.objects.all()
     activeassign_filtered = []
     for item in activeassign_items:
         if str(item.hit_id) in hits_filtered:
             activeassign_filtered.append(item)
-
     activeassign_items = activeassign_filtered
-    print(activeassign_items)
     # retrieve queries for all assignment fields
     if request.method == "POST":
         assign_id = request.POST.get('assign_id')   
         worker_id = request.POST.get('worker_id')   
         hit_id = request.POST.get('hit_id')                          
         flag = request.POST.get('flag')  
-        print(activeassign_items)
         # filter the objects according to the sort
         if assign_id != '' and assign_id is not None:
             activeassign_items = activeassign.filter(assign_id__icontains=assign_id)
@@ -801,7 +796,6 @@ def ticView(request , hit_id):
 
 def deleteassign(request , worker_id):
     item = AssignStatModel.objects.get(worker_id = worker_id)
-    print(item)
     item.delete()
     return redirect('../')
 
