@@ -67,3 +67,13 @@ class AssignStatModel(models.Model):
     class Meta:
         # Remote database name
         db_table = "games_assignstatmodel"
+
+class GameResultModel(models.Model):
+    assign_id = models.CharField(max_length=100, blank=True)
+    hit_id = models.CharField(max_length=100, blank=True)
+    worker_id = models.CharField(max_length=100, blank=True)
+    data = models.JSONField()
+
+    class Meta:
+        # Remote database name
+        db_table = "games_gameresultmodel"

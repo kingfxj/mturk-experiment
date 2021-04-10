@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'mturkapp',
     'channels',
-    'sslserver',
 ]
 
 MIDDLEWARE = [
