@@ -10,6 +10,7 @@ from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
 import random
 
 # display signup page
@@ -491,6 +492,8 @@ def asgmtsActiveView(request):
     :param request
     :return: Active assignment page
     """   
+    # retrieve all active assignment objects and sort
+    activeassign_items = AssignStatModel.objects.all().order_by('-id')
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
     # select all hittype objects accordingly
@@ -505,52 +508,34 @@ def asgmtsActiveView(request):
     for item in hit_items:
         if str(item.hittype_id) in hittypes_filtered:
             hits_filtered.append(str(item.hit_id))
-    # select all assignments (from api call) accordingly
-    mturk = mturk_client()
-    assignments = []
-    for hit_id in hits_filtered:
-        for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
-            assignments.append(assignment)
+    print(hits_filtered)
+    # select all active assignments accordingly
+    activeassign_items = AssignStatModel.objects.all()
+    activeassign_filtered = []
+    for item in activeassign_items:
+        if str(item.hit_id) in hits_filtered:
+            activeassign_filtered.append(item)
+
+    activeassign_items = activeassign_filtered
+    print(activeassign_items)
     # retrieve queries for all assignment fields
     if request.method == "POST":
-        assignmentIdFilter = request.POST.get('assignmentId')   
-        workerIdFilter = request.POST.get('workerId')          
-        acceptTimeFilter = request.POST.get('acceptanceTime')  
-        submitTimeFilter = request.POST.get('submittedTime')    
-        statusFilter = request.POST.get('status')             
+        assign_id = request.POST.get('assign_id')   
+        worker_id = request.POST.get('worker_id')   
+        hit_id = request.POST.get('hit_id')                          
+        flag = request.POST.get('flag')  
+        print(activeassign_items)
         # filter the objects according to the sort
-        if assignmentIdFilter != '' and assignmentIdFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if assignmentIdFilter.lower() in assignment['AssignmentId'].lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if workerIdFilter != '' and workerIdFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if  workerIdFilter.lower() in assignment['WorkerId'].lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if acceptTimeFilter != '' and acceptTimeFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if acceptTimeFilter.lower() in assignment['AcceptTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if submitTimeFilter != '' and submitTimeFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if submitTimeFilter.lower() in assignment['SubmitTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if statusFilter != '' and statusFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if statusFilter.lower() in assignment['AssignmentStatus'].lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
+        if assign_id != '' and assign_id is not None:
+            activeassign_items = activeassign.filter(assign_id__icontains=assign_id)
+        if worker_id != '' and worker_id is not None:
+            activeassign_items = activeassign_items.filter(worker_id__icontains=worker_id)
+        if hit_id != '' and hit_id is not None:
+            activeassign_items = activeassign_items.filter(hit_id__icontains=hit_id)
+        if flag != '' and flag is not None:
+            activeassign_items = activeassign_items.filter(flag__icontains=flag)
     # paginate by 10
-    paginator = Paginator(assignments, 10)
+    paginator = Paginator(activeassign_items, 10)
     page_number = request.GET.get('page')
     assignment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
@@ -789,6 +774,7 @@ def experimentFilterView(request):
 @xframe_options_exempt
 def ticView(request , hit_id):
     player = request.GET.get ('worker_id')
+    assign_id = request.GET.get('assign_id')
     number = AssignStatModel.objects.filter(worker_id = player)
     name =""
     for x in number:
@@ -797,7 +783,7 @@ def ticView(request , hit_id):
         else:
             name ='O'
 
-    context = {"player": player , "hit_id":hit_id,"name":name}
+    context = {"player": player , "hit_id":hit_id,"name":name , "assign_id":assign_id}
     return render(request, 'games/tic.html',context)
 
 def deleteassign(request , worker_id):
@@ -806,21 +792,24 @@ def deleteassign(request , worker_id):
     item.delete()
     return redirect('../')
 
-#@xframe_options_exempt
+@xframe_options_exempt
 def  please(request):
     hit_id = request.GET.get('hitId')
     worker_id = request.GET.get('workerId')
     assign_id = request.GET.get('assignmentId')
     flag = 0
     if assign_id:
+
         assignment = AssignStatModel.objects.create(assign_id=assign_id, hit_id=hit_id, worker_id=worker_id,flag = flag)
         assign = AssignStatModel.objects.filter(hit_id= hit_id)
+
         duplicates = AssignStatModel.objects.values('worker_id')
         duplicates = duplicates.order_by()
         duplicates = duplicates.annotate(
             min_id=models.Min("id"), count_id=models.Count("id")
         )
         duplicates = duplicates.filter(count_id__gt=1)
+
         for duplicate in duplicates:
             to_delete = AssignStatModel.objects.filter(worker_id=worker_id)
             to_delete = to_delete.exclude(id=duplicate["min_id"])
@@ -830,15 +819,13 @@ def  please(request):
             
             player = worker_id
             first_assign = AssignStatModel.objects.filter(hit_id=hit_id).first()
-            first_assign.flag =1
+            first_assign.flag = 1
             first_assign.save()
-            
-            #first_assign.save()
-
-            return redirect( '/tic/' + hit_id + '?worker_id=' + player)
+    
+            return redirect( '/tic/' + hit_id + '?worker_id=' + player + '&assign_id=' + assign_id )
         else:
-            return render(request, 'games/please.html',{})
+            return render(request, 'games/please.html',{'worker_id': worker_id})
 
     else:
         messages.error(request,"Invalid Assignment ID")
-        return render(request, 'games/please.html',{})
+        return render(request, 'games/please.html',{'worker_id':worker_id})

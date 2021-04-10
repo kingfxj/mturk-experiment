@@ -44,9 +44,14 @@
 			var hit_id = '{{hit_id}}'
 			var worker = '{{player}}'
 			var player = '{{name}}'
+            var assign_id = '{{assign_id}}'
 
+            window.onpopstate = function(event) {
+                var worker_id = this.worker
+                document.location.href = "{% url 'deleteassign' 0 %}".replace(/0/,worker_id)
+            }
 
-        let socket = new WebSocket('ws://localhost:8000/ws/gamer/' +hit_id)
+        let socket = new WebSocket('wss://ecfa2dc4a5b3.ngrok.io/ws/gamer/' + hit_id)
 
         let gameState = ["","","","","","","","",""]
 
@@ -100,7 +105,7 @@
             }
 
             if(won){
-                var data = {'type' : 'end' , 'player' : player, 'worker_id': worker}
+                var data = {'type' : 'end' , 'player' : player, 'worker_id': worker , 'assignmentId':assign_id,'result':'won'}
                 socket.send(JSON.stringify({data}))
                 swal("Good job!" , "You won" , "success").then(function(){
                     var xhr = new XMLHttpRequest();
@@ -108,9 +113,7 @@
                     xhr.setRequestHeader('Content-Type', 'application/json');
                     xhr.send(JSON.stringify({data}));
                     var worker_id = this.worker
-                    //console.log(worker_id)
                     document.location.href = "{% url 'deleteassign' 0 %}".replace(/0/,worker_id)
-                    //window.location =  "https://bc2b5f5ceaa9.ngrok.io"
                     
                 });
             }
@@ -126,6 +129,7 @@
                 'player' : player,
                 'index' : index,
                 'worker_id': worker,
+                'assignmentId': assign_id,
                 'type' : 'running'
             }
 
@@ -159,23 +163,21 @@
         socket.onmessage = function (e){
             var data = JSON.parse(e.data)
             console.log(data)
-            if(data.payload.type == 'end' && data.payload.player !== player && data.payload.worker !== worker){
+            if(data.payload.type == 'end' && data.payload.player !== player && data.payload.worker !== worker && data.payload.assign_id !== assign_id){
                 swal("Sorry!" , "You lost" , "error").then(function(){
                     var xhr = new XMLHttpRequest();
                     xhr.open("POST", "https://workersandbox.mturk.com/mturk/externalSubmit", true);
                     xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify({data}));
+                    xhr.send(JSON.stringify({data,'result':'lost'}));
                     var worker_id = this.worker
-                    //console.log(worker_id)
                     document.location.href = "{% url 'deleteassign' 0 %}".replace(/0/,worker_id)
-                    //window.location =  "https://bc2b5f5ceaa9.ngrok.io"
                     
                 });
             }else if(data.payload.type == 'over'){
                 swal("Game over!" , "Game end no one won" , "warning")
                 return;
-            }else if(data.payload.type == 'running' &&  data.payload.player !== player && data.payload.worker !==worker){
-                setAnotherUserText(data.payload.index , data.payload.player,data.payload.worker)
+            }else if(data.payload.type == 'running' &&  data.payload.player !== player && data.payload.worker !==worker && data.payload.assign_id !== assign_id){
+                setAnotherUserText(data.payload.index , data.payload.player,data.payload.worker , data.payload.assign_id)
             }
 
         
