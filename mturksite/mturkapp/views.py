@@ -586,19 +586,19 @@ def qualificationsView(request):
     for item in qual_objects:
         try:
             response = mturk.get_qualification_type(
-                QualificationTypeId=item.QualificationTypeId)
+                QualificationTypeId= item.QualificationTypeId)
         except mturk.exceptions.ServiceFault:
             messages.error(request, "API Service Fault")
         except mturk.exceptions.RequestError:
-            messages.error(request, "Unable to get qualification types")
-            try:
-                qualifications['QualificationTypes'].append(response['QualificationType'])
-            except mturk.exceptions.ServiceFault:
-                messages.error(request, "API Service Fault")
-            except mturk.exceptions.RequestError:
-                messages.error(request, "Unable to get qualification types")
-            except:
-                messages.error(request, "Unavailable, please try again later.")
+            print("Unable to get qualification types") 
+        try:
+            qualifications['QualificationTypes'].append(response['QualificationType'])
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            print("Unable to get qualification types")
+        except:
+            print("Unavailable, please try again later.")
 
     if request.method == "POST":
         # append selected fields
@@ -799,14 +799,11 @@ def workerAssignQualView(request, worker_id):
         messages.error(request, "Unable to assign qualifications")
 
     if request.method == "POST":
-        # form = AssignQualForm(request.POST or None)
-        # if form.is_valid():
-            # qual = form.cleaned_data.get("qualifications")\
         pass
     else:
-        # return render(request, '/workers')
         return redirect('/workers')
 
+# display waiting page - before game starts (1 player in "lobby")
 @xframe_options_exempt
 def  waitPageView(request):
     hit_id = request.GET.get('hitId')
@@ -814,7 +811,6 @@ def  waitPageView(request):
     assign_id = request.GET.get('assignmentId')
     flag = 0
     if assign_id:
-
         assignment = AssignStatModel.objects.create(assign_id=assign_id, hit_id=hit_id, worker_id=worker_id,flag = flag)
         assign = AssignStatModel.objects.filter(hit_id= hit_id)
 
@@ -831,12 +827,11 @@ def  waitPageView(request):
             to_delete.delete()
 
         if (assign.count() == 2):
-            
             player = worker_id
             first_assign = AssignStatModel.objects.filter(hit_id=hit_id).first()
             first_assign.flag = 1
             first_assign.save()
-    
+
             return redirect( '/game/' + hit_id + '?worker_id=' + player + '&assign_id=' + assign_id )
         else:
             return render(request, 'games/waitPage.html',{'worker_id': worker_id})
@@ -845,6 +840,7 @@ def  waitPageView(request):
         messages.error(request,"Invalid Assignment ID")
         return render(request, 'games/waitPage.html',{'worker_id':worker_id})
 
+# display game 
 @xframe_options_exempt
 def gameView(request , hit_id):
     player = request.GET.get ('worker_id')
