@@ -14,16 +14,16 @@
         <tr>
             <form class="d-flex" method="POST">
                 <td>
+                    HIT ID:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
+                </td>
+                <td>
                     Assignment ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assign_id">
                 </td>
                 <td>
                     Worker ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="worker_id">
-                </td>
-                <td>
-                    HIT ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
                 </td>
                 <td>
                     <br>
@@ -34,9 +34,9 @@
             {%  if assignments %}
                 {% for item in assignments %}
                     <tr class="table-info">
+                        <td> {{ item.hit_id }} </td>
                         <td> {{ item.assign_id }} </td>
                         <td> {{ item.worker_id }} </td>
-                        <td> {{ item.hit_id }} </td>
                         <td><center></center></td>
                     </tr>
                 {% endfor %}
