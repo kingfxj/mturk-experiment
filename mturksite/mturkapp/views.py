@@ -56,6 +56,7 @@ def hittypesView(request):
     hittype_items = Hittype.objects.all().order_by('-id')
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    print(experimentFilter)
     # select all hittype objects accordingly
     hittypes_filtered = []
     for item in hittype_items:
@@ -215,7 +216,7 @@ def addHitView(request):
     :return: Redirect to HIT View page after changes are made
     """
     # question form
-    game = str(settings.BASE_DIR) + "/mturkapp/templates/games/mine.xml"
+    game = str(settings.BASE_DIR) + "/mturkapp/templates/games/question.xml"
     question = open(game).read()
     # retrieve all hittype objects
     hittype_items = Hittype.objects.all()    
@@ -513,6 +514,7 @@ def asgmtsActiveView(request):
     for item in activeassign_items:
         if str(item.hit_id) in hits_filtered:
             activeassign_filtered.append(item)
+
     activeassign_items = activeassign_filtered
     # retrieve queries for all assignment fields
     if request.method == "POST":
@@ -520,6 +522,7 @@ def asgmtsActiveView(request):
         worker_id = request.POST.get('worker_id')   
         hit_id = request.POST.get('hit_id')                          
         flag = request.POST.get('flag')  
+        print(activeassign_items)
         # filter the objects according to the sort
         if assign_id != '' and assign_id is not None:
             activeassign_items = activeassign.filter(assign_id__icontains=assign_id)
@@ -773,14 +776,14 @@ def experimentFilterView(request):
     if request.method == "POST":
         experiment = request.POST.get('batch')
         request.session['experiment'] = experiment
-        return redirect(experimentsView)
+        return redirect(experimentFilterView)
     else:   
         experiment_items = Experiment.objects.all() 
         return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
 
 
 @xframe_options_exempt
-def ticView(request , hit_id):
+def gameView(request , hit_id):
     player = request.GET.get ('worker_id')
     assign_id = request.GET.get('assign_id')
     number = AssignStatModel.objects.filter(worker_id = player)
@@ -792,15 +795,11 @@ def ticView(request , hit_id):
             name ='O'
 
     context = {"player": player , "hit_id":hit_id,"name":name , "assign_id":assign_id}
-    return render(request, 'games/tic.html',context)
+    return render(request, 'games/game.html',context)
 
-def deleteassign(request , worker_id):
-    item = AssignStatModel.objects.get(worker_id = worker_id)
-    item.delete()
-    return redirect('../')
 
 @xframe_options_exempt
-def  please(request):
+def  waitPageView(request):
     hit_id = request.GET.get('hitId')
     worker_id = request.GET.get('workerId')
     assign_id = request.GET.get('assignmentId')
@@ -829,10 +828,10 @@ def  please(request):
             first_assign.flag = 1
             first_assign.save()
     
-            return redirect( '/tic/' + hit_id + '?worker_id=' + player + '&assign_id=' + assign_id )
+            return redirect( '/game/' + hit_id + '?worker_id=' + player + '&assign_id=' + assign_id )
         else:
-            return render(request, 'games/please.html',{'worker_id': worker_id})
+            return render(request, 'games/waitPage.html',{'worker_id': worker_id})
 
     else:
         messages.error(request,"Invalid Assignment ID")
-        return render(request, 'games/please.html',{'worker_id':worker_id})
+        return render(request, 'games/waitPage.html',{'worker_id':worker_id})
