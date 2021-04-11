@@ -14,8 +14,6 @@ from django.views.decorators.cache import cache_control
 import logging
 import random
 
-logger = logging.getLogger(__name__)
-
 # display signup page
 def signupView(request):
     if request.method == 'POST':
