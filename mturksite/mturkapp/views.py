@@ -274,17 +274,16 @@ def qualificationsView(request):
         messages.error(request, "Unable to get qualification types")
     
     # retreive inactive qual types from db and cross reference with mturk api call (data check)
-    # qual_objects = Qualification.objects.filter(status='Inactive')
-    # for item in qual_objects:
-    #     while item is not None:
-    #         try:
-    #             response = mturk.get_qualification_type(
-    #                 QualificationTypeId=item.QualificationTypeId)
-    #         except mturk.exceptions.ServiceFault:
-    #             messages.error(request, "API Service Fault")
-    #         except mturk.exceptions.RequestError:
-    #             messages.error(request, "Unable to get qualification types")
-    #         qualifications['QualificationTypes'].append(response['QualificationType'])
+    qual_objects = Qualification.objects.filter(status='Inactive')
+    for item in qual_objects:
+        try:
+            response = mturk.get_qualification_type(
+                QualificationTypeId=item.QualificationTypeId)
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to get qualification types")
+        qualifications['QualificationTypes'].append(response['QualificationType'])
 
     if request.method == "POST":
         # append selected fields
