@@ -206,8 +206,7 @@ def hitsView(request):
     page_number = request.GET.get('page')
     hit_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    context = {"hits": hit_page,"hittypes":hittype_items}
-    return render(request, 'hits/hits.html', context)
+    return render(request, 'hits/hits.html', {"hits": hit_page})
 
 # display add hits form page 
 def addHitView(request):
@@ -252,8 +251,7 @@ def addHitView(request):
             messages.error(request, "Item was not added")
             return redirect(hitsView)
     else:
-        context = {"hittype_items":hittype_items}
-        return render(request, 'hits/addHit.html', context)
+        return render(request, 'hits/addHit.html', {"hittype_items":hittype_items})
 
 # display qualifications table
 def qualificationsView(request):
@@ -365,8 +363,7 @@ def addQualificationView(request):
             messages.error(request, "Item was not added")
             return redirect(qualificationsView)
     else:
-        context = {"country": country_list}
-        return render(request, 'qualifications/addQualification.html', context)
+        return render(request, 'qualifications/addQualification.html', {"country": country_list})
 
 # updating qualifications
 def updateQualificationView(request, List_id):
