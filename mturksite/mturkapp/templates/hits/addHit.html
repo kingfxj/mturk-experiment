@@ -17,7 +17,7 @@
             <td><select name="hittype" id="hittype" class="form-control me-2" type="search" placeholder="Choose HITType">
                 <option value="" disabled selected hidden>--- Choose HITType ---</option>
                   {% for item in hittype_items %}
-                          <option value="{{item.pk}}">{{item.title}} ({{item.hittype_id}})</option>
+                          <option value="{{item.pk}}">{{item.title}} (ID: {{item.hittype_id}})</option>
                   {% endfor %} 
             </td>
             </select>
