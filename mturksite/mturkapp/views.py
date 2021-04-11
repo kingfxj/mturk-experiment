@@ -514,8 +514,18 @@ def asgmtsActiveView(request):
     for item in activeassign_items:
         if str(item.hit_id) in hits_filtered:
             activeassign_filtered.append(item)
-
     activeassign_items = activeassign_filtered
+
+    # select all completed assignments (from api call) accordingly
+    mturk = mturk_client()
+    completed_assignments = []
+    for hit_id in hits_filtered:
+        for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
+            completed_assignments.append(assignment)
+    # delete active assignments if it's completed
+    for obj in activeassign_items:
+        if str(obj.hit_id) in completed_assignments:
+            obj.delete()
     # retrieve queries for all assignment fields
     if request.method == "POST":
         assign_id = request.POST.get('assign_id')   
