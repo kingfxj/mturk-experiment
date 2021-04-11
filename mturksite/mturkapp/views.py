@@ -283,7 +283,14 @@ def qualificationsView(request):
             messages.error(request, "API Service Fault")
         except mturk.exceptions.RequestError:
             messages.error(request, "Unable to get qualification types")
-        qualifications['QualificationTypes'].append(response['QualificationType'])
+            try:
+                qualifications['QualificationTypes'].append(response['QualificationType'])
+            except mturk.exceptions.ServiceFault:
+                messages.error(request, "API Service Fault")
+            except mturk.exceptions.RequestError:
+                messages.error(request, "Unable to get qualification types")
+            except:
+                messages.error(request, "Unavailable, please try again later.")
 
     if request.method == "POST":
         # append selected fields
