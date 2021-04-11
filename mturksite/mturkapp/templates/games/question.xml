@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ExternalQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2006-07-14/ExternalQuestion.xsd">
-  <ExternalURL>https://ecfa2dc4a5b3.ngrok.io/please</ExternalURL>
+  <ExternalURL>https://ecfa2dc4a5b3.ngrok.io/waitPage</ExternalURL>
   <FrameHeight>720</FrameHeight>
 </ExternalQuestion>

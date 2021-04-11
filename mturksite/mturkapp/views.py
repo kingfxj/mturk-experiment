@@ -206,7 +206,8 @@ def hitsView(request):
     page_number = request.GET.get('page')
     hit_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
-    return render(request, 'hits/hits.html', {"hits": hit_page})
+    context = {"hits": hit_page,"hittypes":hittype_items}
+    return render(request, 'hits/hits.html', context)
 
 # display add hits form page 
 def addHitView(request):
@@ -522,10 +523,7 @@ def asgmtsActiveView(request):
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             completed_assignments.append(assignment)
-    # delete active assignments if it's completed
-    for obj in activeassign_items:
-        if str(obj.hit_id) in completed_assignments:
-            obj.delete()
+   
     # retrieve queries for all assignment fields
     if request.method == "POST":
         assign_id = request.POST.get('assign_id')   
@@ -542,6 +540,12 @@ def asgmtsActiveView(request):
             activeassign_items = activeassign_items.filter(hit_id__icontains=hit_id)
         if flag != '' and flag is not None:
             activeassign_items = activeassign_items.filter(flag__icontains=flag)
+    # delete active assignments if it's completed
+    active_assignment = AssignStatModel.objects.all()
+    for obj1 in active_assignment:
+        for obj2 in completed_assignments:
+            if str(obj1.assign_id) == str(obj2['AssignmentId']):
+                obj1.delete()
     # paginate by 10
     paginator = Paginator(activeassign_items, 10)
     page_number = request.GET.get('page')
