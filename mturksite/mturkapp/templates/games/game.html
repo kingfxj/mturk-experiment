@@ -1,0 +1,196 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- CSS file Included -->
+	<link rel="stylesheet"
+		type="text/css" href="{% static 'css/game.css' %}">
+    <!--Bootstrap CSS file Included-->
+	  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+
+<body>
+	<body class="bg-dark">
+
+    <div class="full-page" id="full-page">
+
+        <div class="game flex-column">
+            <!--Initialize tictactoe board cells-->
+            <div class="boardcontainer">
+                <div class="board">
+                    <div data-cell-index="0" class="space"></div>
+                    <div data-cell-index="1" class="space"></div>
+                    <div data-cell-index="2" class="space"></div>
+                    <div data-cell-index="3" class="space"></div>
+                    <div data-cell-index="4" class="space"></div>
+                    <div data-cell-index="5" class="space"></div>
+                    <div data-cell-index="6" class="space"></div>
+                    <div data-cell-index="7" class="space"></div>
+                    <div data-cell-index="8" class="space"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- For submitting data to MTurk-->
+        <form name="hitForm" id="hitForm" action="https://workersandbox.mturk.com/mturk/externalSubmit" method="POST">
+        <input type="hidden" name="assignmentId" value="{{assign_id}}" />
+        <input type="hidden" name="player" value="{{name}}" />
+        <input type="hidden" id="result" name="result" value="draw" />
+        <input type="submit" name="Submit" id="submitButton" value="submit" disabled="true">
+        </form>
+
+        <!-- To import alert messages-->
+	    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+		<script>
+			var hit_id = '{{hit_id}}'  // Get the hit id
+			var worker = '{{player}}'  // Get the worker id
+			var player = '{{name}}'   // Get to know whether the player has 'X' or 'O'
+            var assign_id = '{{assign_id}}' // Get the assignment id
+
+            // start a websocket 
+            let socket = new WebSocket('wss://ecfa2dc4a5b3.ngrok.io/ws/gamer/' + hit_id) // Note: change the domain name in  "wss://{domain-name}/ws/gamer"
+
+            let gameState = ["","","","","","","","",""]
+
+            let elementArray = document.querySelectorAll('.space')
+
+            // EventListener function to set X and O
+            elementArray.forEach(function(elem){
+                elem.addEventListener("click" , function (event){
+                    setText(event.path[0].getAttribute('data-cell-index') , player)
+                })
+            })
+
+
+            // To check Game End
+            function checkGameEnd(){
+                var count = 0;
+                gameState.map((game)=>{
+                    if(game != ""){
+                        count++;
+                    }
+                })
+                // If draw send data to MTurk
+                if(count >= 9){
+                    var data = {'type' : 'over'}
+                    socket.send(JSON.stringify({data}))
+                    swal("Good over!" , "Game end no one won" , "warning").then(function(){
+                        document.forms.hitForm.submit();    
+                    })
+                }
+            }
+
+            // Check Game Won
+            function checkWon(value , player){
+                var won = false;
+
+                if(gameState[0] === value && gameState[1] == value && gameState[2] == value){
+                    won = true;
+                }else if(gameState[3] === value && gameState[4] == value && gameState[5] == value){
+                    won = true
+                }else if(gameState[6] === value && gameState[7] == value && gameState[8] == value){
+                    won = true
+                }
+                else if(gameState[0] === value && gameState[3] == value && gameState[6] == value){
+                    won = true
+                }
+                else if(gameState[1] === value && gameState[4] == value && gameState[7] == value){
+                    won = true
+                }else if(gameState[2] === value && gameState[5] == value && gameState[8] == value){
+                    won = true
+                }
+                else if(gameState[0] === value && gameState[4] == value && gameState[8] == value){
+                    won = true
+                }
+                else if(gameState[2] === value && gameState[4] == value && gameState[6] == value){
+                    won = true
+                }
+                // If you won submit data to MTurk
+                if(won){
+                    var data = {'type' : 'end' , 'player' : player, 'worker_id': worker , 'assignmentId':assign_id,'result':'won'}
+                    socket.send(JSON.stringify({data}))
+                    swal("Good job!" , "You won" , "success").then(function(){
+                        document.getElementById("result").innerHTML = 'won'
+                        document.forms.hitForm.submit();
+                    });
+                }
+                
+                checkGameEnd();
+
+            }
+
+            // Assigns value X and O when this function is called in eventlistener function
+            function setText(index , value){
+                var data = {
+                    'player' : player,
+                    'index' : index,
+                    'worker_id': worker,
+                    'assignmentId': assign_id,
+                    'type' : 'running'
+                }
+
+            
+
+                if(gameState[parseInt(index)] == ""){
+                    gameState[parseInt(index)] = value
+                    elementArray[parseInt(index)].innerHTML = value
+            
+                    socket.send(JSON.stringify({
+                        data
+                    }))
+                    checkWon(value , player )
+                }else{
+                    alert("You cannot fill this space")
+                }
+            }
+
+
+            function setAnotherUserText(index , value){
+                gameState[parseInt(index)] = value
+                elementArray[parseInt(index)].innerHTML = value
+            }
+
+
+            // To write Socket Connected on console when the socket starts
+            socket.onopen = function (e){
+                console.log('Socket connected')
+            }
+            
+            // To display Json objects on console and also submit data for loser and draw
+            socket.onmessage = function (e){
+                var data = JSON.parse(e.data)
+                console.log(data)
+                if(data.payload.type == 'end' && data.payload.player !== player && data.payload.worker !== worker && data.payload.assign_id !== assign_id){
+                    swal("Sorry!" , "You lost" , "error").then(function(){
+                        document.getElementById("result").innerHTML = 'lost'
+                        document.forms.hitForm.submit();                    
+                    });
+                }else if(data.payload.type == 'over'){
+                    swal("Game over!" , "Game end no one won" , "warning").then(function(){
+                        document.forms.hitForm.submit();    
+                    })
+                    return;
+                }else if(data.payload.type == 'running' &&  data.payload.player !== player && data.payload.worker !==worker && data.payload.assign_id !== assign_id){
+                    setAnotherUserText(data.payload.index , data.payload.player,data.payload.worker , data.payload.assign_id)
+                }
+
+        
+
+            }
+            // To display Socket closed when it is disconnected
+            socket.onclose = function (e){
+                console.log('Socket closed')
+            }
+        </script>
+</body>
+
+</html>

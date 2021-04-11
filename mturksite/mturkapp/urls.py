@@ -36,7 +36,7 @@ urlpatterns = [
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
     path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
-    path('please/', views.please, name='please'),
-    path('tic/<hit_id>', views.ticView, name='tic'),
-    path('deleteassign/<worker_id>', views.deleteassign , name= 'deleteassign')
+    path('waitPage/', views.waitPageView, name='waitPage'),
+    path('game/<hit_id>', views.gameView, name='game'),
+   
 ]
