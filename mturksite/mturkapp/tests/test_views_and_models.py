@@ -208,17 +208,7 @@ class AsgmtsCompletedViewTests(TestCase):
         self.assertEquals(response.status_code, 200)
         # test right template used
         self.assertTemplateUsed(response, 'assignments/asgmtsCompleted.html')
-
-
-class LobbyViewTests(TestCase):
-
-    def test_lobbyView_Health(self):
-        response = self.client.get(reverse('lobby'))
-        # test OK
-        self.assertEquals(response.status_code, 200)
-        # test right template used
-        self.assertTemplateUsed(response, 'lobby/lobby.html')
-
+        
 
 class ExperimentsViewTests(TestCase):
 

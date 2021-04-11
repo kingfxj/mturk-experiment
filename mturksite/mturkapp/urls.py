@@ -18,7 +18,6 @@ from django.urls import path
 from js_urls.views import JsUrlsView
 
 urlpatterns = [
-    path('signup/', views.signupView, name='signup'),
     path('', views.homeView, name='home'),
     path('hittypes/', views.hittypesView, name="hittypes"),
     path('hittypes/addhittype/', views.addHittypeView, name="addHittype"),
@@ -32,7 +31,6 @@ urlpatterns = [
     path('assignments/active/', views.asgmtsActiveView, name='asgmtsActive'),
     path('assignments/completed/', views.asgmtsCompletedView, name='asgmtsCompleted'),
     path('assignments/completed/pay_bonuses/', views.payBonusView, name='payBonuses'),
-    path('lobby/', views.lobbyView, name="lobby"),
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
     path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),

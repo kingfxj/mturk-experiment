@@ -18,26 +18,6 @@ from django.views.decorators.cache import cache_control
 
 logger = logging.getLogger('users')
 
-# display signup page
-def signupView(request):
-    if request.method == 'POST':
-        # signup form
-        form = SignUpForm(request.POST)
-        # set variables
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
-            login(request, user)
-            return redirect('login')
-    else:
-        form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
-
 # display home page - shows account balance 
 def homeView(request):
     """
@@ -761,39 +741,6 @@ def payBonusView(request):
         return redirect(asgmtsCompletedView)
     
     return render(request, 'assignments/payBonuses.html', {"assignments": assignments, 'total':total})
-
-# display users and their status in current lobby
-def lobbyView(request):
-    """
-    Lobby View Page
-    :param request
-    :return: Lobby view page
-    """
-    # retrieve all hit IDs
-    mturk = mturk_client()
-    lobby_list = []
-    hitID_list = []
-    for i in Hit.objects.all():         
-        hitID_list.append(i.hit_id)
-    # retrieve all assignments for that hit ID
-    for id in hitID_list:
-        try:
-            response = mturk.list_assignments_for_hit(HITId=id)
-            lobby_list.append(response['Assignments'][0])
-        except:
-            print("Couldn't find", id)
-    # find total number of users in lobby
-    total_users=len(lobby_list)   
-    # find number of 'ready' users in lobby                          
-    ready_users=0
-    for item in lobby_list:                                 
-        if item['AssignmentStatus'] == 'Approved':
-            ready_users += 1
-    # paginate by 10
-    paginator = Paginator(lobby_list, 10)
-    page_number = request.GET.get('page')
-    lobby_page = paginator.get_page(page_number)
-    return render(request, 'lobby/lobby.html', {"lobby": lobby_page,"total_users": total_users, "ready_users": ready_users})
 
 # display experiments table
 def experimentsView(request):
