@@ -74,7 +74,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
                         <li>
                             {% if request.session.experiment != None %}
-                                <span class="nav-link active text-success"><strong><u>Current Experiment</u>: <em>{{ request.session.experiment }}</em></strong></span>
+                                <span class="nav-link active text-success"><strong><em>{{ request.session.experiment }}</em></strong></span>
                             {% else %}
                                 <span class="navbar-brand mb-0 h1" style="color: red"><strong><em>No Experiment Selected ***</em></strong></span>
                             {% endif %}
