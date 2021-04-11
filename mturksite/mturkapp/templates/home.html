@@ -13,10 +13,11 @@
                 <br></br>
                 <p><em><u>Note</u>: To get started, click the "Experiments" tab above to manage your very own experiment! The selected experiment will show in the top right corner.</p>
                 <p><em>If you wish, you could also click the following options of creating or choosing your experiment: <br></br>
-                    <a class="btn btn-info" href="{% url 'addExperiment' %}" role="button">Create My Own!</a>&emsp;or&emsp;<a class="btn btn-success" href="{% url 'experimentFilter' %}" role="button">Choose Existing One!</a></em></p>
+                    <a class="btn btn-info" href="{% url 'addExperiment' %}" role="button">Create My Own!</a>&emsp;or&emsp;<a class="btn btn-success" href="{% url 'experimentFilter' %}" role="button">Choose Existing One!</a>
+                </em></p>
           </div>
         {% else %}
-            <h3>You are not logged in</h3>
+            <h3>You are not logged in.</h3>
             <h4><a href="{% url 'login' %}">Log In</a></h4><br>
             <h4>Don't have an account? <a href="{% url 'signup' %}">Create one</a></h4>
         {% endif %}
