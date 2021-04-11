@@ -11,8 +11,9 @@
                 <hr class="my-4">
                 <h4><strong>Current Available Balance: </strong>${{ balance.AvailableBalance }}</h4>
                 <br></br>
-                <p><em><u>Note</u>: Start by clicking "Experiments" above and create your very own experiment or <a class="btn btn-info btn-sm" href="{% url 'experiments' %}" role="button">Click Here!</a></em></p>
-                <p><em>If you do not wish to create your own and instead want to choose an existing one, click on "Current Experiment Filter" above or <a class="btn btn-success btn-sm" href="{% url 'experimentFilter' %}" role="button">Click Here Instead!</a></em></p>
+                <p><em><u>Note</u>: To get started, click on the "Experiments" tab above to manage your very own experiment!</p>
+                <p><em>If you wish, you could also click on the following options: <br></br>
+                    <a class="btn btn-info btn-sm" href="{% url 'addExperiment' %}" role="button">Create My Own!</a>&emsp;or&emsp;<a class="btn btn-success btn-sm" href="{% url 'experimentFilter' %}" role="button">Choose Existing One!</a></em></p>
           </div>
         {% else %}
             <h3>You are not logged in</h3>

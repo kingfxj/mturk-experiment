@@ -773,7 +773,7 @@ def experimentFilterView(request):
     if request.method == "POST":
         experiment = request.POST.get('batch')
         request.session['experiment'] = experiment
-        return redirect(experimentFilterView)
+        return redirect(experimentsView)
     else:   
         experiment_items = Experiment.objects.all() 
         return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
