@@ -153,13 +153,32 @@ class QualificationsViewTests(TestCase):
 
 class AddQualificationViewTests(TestCase):
 
-    def test_hittypeView_Health(self):
+    def test_addQualificationView_Health(self):
         response = self.client.get(reverse('addQualification'))
         # test OK
         self.assertEquals(response.status_code, 200)
         # test right template used
         self.assertTemplateUsed(response, 'qualifications/addQualification.html')
 
+    def test_addQualificaitonDB(self):
+        mturk = mturk_client()
+        #test api call
+        response = mturk.create_qualification_type(
+            Name= 'testing_qual',
+            Description= 'testing_qual_desc',
+            QualificationTypeStatus='Active'
+        )
+        self.assertEqual(response['QualificationType']['Name'], 'testing_qual')
+        new_qualification = Qualification(  
+            nickname = response['QualificationType']['Name'],
+            description = response['QualificationType']['Description'],
+            QualificationTypeId = response['QualificationType']['QualificationTypeId'],
+            comparator = '',
+            int_value = '',
+            country = '',
+            subdivision = '',
+            status = response['QualificationType']['QualificationTypeStatus'])
+        new_qualification.save()
 
 class WorkersViewTests(TestCase):
 

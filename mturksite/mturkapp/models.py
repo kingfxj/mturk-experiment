@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 class Qualification(models.Model):   
     nickname = models.CharField(max_length=100)
     description = models.CharField(max_length=2000, blank=True, null=False)
-    qualificationTypeId = models.CharField(max_length=255)
+    QualificationTypeId = models.CharField(max_length=255)
     comparator = models.CharField(max_length=50, blank=True)
     int_value = models.IntegerField(blank=True, null=True )
     country =  models.CharField(max_length=100, blank=True, null=True)
