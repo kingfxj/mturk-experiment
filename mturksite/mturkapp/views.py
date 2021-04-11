@@ -1,3 +1,7 @@
+import logging
+import random
+import pytz
+from datetime import datetime
 from .forms import *
 from .models import *
 from django.contrib import messages
@@ -11,8 +15,8 @@ from django_countries import countries
 from django_countries.fields import CountryField
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
-import logging
-import random
+
+logger = logging.getLogger('users')
 
 # display home page - shows account balance 
 def homeView(request):
@@ -63,6 +67,10 @@ def addExperimentView(request):
         form = ExperimentForm(request.POST or None)
         if form.is_valid():
             form.save()
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " created experiment named " + request.POST.get('title')
+            )
             messages.success(request, "Item has been added!")
             return redirect(experimentsView)
         else:
@@ -195,6 +203,10 @@ def addHittypeView(request):
             hittype_id.pk = instance.pk
             hittype_id.save()
             messages.success(request, "Item has been added!")
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " created HITType " + title + " (" + hittypes["HITTypeId"] + ")"
+            )
             return redirect(hittypesView)
         else:
             messages.error(request, "Item was not added")
@@ -288,6 +300,10 @@ def addHitView(request):
             hit_id.pk = instance.pk
             hit_id.save()
             messages.success(request, "Item has been added!")
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " created HIT from HITType with ID " + str(hittypes.hittype_id)
+            )
             return redirect(hitsView)
         else:
             messages.error(request, "Item was not added")
@@ -376,12 +392,20 @@ def asgmtsCompletedView(request):
         for assignment in chosen_asgmts:
             assignmentId = assignment.split(",")[0]
             mturk.approve_assignment(AssignmentId=str(assignmentId))
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " approved assignment with ID " + str(assignmentId)
+            )
     # reject chosen assigments if reject button pressed
     if request.method == "POST" and request.POST.get("reject"):
         chosen_asgmts = request.POST.getlist('chosen_assignments')
         for assignment in chosen_asgmts:
             assignmentId = assignment.split(",")[0]
             mturk.reject_assignment(AssignmentId=str(assignmentId), RequesterFeedback="rejected")
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " rejected assignment with ID " + str(assignmentId)
+            )
     # go to pay bonuses view if requirements are met
     if request.method == "POST" and request.POST.get("pay_bonuses"):
         chosen_asgmts = request.POST.getlist('chosen_assignments')
@@ -527,6 +551,11 @@ def payBonusView(request):
                 Reason=reason
             )
             Bonus.objects.filter(assignment_id=assignment['AssignmentId']).update(status='Paid')
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " paid bonus of $" + assignment['Amount'] + 
+                " for assignment with ID " + assignment['AssignmentId']
+            )
         messages.success(request, "Bonus payments successfully sent!")
         return redirect(asgmtsCompletedView)
     
@@ -636,6 +665,12 @@ def addQualificationView(request):
                 instance = form.save()
                 new_qualification.pk = instance.pk
                 new_qualification.save()
+                date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+                nickname = response['QualificationType']['Name']
+                q_t_id = response['QualificationType']['QualificationTypeId']
+                logger.info(
+                    date + "User " + request.user.get_username() + " created qualification " + nickname + " (ID " + q_t_id + ")"
+                )
                 messages.success(request, "Item has been added!")
             # error handling for ServiceFault, RequestError
             except mturk.exceptions.ServiceFault:  
@@ -692,7 +727,10 @@ def updateQualificationView(request, List_id):
             messages.error(request, "API Service Fault")
         except mturk.exceptions.RequestError:
             messages.error(request, "Unable to update qualification")
-
+    date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+    logger.info(
+        date + "User " + request.user.get_username() + " updated qualification with ID " + List_id
+    )
     messages.success(request, "Item has been Updated!")
     return redirect('qualifications')
 
