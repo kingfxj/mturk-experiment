@@ -174,7 +174,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR + "/logs/server.log",
+            'filename': str(BASE_DIR) + "/logs/server.log",
         },
     },
     'loggers': {
