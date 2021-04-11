@@ -15,26 +15,24 @@ Including another URLconf
 """
 from . import views
 from django.urls import path
-from js_urls.views import JsUrlsView
 
 urlpatterns = [
     path('', views.homeView, name='home'),
+    path('experiments/', views.experimentsView, name="experiments"),
+    path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
+    path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
     path('hittypes/', views.hittypesView, name="hittypes"),
     path('hittypes/addhittype/', views.addHittypeView, name="addHittype"),
     path('hits/', views.hitsView, name="hits"),
     path('hits/addhit/', views.addHitView, name="addHit"),
+    path('assignments/active/', views.asgmtsActiveView, name='asgmtsActive'),
+    path('assignments/completed/', views.asgmtsCompletedView, name='asgmtsCompleted'),
+    path('assignments/completed/pay_bonuses/', views.payBonusView, name='payBonuses'),
     path('qualification/', views.qualificationsView, name="qualifications"),
     path('qualification/addQualifications/', views.addQualificationView, name='addQualification'),
     path('qualification/updateQualification/<List_id>' , views.updateQualificationView , name = 'updateQualification'),
     path('workers/', views.workersView, name="workersView"),
     path('workers/workerAssignQualifications/<worker_id>' , views.workerAssignQualView , name = 'workerAssignQualView'),
-    path('assignments/active/', views.asgmtsActiveView, name='asgmtsActive'),
-    path('assignments/completed/', views.asgmtsCompletedView, name='asgmtsCompleted'),
-    path('assignments/completed/pay_bonuses/', views.payBonusView, name='payBonuses'),
-    path('experiments/', views.experimentsView, name="experiments"),
-    path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
-    path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
     path('waitPage/', views.waitPageView, name='waitPage'),
     path('game/<hit_id>', views.gameView, name='game'),
-   
 ]

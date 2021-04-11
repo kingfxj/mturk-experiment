@@ -30,6 +30,71 @@ def homeView(request):
     balance = mturk.get_account_balance()
     return render(request, 'home.html', {"balance": balance})
 
+# display experiments table
+def experimentsView(request):
+    """
+    Experiments view Page
+    :param request
+    :return: Experiments view page
+    """
+    # retrieve all experiment objects
+    experiment_items = Experiment.objects.all()
+    if request.method == "POST":
+        # retrieve queries for all experiment fields
+        batch_id = request.POST.get('batch_id')        
+        title = request.POST.get('title')              
+        # filter the objects according to the sort
+        if batch_id != '' and batch_id is not None:
+            experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
+        if title != '' and title is not None:
+            experiment_items = experiment_items.filter(title__icontains=title)
+    # paginate by 10
+    paginator = Paginator(experiment_items, 10)
+    page_number = request.GET.get('page')
+    experiment_page = paginator.get_page(page_number)
+    # return the objects that satisfy all search filters
+    return render(request, 'experiments/experiments.html', {"experiments": experiment_page})
+
+# display add experiment form page
+def addExperimentView(request):
+    """
+    Add a new experiment
+    :param request
+    :return: Redirect to experiment View page after changes are made
+    """
+    if request.method == "POST":
+        # experiment form
+        form = ExperimentForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+            logger.info(
+                date + "User " + request.user.get_username() + " created experiment named " + request.POST.get('title')
+            )
+            messages.success(request, "Item has been added!")
+            return redirect(experimentsView)
+        else:
+            messages.error(request, "Item was not added")
+            return redirect(experimentsView)
+    else:
+        return render(request, 'experiments/addExperiment.html')
+
+# display filter experiment page
+def experimentFilterView(request):
+    """
+    Filter application by experiment using session
+    :param request
+    :return: Redirect to previous page after changes are made
+    """
+    # get batch ID and return experiments' title (ID)
+    if request.method == "POST":
+        experiment = request.POST.get('batch')
+        request.session['experiment'] = experiment
+        return redirect(experimentFilterView)
+    else:   
+        experiment_items = Experiment.objects.all() 
+        return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
+
 # display hittypes table 
 def hittypesView(request):
     """
@@ -245,252 +310,6 @@ def addHitView(request):
             return redirect(hitsView)
     else:
         return render(request, 'hits/addHit.html', {"hittype_items":hittype_items})
-
-# display qualifications table
-def qualificationsView(request):
-    """
-    Qualification View Page
-    :param request
-    :return: Qualification view page
-    """
-    mturk = mturk_client()
-    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
-    qual_info = []
-    # api call - gets all qualifications created by admin
-    try:
-        qualifications = mturk.list_qualification_types(  
-            MustBeRequestable=False,
-            MustBeOwnedByCaller=True)
-    except mturk.exceptions.ServiceFault:
-        messages.error(request, "API Service Fault")
-    except mturk.exceptions.RequestError:
-        messages.error(request, "Unable to get qualification types")
-    
-    # retreive inactive qual types from db and cross reference with mturk api call (data check)
-    qual_objects = Qualification.objects.filter(status='Inactive')
-    for item in qual_objects:
-        try:
-            response = mturk.get_qualification_type(
-                QualificationTypeId=item.QualificationTypeId)
-        except mturk.exceptions.ServiceFault:
-            messages.error(request, "API Service Fault")
-        except mturk.exceptions.RequestError:
-            messages.error(request, "Unable to get qualification types")
-            try:
-                qualifications['QualificationTypes'].append(response['QualificationType'])
-            except mturk.exceptions.ServiceFault:
-                messages.error(request, "API Service Fault")
-            except mturk.exceptions.RequestError:
-                messages.error(request, "Unable to get qualification types")
-            except:
-                messages.error(request, "Unavailable, please try again later.")
-
-    if request.method == "POST":
-        # append selected fields
-        for field in qual_fields:
-            qual_info.append(request.POST.get(field))
-        # filter the objects according to the sort
-        if qual_info[0] != '' and qual_info[0] is not None:
-            qualifications = qualifications.filter(nickname__icontains=qual_info[0])
-        if qual_info[1] != '' and qual_info[1] is not None:
-            qualifications = qualifications.filter(qualID__icontains=qual_info[1])
-        if qual_info[2] != '' and qual_info[2] is not None:
-            qualifications = qualifications.filter(comparator__icontains=qual_info[2])
-        if qual_info[3] != '' and qual_info[3] is not None:
-            qualifications = qualifications.filter(int_value__icontains=qual_info[3])
-        if qual_info[4] != '' and qual_info[4] is not None:
-            qualifications = qualifications.filter(country__icontains=qual_info[4])
-        if qual_info[5] != '' and qual_info[5] != None:
-            qualifications = qualifications.filter(subdivision__icontains=qual_info[5])
-    # paginate by 10
-    paginator = Paginator(qualifications['QualificationTypes'], 10)
-    page_number = request.GET.get('page')
-    qualification_page = paginator.get_page(page_number)
-    # return the objects that satisfy all search filters
-    return render(request, 'qualifications/qualifications.html', {"qualifications": qualification_page})
-
-# display add qualifiction form page
-def addQualificationView(request):
-    """
-    Add a new qualification
-    :param request
-    :return: Redirect to Assignment View page after changes are made
-    """
-    # init list of qualification fields
-    mturk = mturk_client()
-    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']  
-    # init list of the required country field
-    country_list = []
-    for name in list(countries):
-        country_list.append(name)
-    if request.method == "POST":
-        # qualification form
-        form = QualificationForm(request.POST or None)
-        if form.is_valid():
-            # init field data list
-            qual_info = []  
-            for i in qual_fields:
-                qual_info.append(form.cleaned_data[i])
-            # api call - create qualification type
-            try:
-                response = mturk.create_qualification_type(  
-                    Name= qual_info[0],
-                    Description= qual_info[1],
-                    QualificationTypeStatus='Active')
-                # create qualification object and store on db
-                new_qualification = Qualification(  
-                    nickname = response['QualificationType']['Name'],
-                    description = response['QualificationType']['Description'],
-                    QualificationTypeId = response['QualificationType']['QualificationTypeId'],
-                    comparator = qual_info[2],
-                    int_value = qual_info[3],
-                    country = qual_info[4],
-                    subdivision = qual_info[5],
-                    status = response['QualificationType']['QualificationTypeStatus'])
-                instance = form.save()
-                new_qualification.pk = instance.pk
-                new_qualification.save()
-                date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
-                nickname = response['QualificationType']['Name']
-                q_t_id = response['QualificationType']['QualificationTypeId']
-                logger.info(
-                    date + "User " + request.user.get_username() + " created qualification " + nickname + " (ID " + q_t_id + ")"
-                )
-                messages.success(request, "Item has been added!")
-            # error handling for ServiceFault, RequestError
-            except mturk.exceptions.ServiceFault:  
-                messages.error(request, "API Service Fault. Please try again later")
-            except mturk.exceptions.RequestError:
-                messages.error(request, "Failed to create qualification type. Please try again.")
-            except:
-                messages.error(request, "Unexpected Error")
-            return redirect(qualificationsView)
-        else:
-            messages.error(request, "Item was not added")
-            return redirect(qualificationsView)
-    else:
-        return render(request, 'qualifications/addQualification.html', {"country": country_list})
-
-# updating qualifications
-def updateQualificationView(request, List_id):
-    mturk = mturk_client()
-    # retrieve the qualification in the database
-    db_qual = Qualification.objects.get(QualificationTypeId=List_id)
-
-    # cross reference with mturk with an api call (data integrity check)
-    try:
-        qual = mturk.get_qualification_type(QualificationTypeId=db_qual.QualificationTypeId)
-    except mturk.exceptions.ServiceFault:
-        messages.error(request, "API Service Fault")
-    except mturk.exceptions.RequestError:
-        messages.error(request, "Unable to update qualification")
-
-    # update active/inactive status
-    if qual['QualificationType']['QualificationTypeStatus'] == 'Inactive':
-        try:
-            # api call - update qualification type on mturk
-            mturk.update_qualification_type(
-                QualificationTypeId= List_id,
-                QualificationTypeStatus='Active')
-            # database - update qualification status on db
-            db_qual.status = 'Active'
-            db_qual.save()
-        except mturk.exceptions.ServiceFault:
-            messages.error(request, "API Service Fault")
-        except mturk.exceptions.RequestError:
-            messages.error(request, "Unable to update qualification")
-    else:
-        try:
-            # api call - updates the qualification type
-            mturk.update_qualification_type(
-                QualificationTypeId= List_id,
-                QualificationTypeStatus='Inactive')
-            # database - update qualification status on db
-            db_qual.status = 'Inactive'
-            db_qual.save()
-        except mturk.exceptions.ServiceFault:
-            messages.error(request, "API Service Fault")
-        except mturk.exceptions.RequestError:
-            messages.error(request, "Unable to update qualification")
-    date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
-    logger.info(
-        date + "User " + request.user.get_username() + " updated qualification with ID " + List_id
-    )
-    messages.success(request, "Item has been Updated!")
-    return redirect('qualifications')
-
-# display workers table
-def workersView(request):
-    """
-    Workers view Page
-    :param request
-    :return: Workers view page
-    """
-    mturk = mturk_client()
-    workers_list = []
-    hitID_list = []
-    # retrieve all hit IDs
-    for i in Hit.objects.all():  
-        hitID_list.append(i.hit_id)
-    # retrieve all assignments for that hit ID
-    for id in hitID_list:
-        # api call - retrieve all assignments based on hit ID
-        try:
-            response = mturk.list_assignments_for_hit(  
-                HITId=id,
-                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
-            for item in response['Assignments']:
-                workers_list.append(item)
-        # exception raised if hit id not found
-        except mturk.exceptions.RequestError:  
-            print("Could not retrieve", id)
-        except mturk.exceptions.ServiceFault:
-            messages.error(request, "API Service Fault")
-    # paginate by 10
-    paginator = Paginator(workers_list, 10)
-    page_number = request.GET.get('page')
-    worker_page = paginator.get_page(page_number)
-    return render(request, 'workers/workers.html', {"workers": worker_page})
-
-# assign qualifications to worker
-def workerAssignQualView(request, worker_id):
-    """
-    Workers Assign qualifications view Page
-    :param request, worker_id
-    :return: Workers view page
-    """
-    mturk = mturk_client()
-    # api call - gets all qualifications created by admin
-    try:  
-        qualifications_api = mturk.list_qualification_types(  
-            MustBeRequestable=False,
-            MustBeOwnedByCaller=True)
-    except mturk.exceptions.ServiceFault:
-        messages.error(request, "API Service Fault")
-    except mturk.exceptions.RequestError:
-        messages.error(request, "Unable to get qualification types")
-    # api call - assign selected qual need to be in a loop
-    try:
-        response = mturk.associate_qualification_with_worker(
-            QualificationTypeId='string',
-            WorkerId='string',
-            IntegerValue=123,
-            SendNotification=True|False)
-    except mturk.exceptions.ServiceFault:
-        messages.error(request, "API Service Fault")
-    except mturk.exceptions.RequestError:
-        messages.error(request, "Unable to assign qualifications")
-    except:
-        messages.error(request, "Unable to assign qualifications")
-
-    if request.method == "POST":
-        # form = AssignQualForm(request.POST or None)
-        # if form.is_valid():
-            # qual = form.cleaned_data.get("qualifications")\
-        pass
-    else:
-        # return render(request, '/workers')
-        return redirect('/workers')
 
 # display active assignments table
 def asgmtsActiveView(request):
@@ -742,87 +561,251 @@ def payBonusView(request):
     
     return render(request, 'assignments/payBonuses.html', {"assignments": assignments, 'total':total})
 
-# display experiments table
-def experimentsView(request):
+# display qualifications table
+def qualificationsView(request):
     """
-    Experiments view Page
+    Qualification View Page
     :param request
-    :return: Experiments view page
+    :return: Qualification view page
     """
-    # retrieve all experiment objects
-    experiment_items = Experiment.objects.all()
-    if request.method == "POST":
-        # retrieve queries for all experiment fields
-        batch_id = request.POST.get('batch_id')        
-        title = request.POST.get('title')              
-        # filter the objects according to the sort
-        if batch_id != '' and batch_id is not None:
-            experiment_items = experiment_items.filter(batch_id__icontains=batch_id)
-        if title != '' and title is not None:
-            experiment_items = experiment_items.filter(title__icontains=title)
-    # paginate by 10
-    paginator = Paginator(experiment_items, 10)
-    page_number = request.GET.get('page')
-    experiment_page = paginator.get_page(page_number)
-    # return the objects that satisfy all search filters
-    return render(request, 'experiments/experiments.html', {"experiments": experiment_page})
+    mturk = mturk_client()
+    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
+    qual_info = []
+    # api call - gets all qualifications created by admin
+    try:
+        qualifications = mturk.list_qualification_types(  
+            MustBeRequestable=False,
+            MustBeOwnedByCaller=True)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to get qualification types")
+    
+    # retreive inactive qual types from db and cross reference with mturk api call (data check)
+    qual_objects = Qualification.objects.filter(status='Inactive')
+    for item in qual_objects:
+        try:
+            response = mturk.get_qualification_type(
+                QualificationTypeId=item.QualificationTypeId)
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to get qualification types")
+            try:
+                qualifications['QualificationTypes'].append(response['QualificationType'])
+            except mturk.exceptions.ServiceFault:
+                messages.error(request, "API Service Fault")
+            except mturk.exceptions.RequestError:
+                messages.error(request, "Unable to get qualification types")
+            except:
+                messages.error(request, "Unavailable, please try again later.")
 
-# display add experiment form page
-def addExperimentView(request):
-    """
-    Add a new experiment
-    :param request
-    :return: Redirect to experiment View page after changes are made
-    """
     if request.method == "POST":
-        # experiment form
-        form = ExperimentForm(request.POST or None)
+        # append selected fields
+        for field in qual_fields:
+            qual_info.append(request.POST.get(field))
+        # filter the objects according to the sort
+        if qual_info[0] != '' and qual_info[0] is not None:
+            qualifications = qualifications.filter(nickname__icontains=qual_info[0])
+        if qual_info[1] != '' and qual_info[1] is not None:
+            qualifications = qualifications.filter(qualID__icontains=qual_info[1])
+        if qual_info[2] != '' and qual_info[2] is not None:
+            qualifications = qualifications.filter(comparator__icontains=qual_info[2])
+        if qual_info[3] != '' and qual_info[3] is not None:
+            qualifications = qualifications.filter(int_value__icontains=qual_info[3])
+        if qual_info[4] != '' and qual_info[4] is not None:
+            qualifications = qualifications.filter(country__icontains=qual_info[4])
+        if qual_info[5] != '' and qual_info[5] != None:
+            qualifications = qualifications.filter(subdivision__icontains=qual_info[5])
+    # paginate by 10
+    paginator = Paginator(qualifications['QualificationTypes'], 10)
+    page_number = request.GET.get('page')
+    qualification_page = paginator.get_page(page_number)
+    # return the objects that satisfy all search filters
+    return render(request, 'qualifications/qualifications.html', {"qualifications": qualification_page})
+
+# display add qualifiction form page
+def addQualificationView(request):
+    """
+    Add a new qualification
+    :param request
+    :return: Redirect to Assignment View page after changes are made
+    """
+    # init list of qualification fields
+    mturk = mturk_client()
+    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']  
+    # init list of the required country field
+    country_list = []
+    for name in list(countries):
+        country_list.append(name)
+    if request.method == "POST":
+        # qualification form
+        form = QualificationForm(request.POST or None)
         if form.is_valid():
-            form.save()
-            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
-            logger.info(
-                date + "User " + request.user.get_username() + " created experiment named " + request.POST.get('title')
-            )
-            messages.success(request, "Item has been added!")
-            return redirect(experimentsView)
+            # init field data list
+            qual_info = []  
+            for i in qual_fields:
+                qual_info.append(form.cleaned_data[i])
+            # api call - create qualification type
+            try:
+                response = mturk.create_qualification_type(  
+                    Name= qual_info[0],
+                    Description= qual_info[1],
+                    QualificationTypeStatus='Active')
+                # create qualification object and store on db
+                new_qualification = Qualification(  
+                    nickname = response['QualificationType']['Name'],
+                    description = response['QualificationType']['Description'],
+                    QualificationTypeId = response['QualificationType']['QualificationTypeId'],
+                    comparator = qual_info[2],
+                    int_value = qual_info[3],
+                    country = qual_info[4],
+                    subdivision = qual_info[5],
+                    status = response['QualificationType']['QualificationTypeStatus'])
+                instance = form.save()
+                new_qualification.pk = instance.pk
+                new_qualification.save()
+                date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+                nickname = response['QualificationType']['Name']
+                q_t_id = response['QualificationType']['QualificationTypeId']
+                logger.info(
+                    date + "User " + request.user.get_username() + " created qualification " + nickname + " (ID " + q_t_id + ")"
+                )
+                messages.success(request, "Item has been added!")
+            # error handling for ServiceFault, RequestError
+            except mturk.exceptions.ServiceFault:  
+                messages.error(request, "API Service Fault. Please try again later")
+            except mturk.exceptions.RequestError:
+                messages.error(request, "Failed to create qualification type. Please try again.")
+            except:
+                messages.error(request, "Unexpected Error")
+            return redirect(qualificationsView)
         else:
             messages.error(request, "Item was not added")
-            return redirect(experimentsView)
+            return redirect(qualificationsView)
     else:
-        return render(request, 'experiments/addExperiment.html')
+        return render(request, 'qualifications/addQualification.html', {"country": country_list})
 
-# display filter experiment page
-def experimentFilterView(request):
+# updating qualifications
+def updateQualificationView(request, List_id):
+    mturk = mturk_client()
+    # retrieve the qualification in the database
+    db_qual = Qualification.objects.get(QualificationTypeId=List_id)
+
+    # cross reference with mturk with an api call (data integrity check)
+    try:
+        qual = mturk.get_qualification_type(QualificationTypeId=db_qual.QualificationTypeId)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to update qualification")
+
+    # update active/inactive status
+    if qual['QualificationType']['QualificationTypeStatus'] == 'Inactive':
+        try:
+            # api call - update qualification type on mturk
+            mturk.update_qualification_type(
+                QualificationTypeId= List_id,
+                QualificationTypeStatus='Active')
+            # database - update qualification status on db
+            db_qual.status = 'Active'
+            db_qual.save()
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to update qualification")
+    else:
+        try:
+            # api call - updates the qualification type
+            mturk.update_qualification_type(
+                QualificationTypeId= List_id,
+                QualificationTypeStatus='Inactive')
+            # database - update qualification status on db
+            db_qual.status = 'Inactive'
+            db_qual.save()
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to update qualification")
+    date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+    logger.info(
+        date + "User " + request.user.get_username() + " updated qualification with ID " + List_id
+    )
+    messages.success(request, "Item has been Updated!")
+    return redirect('qualifications')
+
+# display workers table
+def workersView(request):
     """
-    Filter application by experiment using session
+    Workers view Page
     :param request
-    :return: Redirect to previous page after changes are made
+    :return: Workers view page
     """
-    # get batch ID and return experiments' title (ID)
+    mturk = mturk_client()
+    workers_list = []
+    hitID_list = []
+    # retrieve all hit IDs
+    for i in Hit.objects.all():  
+        hitID_list.append(i.hit_id)
+    # retrieve all assignments for that hit ID
+    for id in hitID_list:
+        # api call - retrieve all assignments based on hit ID
+        try:
+            response = mturk.list_assignments_for_hit(  
+                HITId=id,
+                AssignmentStatuses=['Submitted', 'Approved', 'Rejected'])
+            for item in response['Assignments']:
+                workers_list.append(item)
+        # exception raised if hit id not found
+        except mturk.exceptions.RequestError:  
+            print("Could not retrieve", id)
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+    # paginate by 10
+    paginator = Paginator(workers_list, 10)
+    page_number = request.GET.get('page')
+    worker_page = paginator.get_page(page_number)
+    return render(request, 'workers/workers.html', {"workers": worker_page})
+
+# assign qualifications to worker
+def workerAssignQualView(request, worker_id):
+    """
+    Workers Assign qualifications view Page
+    :param request, worker_id
+    :return: Workers view page
+    """
+    mturk = mturk_client()
+    # api call - gets all qualifications created by admin
+    try:  
+        qualifications_api = mturk.list_qualification_types(  
+            MustBeRequestable=False,
+            MustBeOwnedByCaller=True)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to get qualification types")
+    # api call - assign selected qual need to be in a loop
+    try:
+        response = mturk.associate_qualification_with_worker(
+            QualificationTypeId='string',
+            WorkerId='string',
+            IntegerValue=123,
+            SendNotification=True|False)
+    except mturk.exceptions.ServiceFault:
+        messages.error(request, "API Service Fault")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Unable to assign qualifications")
+    except:
+        messages.error(request, "Unable to assign qualifications")
+
     if request.method == "POST":
-        experiment = request.POST.get('batch')
-        request.session['experiment'] = experiment
-        return redirect(experimentFilterView)
-    else:   
-        experiment_items = Experiment.objects.all() 
-        return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
-
-
-@xframe_options_exempt
-def gameView(request , hit_id):
-    player = request.GET.get ('worker_id')
-    assign_id = request.GET.get('assign_id')
-    number = AssignStatModel.objects.filter(worker_id = player)
-    name =""
-    for x in number:
-        if x.flag == 1:
-            name = 'X'
-        else:
-            name ='O'
-
-    context = {"player": player , "hit_id":hit_id,"name":name , "assign_id":assign_id}
-    return render(request, 'games/game.html',context)
-
+        # form = AssignQualForm(request.POST or None)
+        # if form.is_valid():
+            # qual = form.cleaned_data.get("qualifications")\
+        pass
+    else:
+        # return render(request, '/workers')
+        return redirect('/workers')
 
 @xframe_options_exempt
 def  waitPageView(request):
@@ -861,3 +844,18 @@ def  waitPageView(request):
     else:
         messages.error(request,"Invalid Assignment ID")
         return render(request, 'games/waitPage.html',{'worker_id':worker_id})
+
+@xframe_options_exempt
+def gameView(request , hit_id):
+    player = request.GET.get ('worker_id')
+    assign_id = request.GET.get('assign_id')
+    number = AssignStatModel.objects.filter(worker_id = player)
+    name =""
+    for x in number:
+        if x.flag == 1:
+            name = 'X'
+        else:
+            name ='O'
+
+    context = {"player": player , "hit_id":hit_id,"name":name , "assign_id":assign_id}
+    return render(request, 'games/game.html',context)
