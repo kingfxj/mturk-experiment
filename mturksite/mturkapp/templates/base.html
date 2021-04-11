@@ -75,12 +75,11 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
-                        <li>
+                        <li class="nav-item">
                             {% if request.session.experiment != None %}
-                                <a href="{% url 'experimentFilter' %}"><span class="navbar-brand mb-0 h1" style="color: rgb(0, 180, 0)"><strong><em>{{ request.session.experiment }}</em></strong></span></a>
-
+                                <a class="nav-link active text-success" style="font-size: 20px;" href="{% url 'experimentFilter' %}"><strong><em>{{ request.session.experiment }}</em></strong></a>
                             {% else %}
-                                <a href="{% url 'experimentFilter' %}"><span class="navbar-brand mb-0 h1" style="color: red"><strong><em>No Experiment Selected ***</em></strong></span></a>
+                                <a class="nav-link active text-danger" style="font-size: 20px;" href="{% url 'experimentFilter' %}"><strong><em>No Experiment Selected ***</em></strong></a>
                             {% endif %}
                         </li>
                     </ul>
