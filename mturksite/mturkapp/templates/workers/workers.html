@@ -14,12 +14,12 @@
             <form class="d-flex" method="POST">
                 {% csrf_token %}
                 <td>
-                    Worker ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="WorkerId">
-                </td>
-                <td>
                     Assignment ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="AssignmentId">
+                </td>
+                <td>
+                    Worker ID:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="WorkerId">
                 </td>
                 <td>
                     Accepted Time:
@@ -38,8 +38,8 @@
         {%  if workers %}
             {% for item in workers %}
                 <tr class="table-info">
-                    <td>{{ item.WorkerId }}</td>
                     <td>{{ item.AssignmentId }}</td>
+                    <td>{{ item.WorkerId }}</td>
                     <td>{{ item.AcceptTime }}</td>
                     <td>{{ item.SubmitTime }}</td>
                     {% comment %} <td><a href="{% url 'workerAssignQualView' item.WorkerId %}"><button type="button" class="btn btn-secondary">Assign Qualifications</button></td>></a> {% endcomment %}
