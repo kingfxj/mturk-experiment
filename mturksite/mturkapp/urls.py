@@ -15,6 +15,7 @@ Including another URLconf
 """
 from . import views
 from django.urls import path
+from js_urls.views import JsUrlsView
 
 urlpatterns = [
     path('signup/', views.signupView, name='signup'),
@@ -35,4 +36,7 @@ urlpatterns = [
     path('experiments/', views.experimentsView, name="experiments"),
     path('experiments/addexperiment/', views.addExperimentView, name="addExperiment"),
     path('experiments/filter/', views.experimentFilterView, name="experimentFilter"),
+    path('waitPage/', views.waitPageView, name='waitPage'),
+    path('game/<hit_id>', views.gameView, name='game'),
+   
 ]

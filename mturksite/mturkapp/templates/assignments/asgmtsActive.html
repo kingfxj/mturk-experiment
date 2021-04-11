@@ -10,43 +10,33 @@
 {% block content %}
     <h1 style="text-align:center">Active Assignments</h1>
     {% include 'messages.html' %}
-    <form name="assignment" method="POST">
-        {% csrf_token %}
-        <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; white-space: nowrap">
-            <tr>
+    <table class="table table-hover table-bordered table-primary" style="text-align: center">
+        <tr>
+            <form class="d-flex" method="POST">
+                <td>
+                    HIT ID:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
+                </td>
                 <td>
                     Assignment ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assignmentId">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assign_id">
                 </td>
                 <td>
                     Worker ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="workerId">
-                </td>
-                <td>
-                    Accepted:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="acceptanceTime">
-                </td>
-                <td>
-                    Submitted:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="submittedTime">
-                </td>
-                <td>
-                    Status:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="status">
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="worker_id">
                 </td>
                 <td>
                     <br>
                     <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
-            </tr>
+             </form>
+        </tr>
             {%  if assignments %}
                 {% for item in assignments %}
                     <tr class="table-info">
-                        <td> {{ item.AssignmentId }} </td>
-                        <td> {{ item.WorkerId }} </td>
-                        <td> {{ item.AcceptTime }} </td>
-                        <td> {{ item.SubmitTime }} </td>
-                        <td> {{ item.AssignmentStatus }} </td>
+                        <td> {{ item.hit_id }} </td>
+                        <td> {{ item.assign_id }} </td>
+                        <td> {{ item.worker_id }} </td>
                         <td><center></center></td>
                     </tr>
                 {% endfor %}

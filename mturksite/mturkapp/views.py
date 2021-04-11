@@ -5,10 +5,12 @@ from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.views.decorators.clickjacking import xframe_options_exempt
 from .mturk_client import mturk_client
 from django_countries import countries
 from django_countries.fields import CountryField
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
 import random
 
 # display signup page
@@ -214,7 +216,7 @@ def addHitView(request):
     :return: Redirect to HIT View page after changes are made
     """
     # question form
-    game = str(settings.BASE_DIR) + "/mturkapp/templates/games/mine.xml"
+    game = str(settings.BASE_DIR) + "/mturkapp/templates/games/question.xml"
     question = open(game).read()
     # retrieve all hittype objects
     hittype_items = Hittype.objects.all()    
@@ -249,8 +251,7 @@ def addHitView(request):
             messages.error(request, "Item was not added")
             return redirect(hitsView)
     else:
-        context = {"hittype_items":hittype_items}
-        return render(request, 'hits/addHit.html', context)
+        return render(request, 'hits/addHit.html', {"hittype_items":hittype_items})
 
 # display qualifications table
 def qualificationsView(request):
@@ -363,8 +364,7 @@ def addQualificationView(request):
             messages.error(request, "Item was not added")
             return redirect(qualificationsView)
     else:
-        context = {"country": country_list}
-        return render(request, 'qualifications/addQualification.html', context)
+        return render(request, 'qualifications/addQualification.html', {"country": country_list})
 
 # updating qualifications
 def updateQualificationView(request, List_id):
@@ -491,6 +491,8 @@ def asgmtsActiveView(request):
     :param request
     :return: Active assignment page
     """   
+    # retrieve all active assignment objects and sort
+    activeassign_items = AssignStatModel.objects.all().order_by('-id')
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
     # select all hittype objects accordingly
@@ -505,52 +507,45 @@ def asgmtsActiveView(request):
     for item in hit_items:
         if str(item.hittype_id) in hittypes_filtered:
             hits_filtered.append(str(item.hit_id))
-    # select all assignments (from api call) accordingly
+    # select all active assignments accordingly
+    activeassign_items = AssignStatModel.objects.all()
+    activeassign_filtered = []
+    for item in activeassign_items:
+        if str(item.hit_id) in hits_filtered:
+            activeassign_filtered.append(item)
+    activeassign_items = activeassign_filtered
+
+    # select all completed assignments (from api call) accordingly
     mturk = mturk_client()
-    assignments = []
+    completed_assignments = []
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
-            assignments.append(assignment)
+            completed_assignments.append(assignment)
+   
     # retrieve queries for all assignment fields
     if request.method == "POST":
-        assignmentIdFilter = request.POST.get('assignmentId')   
-        workerIdFilter = request.POST.get('workerId')          
-        acceptTimeFilter = request.POST.get('acceptanceTime')  
-        submitTimeFilter = request.POST.get('submittedTime')    
-        statusFilter = request.POST.get('status')             
+        assign_id = request.POST.get('assign_id')   
+        worker_id = request.POST.get('worker_id')   
+        hit_id = request.POST.get('hit_id')                          
+        flag = request.POST.get('flag')  
+        print(activeassign_items)
         # filter the objects according to the sort
-        if assignmentIdFilter != '' and assignmentIdFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if assignmentIdFilter.lower() in assignment['AssignmentId'].lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if workerIdFilter != '' and workerIdFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if  workerIdFilter.lower() in assignment['WorkerId'].lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if acceptTimeFilter != '' and acceptTimeFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if acceptTimeFilter.lower() in assignment['AcceptTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if submitTimeFilter != '' and submitTimeFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if submitTimeFilter.lower() in assignment['SubmitTime'].strftime("%B %-d, %Y, %-H:%M %p").lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
-        if statusFilter != '' and statusFilter is not None:
-            temp_assignments = []
-            for assignment in assignments:
-                if statusFilter.lower() in assignment['AssignmentStatus'].lower():
-                    temp_assignments.append(assignment)
-            assignments = temp_assignments
+        if assign_id != '' and assign_id is not None:
+            activeassign_items = activeassign.filter(assign_id__icontains=assign_id)
+        if worker_id != '' and worker_id is not None:
+            activeassign_items = activeassign_items.filter(worker_id__icontains=worker_id)
+        if hit_id != '' and hit_id is not None:
+            activeassign_items = activeassign_items.filter(hit_id__icontains=hit_id)
+        if flag != '' and flag is not None:
+            activeassign_items = activeassign_items.filter(flag__icontains=flag)
+    # delete active assignments if it's completed
+    active_assignment = AssignStatModel.objects.all()
+    for obj1 in active_assignment:
+        for obj2 in completed_assignments:
+            if str(obj1.assign_id) == str(obj2['AssignmentId']):
+                obj1.delete()
     # paginate by 10
-    paginator = Paginator(assignments, 10)
+    paginator = Paginator(activeassign_items, 10)
     page_number = request.GET.get('page')
     assignment_page = paginator.get_page(page_number)
     # return the objects that satisfy all search filters
@@ -562,7 +557,19 @@ def asgmtsCompletedView(request):
     View Completed assignments
     :param request
     :return: Completed assignments page
-    """   
+    """
+    mturk = mturk_client()
+    # approve chosen assigments if approve button pressed
+    if request.method == "POST" and request.POST.get("approve"):
+        chosen_asgmts = request.POST.getlist('chosen_assignments')
+        for assignmentId in chosen_asgmts:
+            mturk.approve_assignment(AssignmentId=str(assignmentId))
+    # reject chosen assigments if reject button pressed
+    if request.method == "POST" and request.POST.get("reject"):
+        chosen_asgmts = request.POST.getlist('chosen_assignments')
+        for assignmentId in chosen_asgmts:
+            mturk.reject_assignment(AssignmentId=str(assignmentId), RequesterFeedback="rejected")
+
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
     # select all hittype objects accordingly
@@ -578,11 +585,12 @@ def asgmtsCompletedView(request):
         if str(item.hittype_id) in hittypes_filtered:
             hits_filtered.append(str(item.hit_id))
     # select all assignments (from api call) accordingly
-    mturk = mturk_client()
     assignments = []
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             assignments.append(assignment)
+    # sort assignments based on time submitted
+    assignments.sort(key=lambda item:item['SubmitTime'], reverse=True)
     # append/create bonus information for assignments
     for assignment in assignments:
         bonus = Bonus.objects.filter(assignment_id=assignment['AssignmentId'])
@@ -784,3 +792,58 @@ def experimentFilterView(request):
     else:   
         experiment_items = Experiment.objects.all() 
         return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
+
+
+@xframe_options_exempt
+def gameView(request , hit_id):
+    player = request.GET.get ('worker_id')
+    assign_id = request.GET.get('assign_id')
+    number = AssignStatModel.objects.filter(worker_id = player)
+    name =""
+    for x in number:
+        if x.flag == 1:
+            name = 'X'
+        else:
+            name ='O'
+
+    context = {"player": player , "hit_id":hit_id,"name":name , "assign_id":assign_id}
+    return render(request, 'games/game.html',context)
+
+
+@xframe_options_exempt
+def  waitPageView(request):
+    hit_id = request.GET.get('hitId')
+    worker_id = request.GET.get('workerId')
+    assign_id = request.GET.get('assignmentId')
+    flag = 0
+    if assign_id:
+
+        assignment = AssignStatModel.objects.create(assign_id=assign_id, hit_id=hit_id, worker_id=worker_id,flag = flag)
+        assign = AssignStatModel.objects.filter(hit_id= hit_id)
+
+        duplicates = AssignStatModel.objects.values('worker_id')
+        duplicates = duplicates.order_by()
+        duplicates = duplicates.annotate(
+            min_id=models.Min("id"), count_id=models.Count("id")
+        )
+        duplicates = duplicates.filter(count_id__gt=1)
+
+        for duplicate in duplicates:
+            to_delete = AssignStatModel.objects.filter(worker_id=worker_id)
+            to_delete = to_delete.exclude(id=duplicate["min_id"])
+            to_delete.delete()
+
+        if (assign.count() == 2):
+            
+            player = worker_id
+            first_assign = AssignStatModel.objects.filter(hit_id=hit_id).first()
+            first_assign.flag = 1
+            first_assign.save()
+    
+            return redirect( '/game/' + hit_id + '?worker_id=' + player + '&assign_id=' + assign_id )
+        else:
+            return render(request, 'games/waitPage.html',{'worker_id': worker_id})
+
+    else:
+        messages.error(request,"Invalid Assignment ID")
+        return render(request, 'games/waitPage.html',{'worker_id':worker_id})

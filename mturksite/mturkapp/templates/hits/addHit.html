@@ -24,11 +24,11 @@
             </tr>
             <tr><td> Max Assignments:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Enter max assignments" aria-label="Search" name="max_assignments"></td>
+                <td><input class="form-control me-2" type="number" min="1" max="1000000000" placeholder="Enter max assignments" aria-label="Search" name="max_assignments" value="1"></td>
             </tr>
             <tr><td>Lifetime in Seconds:</td></tr>
             <tr>
-                <td><input class="form-control me-2" type="search" placeholder="Enter Lifetime (in seconds)" aria-label="Search" name="lifetime_in_seconds"></td>
+                <td><input class="form-control me-2" type="number" min="30" max="31536000" placeholder="Enter Lifetime (in seconds)" aria-label="Search" name="lifetime_in_seconds" value="86400"></td>
             </tr>
             <tr>
                 <td><input class="btn btn-info" type="submit" style="float: right;" value="Submit"></td>

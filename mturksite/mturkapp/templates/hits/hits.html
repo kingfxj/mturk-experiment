@@ -15,12 +15,12 @@
             <form class="d-flex" method="POST">
                 {% csrf_token %}
                 <td>
-                    HIT ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
-                </td>
-                <td>
                     HITType ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hittype_id">
+                </td>
+                <td>
+                    HIT ID:
+                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
                 </td>
                 <td>
                     Max Assignments:
@@ -39,8 +39,8 @@
         {%  if hits %}
             {% for item in hits %}
                 <tr class="table-info">
+                    <td><center> {{item.hittype_id}} </center></td>
                     <td><center> {{ item.hit_id }} </center></td>
-                    <td><center> {{ item.hittype_id }}</center></td>
                     <td><center>  {{ item.max_assignments }}</center></td>
                     <td><center>  {{ item.lifetime_in_seconds }}</center></td>
                     <td><center></center></td>
