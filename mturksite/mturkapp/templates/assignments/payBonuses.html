@@ -8,53 +8,35 @@
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">Pay Bonus</h1>
+    <h1 style="text-align:center">Pay Bonuses</h1>
     {% include 'messages.html' %}
-    <form class="d-flex" method="POST">
+    <div class="row justify-content-center">
+    <form name="bonuses" method="POST" style="text-align:center;">
         {% csrf_token %}
-        <table id="assignment" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; ">
+        <table id="assignment_bonuses" class="table table-hover table-bordered table-primary" style="text-align: center; vertical-align: middle; ">
             <tr>
-                <td>
-                    Name:
-                    <input class="form-control me-2" type="search" placeholder="Name" aria-label="Search" name="name">
-                </td>
-                <td>
-                    Surname:
-                    <input class="form-control me-2" type="search" placeholder="Surame" aria-label="Search" name="surname">
-                </td>
-                <td>
-                    Birth Year:
-                    <input class="form-control me-2" type="search" placeholder="Birth Year" aria-label="Search" name="birthYear">
-                </td>
-                <td>
-                    Birth Place:
-                    <input class="form-control me-2" type="search" placeholder="Birth Place" aria-label="Search" name="birthPlace">
-                </td>
-                <td>
-                    Active:
-                    <select class="form-control me-2" name="active">
-                        <option value="">--Please select an option--</option>
-                        <option value="True">True</option>
-                        <option value="False">False</option>
-                    </select>
-                </td>
-                <td>
-                    <br>
-                    <input type="submit" value="Search">
-                </td>
+                <td>Assignment ID:</td>
+                <td>Worker ID:</td>
+                <td>Amount:</td>
             </tr>
-            {%  if all_items %}
-                {% for item in all_items|dictsort:"name.lower" %}
+            {%  if assignments %}
+                {% for item in assignments %}
                     <tr class="table-info">
-                        <td> {{ item.name }} </td>
-                        <td> {{ item.surname }} </td>
-                        <td> {{ item.birthYear }} </td>
-                        <td> {{ item.birthCity }} </td>
-                        <td> {{ item.active }} </td>
-                        <td> <input type="submit" name="deletePayment {{ item.id }}" id="{{ item.id }}" value="Delete"/></td>
+                        <input type="hidden" name="chosen_assignments" value="{{ item.AssignmentId }},{{ item.WorkerId }},{{ item.Amount }}"/>
+                        <td> {{ item.AssignmentId }} </td>
+                        <td> {{ item.WorkerId }} </td>
+                        <td> ${{ item.Amount }} </td>
                     </tr>
                 {% endfor %}
             {% endif %}
+            <tr>
+                <td> <strong>TOTAL</strong> </td>
+                <td></td>
+                <td> ${{ total }} </td>
+            </tr>
         </table>
+        <div class="float-left" ><input type="text" name="reason" size="41" placeholder='Enter Reason (leave blank for "performance" default)'></div>
+        <div class="float-right" ><input type="submit" class="btn btn-info" name="pay" value="Send Bonus Payments"/></div>
     </form>
+    </div>
 {% endblock %}

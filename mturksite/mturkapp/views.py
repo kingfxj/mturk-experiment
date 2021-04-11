@@ -530,7 +530,7 @@ def asgmtsActiveView(request):
         print(activeassign_items)
         # filter the objects according to the sort
         if assign_id != '' and assign_id is not None:
-            activeassign_items = activeassign.filter(assign_id__icontains=assign_id)
+            activeassign_items = activeassign_items.filter(assign_id__icontains=assign_id)
         if worker_id != '' and worker_id is not None:
             activeassign_items = activeassign_items.filter(worker_id__icontains=worker_id)
         if hit_id != '' and hit_id is not None:
@@ -561,13 +561,49 @@ def asgmtsCompletedView(request):
     # approve chosen assigments if approve button pressed
     if request.method == "POST" and request.POST.get("approve"):
         chosen_asgmts = request.POST.getlist('chosen_assignments')
-        for assignmentId in chosen_asgmts:
+        for assignment in chosen_asgmts:
+            assignmentId = assignment.split(",")[0]
             mturk.approve_assignment(AssignmentId=str(assignmentId))
     # reject chosen assigments if reject button pressed
     if request.method == "POST" and request.POST.get("reject"):
         chosen_asgmts = request.POST.getlist('chosen_assignments')
-        for assignmentId in chosen_asgmts:
+        for assignment in chosen_asgmts:
+            assignmentId = assignment.split(",")[0]
             mturk.reject_assignment(AssignmentId=str(assignmentId), RequesterFeedback="rejected")
+    # go to pay bonuses view if requirements are met
+    if request.method == "POST" and request.POST.get("pay_bonuses"):
+        chosen_asgmts = request.POST.getlist('chosen_assignments')
+        okay = True
+        asgmts_list = []
+        for assignment in chosen_asgmts:
+            asgmt_list = assignment.split(",")
+            assignment_status = asgmt_list[2]
+            # make sure all chosen assignments are approved before continuing
+            if assignment_status != "Approved":
+                messages.error(request, "One or more of the selected assignments are not approved.")
+                okay = False
+                break
+            bonus_status = asgmt_list[3]
+            # make sure all chosen assignments are unpaid before continuing
+            if "un" not in bonus_status.lower():
+                messages.error(request, "Bonuses for one or more of the selected assignments have already been paid.")
+                okay = False
+                break
+            asgmts_list.append(asgmt_list)
+        # if everything okay, go to pay bonuses page and save data in session for easy use
+        if okay:
+            bonus_asgmts = []
+            total = 0
+            for assignment in asgmts_list:
+                temp_assignment = {}
+                temp_assignment['AssignmentId'] = assignment[0]
+                temp_assignment['WorkerId'] = assignment[1]
+                temp_assignment['Amount'] = assignment[4]
+                total = total + float(assignment[4])
+                bonus_asgmts.append(temp_assignment)
+            request.session['bonus_asgmts'] = bonus_asgmts
+            request.session['total'] = total
+            return redirect(payBonusView)
 
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
@@ -663,40 +699,26 @@ def payBonusView(request):
     """
     Pay Bonus
     :param request
-    :return:
-    NOT IMPLEMENTED
+    :return: Pay Bonuses page
     """
-    # # retrieve assignment IDs
-    # selectPayment = request.session.get('payBonus', None)
-    # if not selectPayment:
-    #     selectPayment = []
-    # all_items = Assignment.objects.filter(id__in=selectPayment)
-    # # retrieve queries for all fields
-    # if request.method == "POST":
-    #     name = request.POST.get('name')            
-    #     surname = request.POST.get('surname')     
-    #     birthYear = request.POST.get('birthYear')   
-    #     birthCity = request.POST.get('birthCity')   
-    #     active = request.POST.get('active')         
-    #     # remove that ID from payment
-    #     for key in request.POST.keys():
-    #         if key.startswith('deletePayment'):
-    #             action = key[14:]
-    #             selectPayment.remove(action)
-    #             request.session['payBonus'] = selectPayment
-    #             all_items = Assignment.objects.filter(id__in=selectPayment)
-    #     # filter the objects according to the sort
-    #     if name != '' and name is not None:
-    #         all_items = all_items.filter(name__icontains=name)
-    #     if surname != '' and surname is not None:
-    #         all_items = all_items.filter(surname__icontains=surname)
-    #     if birthYear != '' and birthYear is not None:
-    #         all_items = all_items.filter(birthYear__icontains=birthYear)
-    #     if birthCity != '' and birthCity is not None:
-    #         all_items = all_items.filter(birthCity__icontains=birthCity)
-    #     if active != '' and active is not None:
-    #         all_items = all_items.filter(active__icontains=active)
-    # return render(request, 'assignments/payBonuses.html', {"all_items": all_items})
+    assignments = request.session['bonus_asgmts'] if ('bonus_asgmts' in request.session) else ""
+    total = request.session['total'] if ('total' in request.session) else ""
+    # retrieve queries for all fields
+    if request.method == "POST":
+        mturk = mturk_client() 
+        reason = "Performance" if not request.POST.get('reason') else request.POST.get('reason')
+        for assignment in assignments:
+            mturk.send_bonus(
+                WorkerId=assignment['WorkerId'],
+                BonusAmount=assignment['Amount'],
+                AssignmentId=assignment['AssignmentId'],
+                Reason=reason
+            )
+            Bonus.objects.filter(assignment_id=assignment['AssignmentId']).update(status='Paid')
+        messages.success(request, "Bonus payments successfully sent!")
+        return redirect(asgmtsCompletedView)
+    
+    return render(request, 'assignments/payBonuses.html', {"assignments": assignments, 'total':total})
 
 # display users and their status in current lobby
 def lobbyView(request):
