@@ -52,12 +52,12 @@ It is strongly recommended that you install **pgAdmin 4** **_(https://www.pgadmi
 
 ## _Game - OS Installations_
 
-To make changes to our existing game, you must first install/download depending on your OS system.<br>
-### Linux/Mac:
+To make changes to our existing game, you must first install/download depending on your OS system.<br><br>
+**Linux/Mac:**<br>
 `sudo apt update`<br>
-`sudo apt install redis-server`<br><br>
-**_Further documentation: https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04_**<br>
-### Windows:
+`sudo apt install redis-server`<br>
+**_Further documentation: https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04_**<br><br>
+**Windows:**<br>
 Download Memurai **_(https://www.memurai.com/get-memurai)_**
 
 ## _Game - Changing Domain Name_
