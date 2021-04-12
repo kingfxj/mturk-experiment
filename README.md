@@ -6,7 +6,7 @@ First, create a virtual environment in the root directory of your local repo.<br
 Then, activate the virtual environment (assuming venv is the name of your virtual environment):<br>
 **Linux/Mac:** `source venv/bin/activate`<br>
 **Windows:** `./venv/Scripts/activate`<br><br>
-While the venv is active, install dependencies from requirements.txt:<br>
+While the venv is active, install dependencies from `requirements.txt`:<br>
 `pip install -r requirements.txt`<br><br>
 To deactivate the virtual environment, simply run `deactivate`.<br><br>
 **_Note: ALL required libraries can be found in the `requirements.txt` file._**
