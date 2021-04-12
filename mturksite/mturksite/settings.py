@@ -95,6 +95,9 @@ DATABASES = {
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
         'HOST': env('HOST'),
         'PORT': '5432',
+        'TEST': {
+            'NAME':'mytestdatabase'
+        }
     }
 }
 

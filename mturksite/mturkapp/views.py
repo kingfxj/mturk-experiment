@@ -105,14 +105,17 @@ def hittypesView(request):
     # retrieve all hittype objects
     hittype_items = Hittype.objects.all().order_by('-id')
     # filter by experiment
-    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
-    print(experimentFilter)
-    # select all hittype objects accordingly
-    hittypes_filtered = []
-    for item in hittype_items:
-        if str(item.batch_id) in experimentFilter:
-            hittypes_filtered.append(item)
-    hittype_items = hittypes_filtered
+    try:
+        experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+        print(experimentFilter)
+        # select all hittype objects accordingly
+        hittypes_filtered = []
+        for item in hittype_items:
+            if str(item.batch_id) in experimentFilter:
+                hittypes_filtered.append(item)
+        hittype_items = hittypes_filtered
+    except:
+        messages.warning(request,"No Experiment Filter Selected")
     # retrieve queries for all hittype fields
     if request.method == "POST":
         title = request.POST.get('title')               
@@ -151,10 +154,17 @@ def addHittypeView(request):
     """
     # api call - gets all qualifications created by admin
     mturk = mturk_client()
-    qualifications = mturk.list_qualification_types(  
-        MustBeRequestable=False,
-        MustBeOwnedByCaller=True,
-    )
+    try:
+        qualifications = mturk.list_qualification_types(  
+            MustBeRequestable=False,
+            MustBeOwnedByCaller=True,
+        )
+    except mturk.exceptions.ServiceFault:
+        messages.error(request,"API Service Fault.Please Try again")
+    except mturk.exceptions.RequestError:
+        messages.error(request, "Failed to list qualification types. Please try again.")
+    except:
+        messages.error(request, "Unexpected Error")
     if request.method == "POST":
         # hittype form
         form = HittypeForm(request.POST or None)       
@@ -182,31 +192,39 @@ def addHittypeView(request):
                     batch_id = item.batch_id
                     break
             # api call - create hittype
-            hittypes = mturk.create_hit_type(
-                AutoApprovalDelayInSeconds = Auto_Approval_Delay_In_Seconds,
-                AssignmentDurationInSeconds = Assignment_Duration_In_Seconds ,
-                Reward = reward,
-                Title = title,
-                Keywords = keyword,
-                Description = description
-            )
-            instance = form.save()
-            hittype_id = Hittype(hittype_id = hittypes["HITTypeId"], 
-                title = title , 
-                description = description , 
-                keyword = keyword , 
-                reward = reward , 
-                qualifications = qualifications,
-                batch_id = batch_id,
-                batch_title = batch_title
-            )
-            hittype_id.pk = instance.pk
-            hittype_id.save()
-            messages.success(request, "Item has been added!")
-            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
-            logger.info(
-                date + "User " + request.user.get_username() + " created HITType " + title + " (" + hittypes["HITTypeId"] + ")"
-            )
+            try:
+                hittypes = mturk.create_hit_type(
+                    AutoApprovalDelayInSeconds = Auto_Approval_Delay_In_Seconds,
+                    AssignmentDurationInSeconds = Assignment_Duration_In_Seconds ,
+                    Reward = reward,
+                    Title = title,
+                    Keywords = keyword,
+                    Description = description
+                )
+                instance = form.save()
+                hittype_id = Hittype(hittype_id = hittypes["HITTypeId"], 
+                    title = title , 
+                    description = description , 
+                    keyword = keyword , 
+                    reward = reward , 
+                    qualifications = qualifications,
+                    batch_id = batch_id,
+                    batch_title = batch_title
+                )
+                hittype_id.pk = instance.pk
+                hittype_id.save()
+                messages.success(request, "Item has been added!")
+                date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+                logger.info(
+                    date + "User " + request.user.get_username() + " created HITType " + title + " (" + hittypes["HITTypeId"] + ")"
+                )
+            # error handling for Request Error and Service Fault
+            except mturk.exceptions.ServiceFault:
+                messages.error(request,"API Service Fault.Please Try again")
+            except mturk.exceptions.RequestError:
+                messages.error(request, "Failed to create HIT Type. Please try again.")
+            except:
+                messages.error(request, "Unexpected Error")
             return redirect(hittypesView)
         else:
             messages.error(request, "Item was not added")
@@ -226,20 +244,23 @@ def hitsView(request):
     # retrieve all hit objects and sort
     hit_items = Hit.objects.all().order_by('-id')
     # filter by experiment
-    experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
-    # select all hittype objects accordingly
-    hittype_items = Hittype.objects.all()
-    hittypes_filtered = []
-    for item in hittype_items:
-        if str(item.batch_id) in experimentFilter:
-            hittypes_filtered.append(str(item.hittype_id))
-    # select all hit objects accordingly
-    hit_items = Hit.objects.all()
-    hits_filtered = []
-    for item in hit_items:
-        if str(item.hittype_id) in hittypes_filtered:
-            hits_filtered.append(item)
-    hit_items = hits_filtered
+    try:
+        experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+        # select all hittype objects accordingly
+        hittype_items = Hittype.objects.all()
+        hittypes_filtered = []
+        for item in hittype_items:
+            if str(item.batch_id) in experimentFilter:
+                hittypes_filtered.append(str(item.hittype_id))
+        # select all hit objects accordingly
+        hit_items = Hit.objects.all()
+        hits_filtered = []
+        for item in hit_items:
+            if str(item.hittype_id) in hittypes_filtered:
+                hits_filtered.append(item)
+        hit_items = hits_filtered
+    except:
+        messages.warning(request, "No Experiment Filter Selected")
     # retrieve queries for all hit fields
     if request.method == "POST":
         hit_id = request.POST.get('hit_id')                          
@@ -285,25 +306,33 @@ def addHitView(request):
             hittypes = Hittype.objects.get(pk = x)
             # api call - create hit with hittype
             mturk = mturk_client()
-            hit = mturk.create_hit_with_hit_type(
-                HITTypeId = hittypes.hittype_id,
-                MaxAssignments = maxassignments ,
-                LifetimeInSeconds= int(lifetime_in_seconds),
-                Question =question
-            )
-            instance = form.save()
-            hit_id = Hit(hit_id = hit["HIT"]["HITId"], 
-                hittype_id = hittypes.hittype_id  , 
-                max_assignments = maxassignments , 
-                lifetime_in_seconds = lifetime_in_seconds 
-            )
-            hit_id.pk = instance.pk
-            hit_id.save()
-            messages.success(request, "Item has been added!")
-            date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
-            logger.info(
-                date + "User " + request.user.get_username() + " created HIT from HITType with ID " + str(hittypes.hittype_id)
-            )
+            try:
+                hit = mturk.create_hit_with_hit_type(
+                    HITTypeId = hittypes.hittype_id,
+                    MaxAssignments = maxassignments ,
+                    LifetimeInSeconds= int(lifetime_in_seconds),
+                    Question =question
+                )
+                instance = form.save()
+                hit_id = Hit(hit_id = hit["HIT"]["HITId"], 
+                    hittype_id = hittypes.hittype_id  , 
+                    max_assignments = maxassignments , 
+                    lifetime_in_seconds = lifetime_in_seconds 
+                )
+                hit_id.pk = instance.pk
+                hit_id.save()
+                messages.success(request, "Item has been added!")
+                date = "[" + datetime.now(pytz.timezone('Canada/Mountain')).strftime("%Y-%m-%d %H:%M:%S") + "] "
+                logger.info(
+                    date + "User " + request.user.get_username() + " created HIT from HITType with ID " + str(hittypes.hittype_id)
+                )
+            # error handling for Service Fault and Request Error
+            except mturk.exceptions.ServiceFault:
+                messages.error(request,"API Service Fault.Please Try again")
+            except mturk.exceptions.RequestError:
+                messages.error(request, "Failed to create HIT. Please try again.")
+            except:
+                messages.error(request, "Unexpected Error")
             return redirect(hitsView)
         else:
             messages.error(request, "Item was not added")
@@ -322,6 +351,9 @@ def asgmtsActiveView(request):
     activeassign_items = AssignStatModel.objects.all().order_by('-id')
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    if experimentFilter is None:
+        messages.error(request ,"Cannot open Active Assignments without selecting Experiment")
+        return redirect(experimentsView)
     # select all hittype objects accordingly
     hittype_items = Hittype.objects.all()
     hittypes_filtered = []
@@ -341,7 +373,6 @@ def asgmtsActiveView(request):
         if str(item.hit_id) in hits_filtered:
             activeassign_filtered.append(item)
     activeassign_items = activeassign_filtered
-
     # select all completed assignments (from api call) accordingly
     mturk = mturk_client()
     completed_assignments = []
@@ -443,6 +474,9 @@ def asgmtsCompletedView(request):
 
     # filter by experiment
     experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
+    if experimentFilter is None:
+        messages.error(request ,"Cannot open Completed Assignment without selecting Experiment")
+        return redirect(experimentsView)
     # select all hittype objects accordingly
     hittype_items = Hittype.objects.all()
     hittypes_filtered = []
