@@ -471,18 +471,19 @@ def workerAssignQualView(request, worker_id):
     except mturk.exceptions.RequestError:
         messages.error(request, "Unable to get qualification types")
     # api call - assign selected qual need to be in a loop
-    try:
-        response = mturk.associate_qualification_with_worker(
-            QualificationTypeId='string',
-            WorkerId='string',
-            IntegerValue=123,
-            SendNotification=True|False)
-    except mturk.exceptions.ServiceFault:
-        messages.error(request, "API Service Fault")
-    except mturk.exceptions.RequestError:
-        messages.error(request, "Unable to assign qualifications")
-    except:
-        messages.error(request, "Unable to assign qualifications")
+    assigned_qual = ''
+    for worker in worker_list:
+        try:
+            response = mturk.associate_qualification_with_worker(
+                QualificationTypeId=assigned_qual,
+                WorkerId=worker,
+                SendNotification=True)
+        except mturk.exceptions.ServiceFault:
+            messages.error(request, "API Service Fault")
+        except mturk.exceptions.RequestError:
+            messages.error(request, "Unable to assign qualifications")
+        except:
+            messages.error(request, "Unable to assign qualifications")
 
     if request.method == "POST":
         # form = AssignQualForm(request.POST or None)
