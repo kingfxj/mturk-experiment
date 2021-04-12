@@ -9,6 +9,14 @@ from mturkapp.models import Hit, Hittype, Qualification, Experiment ,  AssignSta
 from mturkapp.mturk_client import mturk_client
 from django.conf import settings
 from faker import Faker
+import unittest
+from unittest import mock 
+from unittest.mock import MagicMock,patch
+import pytest
+
+
+
+
 
 
 class LoginTests(TestCase):
@@ -142,8 +150,19 @@ class HitsViewTests(TestCase):
         self.assertEquals(response.status_code, 200)
         # test right template used
         self.assertTemplateUsed(response, 'hits/hits.html')
-
-
+    
+    def test_hitView_POST_filter(self):
+            hit = Hit.objects.create(
+                hit_id = 'fake hitid' ,                         
+                hittype_id = 'fake hittypeid',            
+                max_assignments = 20 ,        
+                lifetime_in_seconds = 86400
+            )
+            response = self.client.post(reverse('hits'), {
+                'hit_id': 'fake hitid'
+            })
+            # test OK
+            self.assertEquals(response.status_code, 200)
 class AddHitViewTests(TestCase):
 
     def test_addHitView_Health(self):
@@ -155,15 +174,15 @@ class AddHitViewTests(TestCase):
 
     def test_addHitView_POST_and_DB(self):
         mturk = mturk_client()
-        addhit = Hittype.objects.create(
-            batch_id = 'test8765',
-            batch_title = 'test2',
-            title = 'test title 2',
-            hittype_id = '3CS3U1VE5KBFL43TLU25PEJOXNXS0M',
-            description = 'fake description2',
-            keyword = 'test2',
-            reward = '1.00',
-            qualifications = 'testqual2'
+        hittype1 = Hittype.objects.create(
+            batch_id = '4251b7d5-bc0a-4f08-bd4f-65168e5a5163',
+            batch_title = 'Testing',
+            title = 'test title 1',
+            hittype_id = '3CS3U1VE5KBFL43TLU25PEJOXNXS0M',   # create your own hittype id to get this test working
+            description = 'fake description1',
+            keyword = 'test1',
+            reward = '0.01',
+            qualifications = 'testqual1'
         )
         response = self.client.post(reverse('addHit'),{
             'hittype' : 1,
@@ -175,21 +194,20 @@ class AddHitViewTests(TestCase):
         #test if it is saved in the db(only single User in DB)
         hit_items = Hit.objects.all()
         self.assertEqual(hit_items.count(),1)
-        self.assertEqual(hit_items[0].hittype_id,'3CS3U1VE5KBFL43TLU25PEJOXNXS0M')
+        self.assertEqual(hit_items[0].hittype_id,'3CS3U1VE5KBFL43TLU25PEJOXNXS0M')    # create your own hittype id to get this test working
 
-    def test_addHitView_APICall(self):
+    def test_create_hit_with_hittype_apicall(self):
         mturk = mturk_client()
-        test_game = str(settings.BASE_DIR) + "/mturkapp/templates/games/question.xml"
-        question = open(test_game).read()
+        test =  str(settings.BASE_DIR) + "/mturkapp/templates/games/question.xml"
+        question = open(test).read()
         response = mturk.create_hit_with_hit_type(
-                HITTypeId = '3CS3U1VE5KBFL43TLU25PEJOXNXS0M',   # single hittype in the DB
-                MaxAssignments = 12 ,
-                LifetimeInSeconds= 600,
-                Question =question
-            )
-        # test create_hit_with_hit_type api call (As the response from the api is a dictionary)
-        self.assertEqual(response['HIT']['HITTypeId'] , '3CS3U1VE5KBFL43TLU25PEJOXNXS0M')
-
+                    HITTypeId = '3CS3U1VE5KBFL43TLU25PEJOXNXS0M',                  # create your own hittype id to get this test working
+                    MaxAssignments = 600 ,
+                    LifetimeInSeconds= 600,
+                    Question = question
+                )
+        
+      
 class QualificationsViewTests(TestCase):
 
     def test_qualificationsView_Health(self):
@@ -323,3 +341,15 @@ class ExperimentFilterViewTests(TestCase):
         self.assertEquals(response.status_code, 200)
         # test right template used
         self.assertTemplateUsed(response, 'experiments/experimentFilter.html')
+
+    def test_experimentFilterView_POST(self):
+        experiment_filter = Experiment.objects.create(
+            batch_id= '1ba05d73-0f19-4aa6-9195-037ed2391752',
+            title = 'fake batch'
+        )
+
+        response = self.client.post(reverse('experiments'),{
+            'batch_id': '1ba05d73-0f19-4aa6-9195-037ed2391752'
+        })
+        # Test that it shows Experiment batch
+        self.assertEqual(response.status_code , 200)
