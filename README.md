@@ -70,8 +70,8 @@ Under `mturksite/mturkapp/templates/games`, replace `{domain-name}` with your ow
 
 ## _Amazon MTurk_
 You're going to need 2 Amazon sandbox accounts for testing your specific applications/tasks.<br><br>
-**_Remember to access the sandbox accounts, you will first need to have an existing AWS account_**
-### Requester Sandbox Account:
-**_https://requestersandbox.mturk.com/_**<br>
-### Worker Sandbox Account:
+**_Remember to access the sandbox accounts, you will first need to have an existing AWS account_**<br><br>
+**Requester Sandbox Account:**<br>
+**_https://requestersandbox.mturk.com/_**<br><br>
+**Worker Sandbox Account:**<br>
 **_https://workersandbox.mturk.com/_**
