@@ -11,31 +11,6 @@ from django.conf import settings
 from faker import Faker
 
 
-# class SignupViewTests(TestCase):
-
-#     def test_signupView_Health(self):
-#         response = self.client.get(reverse('signup'))
-#         # test OK
-#         self.assertEquals(response.status_code, 200)
-#         # test right template used
-#         self.assertTemplateUsed(response, 'registration/signup.html')
-
-#     def test_signupView_POST(self):
-#         response = self.client.post(reverse('signup'), {
-#             'username': 'test',
-#             'email': 'test@test.com',
-#             'password1': 'testpassword1234',
-#             'password2': 'testpassword1234'
-#         })
-#         # test redirect to 'login' works
-#         self.assertEqual(response.status_code, 302)
-#         self.assertEqual(response.url, '/login/')
-#         users = get_user_model().objects.all()
-#         # test user is saved to DB (should be single user in test DB)
-#         self.assertEqual(users.count(), 1)
-#         self.assertEqual(users[0].username, 'test')
-
-
 class LoginTests(TestCase):
 
     def test_login_health(self):
