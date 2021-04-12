@@ -6,8 +6,10 @@ First, create a virtual environment in the root directory of you local repo.<br>
 Then, activate the virtual environment (assuming venv is the name of your virtual environment):<br>
 **Linux/Mac:** `source venv/bin/activate`<br>
 **Windows:** `./venv/Scripts/activate`<br><br>
-Then, while the venv is active, install dependencies from requirements.txt:<br>
-`pip install -r requirements.txt`<br>
+While the venv is active, install dependencies from requirements.txt:<br>
+`pip install -r requirements.txt`<br><br>
+To deactivate the virtual environment, simply run `deactivate`.<br><br>
+**_Note: ALL required libraries can be found in the `requirements.txt` file._**
 
 ## _To set environment variables_
 Create a `.env` file under `mturksite/mturksite` folder and set the following variables:
@@ -49,13 +51,21 @@ It is strongly recommended that you install **pgAdmin 4** **_(https://www.pgadmi
 # For Future Developers
 
 ## _Game_
+
 To make changes to our existing game, you must first install/download depending on your OS system.<br>
 ### Linux/Mac:
 `sudo apt update`<br>
 `sudo apt install redis-server`<br><br>
 **_Further documentation: https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04_**<br>
 ### Windows:
-Download Memurai **_(https://www.memurai.com/get-memurai)_**
+Download Memurai **_(https://www.memurai.com/get-memurai)_**<br><br>
+### Change Domain Name:
+Under `mturksite/mturkapp/templates/games`, you can replace `{domain-name}` with your own in 2 of the files shown below:<br>
+
+1. `question.xml` file on line 3, where `https://{domain-name}/waitPage`.<br>
+2. `game.html` file on line 56, where `wss://{domain-name}/ws/gamer`.<br>
+
+**_More on `channels`, `consumers.py` and `asgi()` programming: https://channels.readthedocs.io/en/stable/installation.html_**<br>
 
 ## _Amazon MTurk_
 You're going to need 2 Amazon sandbox accounts for testing your specific applications/tasks.<br><br>
