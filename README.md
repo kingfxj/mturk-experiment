@@ -34,10 +34,15 @@ When all is set and done, start our web app by running the following command:<br
 # PostgreSQL
 
 We are going to use PostgreSQL as a backend database as it is well-suited for production use.<br><br>
-To avoid the headache of everyone having to setup local a PostgreSQL server and attempting to keep data synced while developing, we are going to make use of a cloud PostgreSQL server hosted on a Cybera instance. **_WARNING: THIS MEANS THAT ANY DATABASE CHANGES WILL AFFECT EVERYONE._**<br><br>
-You will find the connection information for our PostgreSQL server in `mturksite/mturksite/settings.py` in the `DATABASES` dictionary.<br><br>
-It is strongly recommended that you install **pgAdmin 4** **_(https://www.pgadmin.org/)_** to use as a PostgreSQL management tool. Once installed, make sure you
-connect to our Cybera hosted PSQL server using the information found in the settings file above. Remember that you will have to use a VPN tool in order to connect if you do not have IPV6 (see tutorials on eClass).
+
+To avoid the headache of everyone having to setup local a PostgreSQL server and attempting to keep data synced while developing, we are going to make use of a cloud PostgreSQL server hosted on a Cybera instance. **_WARNING: THIS MEANS THAT ANY DATABASE CHANGES WILL AFFECT EVERYONE._**<br>
+
+## _Connection Information_
+You will find the connection information for our PostgreSQL server in `mturksite/mturksite/settings.py` in the `DATABASES` dictionary.
+
+## _Installation_
+It is strongly recommended that you install **pgAdmin 4** **_(https://www.pgadmin.org/)_** to use as a PostgreSQL management tool. Once installed, make sure you connect to our Cybera hosted PSQL server using the information found in the settings file above.<br><br>
+**_Remember that you will have to use a VPN tool in order to connect if you do not have IPV6 (see tutorials on eClass)._**
 
 <br>
 
