@@ -90,7 +90,7 @@ def experimentFilterView(request):
     if request.method == "POST":
         experiment = request.POST.get('batch')
         request.session['experiment'] = experiment
-        return redirect(experimentFilterView)
+        return redirect(experimentsView)
     else:   
         experiment_items = Experiment.objects.all() 
         return render(request, 'experiments/experimentFilter.html', {"experiment_items": experiment_items})
@@ -107,7 +107,6 @@ def hittypesView(request):
     # filter by experiment
     try:
         experimentFilter = request.session['experiment'] if ('experiment' in request.session) else ""
-        print(experimentFilter)
         # select all hittype objects accordingly
         hittypes_filtered = []
         for item in hittype_items:
@@ -118,26 +117,56 @@ def hittypesView(request):
         messages.warning(request,"No Experiment Filter Selected")
     # retrieve queries for all hittype fields
     if request.method == "POST":
-        title = request.POST.get('title')               
-        hittype_id = request.POST.get('hittype_id')       
-        description = request.POST.get('description')      
-        keyword = request.POST.get('keyword')             
-        reward = request.POST.get('reward')                
-        qualifications = request.POST.get('qualifications')
-        batch = request.POST.get('batch')                   
+        titleFilter = request.POST.get('title')               
+        hittype_idFilter = request.POST.get('hittype_id')       
+        descriptionFilter = request.POST.get('description')      
+        keywordFilter = request.POST.get('keyword')             
+        rewardFilter = request.POST.get('reward')                
+        qualificationsFilter = request.POST.get('qualifications')
+        batchFilter = request.POST.get('batch')                   
         # filter the objects according to the sort
-        if title != '' and title is not None:
-            hittype_items = hittype_items.filter(title__icontains=title)
-        if hittype_id != '' and hittype_id is not None:
-            hittype_items = hittype_items.filter(hittype_id__icontains=hittype_id)
-        if description != '' and description is not None:
-            hittype_items = hittype_items.filter(description__icontains=description)
-        if keyword != '' and keyword is not None:
-            hittype_items = hittype_items.filter(keyword__icontains=keyword)
-        if qualifications != '' and qualifications is not None:
-            hittype_items = hittype_items.filter(qualifications__icontains=qualifications)
-        if batch != '' and batch is not None:
-            hittype_items = hittype_items.filter(batch__icontains=batch)
+        if titleFilter != '' and titleFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if titleFilter.lower() in hittype.title.lower():
+                    temp.append(hittype)
+            hittype_items = temp
+        if hittype_idFilter != '' and hittype_idFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if hittype_idFilter.lower() in hittype.hittype_id.lower():
+                    temp.append(hittype)
+            hittype_items = temp
+        if descriptionFilter != '' and descriptionFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if descriptionFilter.lower() in hittype.description.lower():
+                    temp.append(hittype)
+            hittype_items = temp
+        if keywordFilter != '' and keywordFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if keywordFilter.lower() in hittype.keyword.lower():
+                    temp.append(hittype)
+            hittype_items = temp
+        if rewardFilter != '' and rewardFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if rewardFilter.lower() in hittype.reward.lower():
+                    temp.append(hittype)
+            hittype_items = temp
+        if qualificationsFilter != '' and qualificationsFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if qualificationsFilter.lower() in hittype.qualifications.lower():
+                    temp.append(hittype)
+            hittype_items = temp
+        if batchFilter != '' and batchFilter is not None:
+            temp = []
+            for hittype in hittype_items:
+                if batchFilter.lower() in hittype.batch_id.lower():
+                    temp.append(hittype)
+            hittype_items = temp
     # paginate by 5
     paginator = Paginator(hittype_items, 5)
     page_number = request.GET.get('page')
@@ -263,19 +292,35 @@ def hitsView(request):
         messages.warning(request, "No Experiment Filter Selected")
     # retrieve queries for all hit fields
     if request.method == "POST":
-        hit_id = request.POST.get('hit_id')                          
-        hittype_id = request.POST.get('hittype_id')               
-        max_assignments = request.POST.get('max_assignments')         
-        lifetime_in_seconds = request.POST.get('lifetime_in_seconds')  
+        hit_idFilter = request.POST.get('hit_id')                          
+        hittype_idFilter = request.POST.get('hittype_id')               
+        max_assignmentsFilter = request.POST.get('max_assignments')         
+        lifetime_in_secondsFilter = request.POST.get('lifetime_in_seconds')  
         # filter the objects according to the sort
-        if hit_id != '' and hit_id is not None:
-            hit_items = hit_items.filter(hit_id__icontains=hit_id)
-        if hittype_id != '' and hittype_id is not None:
-            hit_items = hit_items.filter(hittype_id__icontains=hittype_id)
-        if max_assignments != '' and max_assignments is not None:
-            hit_items = hit_items.filter(max_assignments__icontains=max_assignments)
-        if lifetime_in_seconds != '' and lifetime_in_seconds is not None:
-            hit_items = hit_items.filter(lifetime_in_seconds__icontains=lifetime_in_seconds)
+        if hit_idFilter != '' and hit_idFilter is not None:
+            temp = []
+            for hit in hit_items:
+                if hit_idFilter.lower() in hit.hit_id.lower():
+                    temp.append(hit)
+            hit_items = temp
+        if hittype_idFilter != '' and hittype_idFilter is not None:
+            temp = []
+            for hit in hit_items:
+                if hittype_idFilter.lower() in hit.hittype_id.lower():
+                    temp.append(hit)
+            hit_items = temp
+        if max_assignmentsFilter != '' and max_assignmentsFilter is not None:
+            temp = []
+            for hit in hit_items:
+                if max_assignmentsFilter in str(hit.max_assignments):
+                    temp.append(hit)
+            hit_items = temp
+        if lifetime_in_secondsFilter != '' and lifetime_in_secondsFilter is not None:
+            temp = []
+            for hit in hit_items:
+                if lifetime_in_secondsFilter.lower() in hit.lifetime_in_seconds.lower():
+                    temp.append(hit)
+            hit_items = temp
     # paginate by 10
     paginator = Paginator(hit_items, 10)
     page_number = request.GET.get('page')
@@ -379,7 +424,30 @@ def asgmtsActiveView(request):
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             completed_assignments.append(assignment)
-
+    # retrieve queries for all assignment fields
+    if request.method == "POST":
+        assign_idFilter = request.POST.get('assign_id')   
+        worker_idFilter = request.POST.get('worker_id')   
+        hit_idFilter = request.POST.get('hit_id')                          
+        # filter the objects according to the sort
+        if assign_idFilter != '' and assign_idFilter is not None:
+            temp = []
+            for assignment in activeassign_items:
+                if assign_idFilter.lower() in assignment.assign_id.lower():
+                    temp.append(assignment)
+            activeassign_items = temp
+        if worker_idFilter != '' and worker_idFilter is not None:
+            temp = []
+            for assignment in activeassign_items:
+                if worker_idFilter.lower() in assignment.worker_id.lower():
+                    temp.append(assignment)
+            activeassign_items = temp
+        if hit_idFilter != '' and hit_idFilter is not None:
+            temp = []
+            for assignment in activeassign_items:
+                if hit_idFilter.lower() in assignment.hit_id.lower():
+                    temp.append(assignment)
+            activeassign_items = temp
     # delete active assignments if it's completed
     active_assignment = AssignStatModel.objects.all()
     for obj1 in active_assignment:
@@ -587,8 +655,6 @@ def qualificationsView(request):
     :return: Qualification view page
     """
     mturk = mturk_client()
-    qual_fields = ['nickname', 'description', 'comparator', 'int_value', 'country', 'subdivision']
-    qual_info = []
     # api call - gets all qualifications created by admin
     try:
         qualifications = mturk.list_qualification_types(  
@@ -618,23 +684,37 @@ def qualificationsView(request):
         except:
             print("Unavailable, please try again later.")
 
+    # retrieve queries for all qualification fields
     if request.method == "POST":
-        # append selected fields
-        for field in qual_fields:
-            qual_info.append(request.POST.get(field))
+        nameFilter = request.POST.get('Name')               
+        qualificationTypeIdFilter = request.POST.get('QualificationTypeId')       
+        descriptionFilter = request.POST.get('Description')      
+        qualificationTypeStatusFilter = request.POST.get('QualificationTypeStatus')              
         # filter the objects according to the sort
-        if qual_info[0] != '' and qual_info[0] is not None:
-            qualifications = qualifications.filter(nickname__icontains=qual_info[0])
-        if qual_info[1] != '' and qual_info[1] is not None:
-            qualifications = qualifications.filter(qualID__icontains=qual_info[1])
-        if qual_info[2] != '' and qual_info[2] is not None:
-            qualifications = qualifications.filter(comparator__icontains=qual_info[2])
-        if qual_info[3] != '' and qual_info[3] is not None:
-            qualifications = qualifications.filter(int_value__icontains=qual_info[3])
-        if qual_info[4] != '' and qual_info[4] is not None:
-            qualifications = qualifications.filter(country__icontains=qual_info[4])
-        if qual_info[5] != '' and qual_info[5] != None:
-            qualifications = qualifications.filter(subdivision__icontains=qual_info[5])
+        if nameFilter != '' and nameFilter is not None:
+            temp = []
+            for qualification in qualifications['QualificationTypes']:
+                if nameFilter.lower() in qualification['Name'].lower():
+                    temp.append(qualification)
+            qualifications['QualificationTypes'] = temp
+        if qualificationTypeIdFilter != '' and qualificationTypeIdFilter is not None:
+            temp = []
+            for qualification in qualifications['QualificationTypes']:
+                if qualificationTypeIdFilter.lower() in qualification['QualificationTypeId'].lower():
+                    temp.append(qualification)
+            qualifications['QualificationTypes'] = temp
+        if descriptionFilter != '' and descriptionFilter is not None:
+            temp = []
+            for qualification in qualifications['QualificationTypes']:
+                if descriptionFilter.lower() in qualification['Description'].lower():
+                    temp.append(qualification)
+            qualifications['QualificationTypes'] = temp
+        if qualificationTypeStatusFilter != '' and qualificationTypeStatusFilter is not None:
+            temp = []
+            for qualification in qualifications['QualificationTypes']:
+                if qualificationTypeStatusFilter.lower() in qualification['QualificationTypeStatus'].lower():
+                    temp.append(qualification)
+            qualifications['QualificationTypes'] = temp
     # paginate by 10
     paginator = Paginator(qualifications['QualificationTypes'], 10)
     page_number = request.GET.get('page')

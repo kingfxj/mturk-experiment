@@ -15,23 +15,15 @@
                 {% csrf_token %}
                 <td>
                     Assignment ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="AssignmentId">
                 </td>
                 <td>
                     Worker ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="WorkerId">
                 </td>
                 <td>
                     Accepted Time:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="AcceptTime">
                 </td>
                 <td>
                     Submitted Time:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="SubmitTime">
-                </td>
-                <td>
-                    <br>
-                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
             </form>
         </tr>
@@ -43,7 +35,6 @@
                     <td>{{ item.AcceptTime }}</td>
                     <td>{{ item.SubmitTime }}</td>
                     {% comment %} <td><a href="{% url 'workerAssignQualView' item.WorkerId %}"><button type="button" class="btn btn-secondary">Assign Qualifications</button></td>></a> {% endcomment %}
-                    <td><center></center></td>
                 </tr>
             {% endfor %}    
         {% endif %}
