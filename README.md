@@ -50,7 +50,7 @@ It is strongly recommended that you install **pgAdmin 4** **_(https://www.pgadmi
 
 # For Future Developers
 
-## _Game_
+## _Game - OS Installations_
 
 To make changes to our existing game, you must first install/download depending on your OS system.<br>
 ### Linux/Mac:
@@ -58,14 +58,15 @@ To make changes to our existing game, you must first install/download depending 
 `sudo apt install redis-server`<br><br>
 **_Further documentation: https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04_**<br>
 ### Windows:
-Download Memurai **_(https://www.memurai.com/get-memurai)_**<br><br>
-### Changing Domain Name:
+Download Memurai **_(https://www.memurai.com/get-memurai)_**
+
+## _Game - Changing Domain Name_
 Under `mturksite/mturkapp/templates/games`, you can replace `{domain-name}` with your own in 2 of the files shown below:<br>
 
 1. `question.xml` file on line 3, where `https://{domain-name}/waitPage`.<br>
 2. `game.html` file on line 56, where `wss://{domain-name}/ws/gamer`.<br>
 
-**_More on `channels`, `consumers.py` and `asgi()` programming: https://channels.readthedocs.io/en/stable/installation.html_**<br>
+**_More on `channels`, `consumers.py` and `asgi()` programming: https://channels.readthedocs.io/en/stable/installation.html_**<br><br>
 
 ## _Amazon MTurk_
 You're going to need 2 Amazon sandbox accounts for testing your specific applications/tasks.<br><br>
