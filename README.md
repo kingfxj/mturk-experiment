@@ -59,7 +59,7 @@ To make changes to our existing game, you must first install/download depending 
 **_Further documentation: https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04_**<br>
 ### Windows:
 Download Memurai **_(https://www.memurai.com/get-memurai)_**<br><br>
-### Change Domain Name:
+### Changing Domain Name:
 Under `mturksite/mturkapp/templates/games`, you can replace `{domain-name}` with your own in 2 of the files shown below:<br>
 
 1. `question.xml` file on line 3, where `https://{domain-name}/waitPage`.<br>
