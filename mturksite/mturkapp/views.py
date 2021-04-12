@@ -379,23 +379,7 @@ def asgmtsActiveView(request):
     for hit_id in hits_filtered:
         for assignment in mturk.list_assignments_for_hit(HITId=hit_id)['Assignments']:
             completed_assignments.append(assignment)
-   
-    # retrieve queries for all assignment fields
-    if request.method == "POST":
-        assign_id = request.POST.get('assign_id')   
-        worker_id = request.POST.get('worker_id')   
-        hit_id = request.POST.get('hit_id')                          
-        flag = request.POST.get('flag')  
-        print(activeassign_items)
-        # filter the objects according to the sort
-        if assign_id != '' and assign_id is not None:
-            activeassign_items = activeassign_items.filter(assign_id__icontains=assign_id)
-        if worker_id != '' and worker_id is not None:
-            activeassign_items = activeassign_items.filter(worker_id__icontains=worker_id)
-        if hit_id != '' and hit_id is not None:
-            activeassign_items = activeassign_items.filter(hit_id__icontains=hit_id)
-        if flag != '' and flag is not None:
-            activeassign_items = activeassign_items.filter(flag__icontains=flag)
+
     # delete active assignments if it's completed
     active_assignment = AssignStatModel.objects.all()
     for obj1 in active_assignment:

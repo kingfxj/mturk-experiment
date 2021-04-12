@@ -15,19 +15,12 @@
             <form class="d-flex" method="POST">
                 <td>
                     HIT ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
                 </td>
                 <td>
                     Assignment ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="assign_id">
                 </td>
                 <td>
                     Worker ID:
-                    <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="worker_id">
-                </td>
-                <td>
-                    <br>
-                    <input class="btn btn-primary btn-sm" type="submit" value="Search">
                 </td>
              </form>
         </tr>
@@ -37,7 +30,6 @@
                         <td> {{ item.hit_id }} </td>
                         <td> {{ item.assign_id }} </td>
                         <td> {{ item.worker_id }} </td>
-                        <td><center></center></td>
                     </tr>
                 {% endfor %}
             {% endif %}
