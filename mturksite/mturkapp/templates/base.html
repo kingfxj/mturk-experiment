@@ -69,10 +69,6 @@
                         <li class="nav-item">
                             <a class="nav-link active text-info" href="{% url 'workersView' %}">Workers</a>
                         </li>
-                        <li class="nav-link active text-warning"><strong>|</strong></li>
-                        <li class="nav-item">
-                            <a class="nav-link active text-info" href="{% url 'lobby' %}">Lobby</a>
-                        </li>
                     </ul>
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-auto">
                         <li class="nav-item">
@@ -95,7 +91,13 @@
                 <!-- Data is not shown if they are not logged in -->
                 {% block login %}
                 {% endblock %}
-                <center><h2>Please <a href="{% url 'login' %}">login</a> to continue.</h2></center><br>
+                <center>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+                    </svg>
+                    <br></br>
+                    <h2>Please <a href="{% url 'login' %}">login</a> to continue.</h2>
+                </center>
             {% endif %}
         </div>
     </body>

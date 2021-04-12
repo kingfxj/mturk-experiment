@@ -95,6 +95,9 @@ DATABASES = {
         'PASSWORD': 'jd1zIJrLZojgUQmUo83E',
         'HOST': env('HOST'),
         'PORT': '5432',
+        'TEST': {
+            'NAME':'mytestdatabase'
+        }
     }
 }
 
@@ -174,11 +177,11 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': str(BASE_DIR) + "/logs/server.log",
+            'filename': str(BASE_DIR) + "/logs/users.log",
         },
     },
     'loggers': {
-        'django': {
+        'users': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,

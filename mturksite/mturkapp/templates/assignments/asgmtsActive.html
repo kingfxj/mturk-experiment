@@ -13,6 +13,7 @@
     <table class="table table-hover table-bordered table-primary" style="text-align: center">
         <tr>
             <form class="d-flex" method="POST">
+                {% csrf_token %}
                 <td>
                     HIT ID:
                     <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="hit_id">
