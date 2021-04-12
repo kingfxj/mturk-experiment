@@ -61,7 +61,7 @@ To make changes to our existing game, you must first install/download depending 
 Download Memurai **_(https://www.memurai.com/get-memurai)_**
 
 ## _Game - Changing Domain Name_
-Under `mturksite/mturkapp/templates/games`, you can replace `{domain-name}` with your own in 2 of the files shown below:<br>
+Under `mturksite/mturkapp/templates/games`, replace `{domain-name}` with your own in 2 of the files shown below:<br>
 
 1. `question.xml` file on line 3, where `https://{domain-name}/waitPage`.<br>
 2. `game.html` file on line 56, where `wss://{domain-name}/ws/gamer`.<br>
