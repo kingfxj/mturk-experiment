@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -51,6 +52,7 @@
 			var worker = '{{player}}'  // Get the worker id
 			var player = '{{name}}'   // Get to know whether the player has 'X' or 'O'
             var assign_id = '{{assign_id}}' // Get the assignment id
+            var moves = []       //create a list to save the moves of players
 
             // start a websocket 
             let socket = new WebSocket('wss://ecfa2dc4a5b3.ngrok.io/ws/gamer/' + hit_id) // Note: change the domain name in  "wss://{domain-name}/ws/gamer"
@@ -62,6 +64,8 @@
                 elem.addEventListener("click" , function (event){
                     setText(event.path[0].getAttribute('data-cell-index') , player)
                 })
+                //save the moves
+                //moves.push(event.path[0].getAttribute('data-cell-index'))
             })
 
             // To check Game End
@@ -110,10 +114,34 @@
                 // If won, submit data to MTurk
                 if(won){
                     var data = {'type' : 'end' , 'player' : player, 'worker_id': worker , 'assignmentId':assign_id,'result':'won'}
+                    var result = {'player':player, 'moves':moves}
                     socket.send(JSON.stringify({data}))
                     swal("Good job!" , "You won" , "success").then(function(){
                         document.getElementById("result").innerHTML = 'won'
                         document.forms.hitForm.submit();
+                    }).then(function(){
+                        var result_hit = this.hit_id
+                        var result_assign = this.assign_id
+                        var result_worker = this.worker_id
+                        var result_data = JSON.stringify({result})
+                        $.ajax({
+                            type: "GET",
+                            url: '/saveresult',
+                            data: {
+                                "result_hit": result_hit,
+                                "result_assign":result_assign,
+                                "result_worker":result_worker,
+                                "result_data":result_data,
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                // any process in data
+                                console.log("save data successfull")
+                            },
+                            failure: function () {
+                                console.log("save data failure");
+                            }
+                        });
                     });
                 }
                 checkGameEnd();
@@ -155,15 +183,62 @@
             // To display Json objects on console and also submit data for loser and draw
             socket.onmessage = function (e){
                 var data = JSON.parse(e.data)
-                console.log(data)
+                var result = {'player':player, 'moves':moves}
+                console.log(result)
                 if(data.payload.type == 'end' && data.payload.player !== player && data.payload.worker !== worker && data.payload.assign_id !== assign_id){
                     swal("Sorry!" , "You lost" , "error").then(function(){
                         document.getElementById("result").innerHTML = 'lost'
                         document.forms.hitForm.submit();                    
-                    });
+                    }).then(function(){
+                        var result_hit = this.hit_id
+                        var result_assign = this.assign_id
+                        var result_worker = this.worker_id
+                        var result_data = JSON.stringify({result})
+                        $.ajax({
+                            type: "GET",
+                            url: '/saveresult',
+                            data: {
+                                "result_hit": result_hit,
+                                "result_assign":result_assign,
+                                "result_worker":result_worker,
+                                "result_data":result_data,
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                // any process in data
+                                console.log("save data successfull")
+                            },
+                            failure: function () {
+                                console.log("save data failure");
+                            }
+                        });
+                    })
                 }else if(data.payload.type == 'over'){
                     swal("Game over!" , "Game end no one won" , "warning").then(function(){
                         document.forms.hitForm.submit();    
+                    }).then(function(){
+                        var result_hit = this.hit_id
+                        var result_assign = this.assign_id
+                        var result_worker = this.worker_id
+                        var result_data = JSON.stringify({result})
+                        $.ajax({
+                            type: "GET",
+                            url: '/saveresult',
+                            data: {
+                                "result_hit": result_hit,
+                                "result_assign":result_assign,
+                                "result_worker":result_worker,
+                                "result_data":result_data,
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                // any process in data
+                                console.log("save data successfull")
+                            },
+                            failure: function () {
+                                console.log("save data failure");
+                            }
+                        });
                     })
                     return;
                 }else if(data.payload.type == 'running' &&  data.payload.player !== player && data.payload.worker !==worker && data.payload.assign_id !== assign_id){

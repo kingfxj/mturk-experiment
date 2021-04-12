@@ -1,4 +1,4 @@
-    """mturksite URL Configuration
+"""mturksite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -35,4 +35,5 @@ urlpatterns = [
     path('workers/workerAssignQualifications/<worker_id>' , views.workerAssignQualView , name = 'workerAssignQualView'),
     path('waitPage/', views.waitPageView, name='waitPage'),
     path('game/<hit_id>', views.gameView, name='game'),
+    path('saveresult/', views.saveResultView , name= 'saveresult'),
 ]

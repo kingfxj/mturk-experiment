@@ -855,3 +855,15 @@ def gameView(request , hit_id):
 
     context = {"player": player , "hit_id":hit_id,"name":name , "assign_id":assign_id}
     return render(request, 'games/game.html',context)
+
+def saveResultView(request):
+    result_worker = request.GET.get('result_worker', None)
+    result_hit = request.GET.get('result_hit', None)
+    result_assign = request.GET.get('result_assign', None)
+    result_data = request.GET.get('result_data', None)
+    result = GameResultModel.objects.create(worker_id = result_worker, hit_id=result_hit, assign_id = result_assign, result = result_data)
+    print(result)
+    data = {
+            # Data that you want to send to javascript function
+    }
+    return JsonResponse(data)

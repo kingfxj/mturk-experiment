@@ -1,5 +1,6 @@
 '''
 the test codes reference https://github.com/django/channels/blob/main/tests/test_testing.py
+pip install pytest before run
 '''
 
 import asyncio
