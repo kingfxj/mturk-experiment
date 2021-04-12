@@ -35,7 +35,7 @@ When all is set and done, start our web app by running the following command:<br
 
 # PostgreSQL
 
-We are going to use PostgreSQL as a backend database as it is well-suited for production use.<br><br>
+We are going to use PostgreSQL as a backend database as it is well-suited for production use.<br>
 
 To avoid the headache of everyone having to setup local a PostgreSQL server and attempting to keep data synced while developing, we are going to make use of a cloud PostgreSQL server hosted on a Cybera instance. **_WARNING: THIS MEANS THAT ANY DATABASE CHANGES WILL AFFECT EVERYONE._**<br>
 
