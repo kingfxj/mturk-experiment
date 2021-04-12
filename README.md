@@ -26,7 +26,7 @@ Create a `logs` folder under `mturksite`, as well as a `users.log` file under th
 (Should look like this: `mturksite/logs/users.log`)
 
 ## _To run our web app_
-Make sure to cd into the correct folder of `mturksite/mturkapp`<br>
+Make sure to cd into the correct folder of `mturksite/mturkapp`.<br>
 When all is set and done, start our web app by running the following command:<br>
 `python manage.py runserver`<br><br>
 **_Remember to set your editor/IDE to use this virtual environment and have it activated when necessary while developing_**
