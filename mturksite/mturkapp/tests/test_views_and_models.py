@@ -238,3 +238,21 @@ class ExperimentFilterViewTests(TestCase):
         self.assertEquals(response.status_code, 200)
         # test right template used
         self.assertTemplateUsed(response, 'experiments/experimentFilter.html')
+
+class GameViewTests(TestCase):
+
+    def test_gameView_Health(self):
+        response = self.client.get(reverse('game'))
+        # test OK
+        self.assertEquals(response.status_code, 200)
+        # test right template used
+        self.assertTemplateUsed(response, 'games/game.html')
+
+class waitPageViewTests(TestCase):
+
+    def test_waitPageView_Health(self):
+        response = self.client.get(reverse('waitPage'))
+        # test OK
+        self.assertEquals(response.status_code, 200)
+        # test right template used
+        self.assertTemplateUsed(response, 'games/waitPage.html')
