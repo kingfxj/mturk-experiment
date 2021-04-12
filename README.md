@@ -2,7 +2,7 @@
 
 ## _To install dependencies_
 We are going to use a python virtual environment to avoid dependency problems.<br>
-First, create a virtual environment in the root directory of you local repo.<br><br>
+First, create a virtual environment in the root directory of your local repo.<br><br>
 Then, activate the virtual environment (assuming venv is the name of your virtual environment):<br>
 **Linux/Mac:** `source venv/bin/activate`<br>
 **Windows:** `./venv/Scripts/activate`<br><br>
