@@ -1,6 +1,6 @@
 # Final Presentation
-PowerPoint: https://drive.google.com/file/d/1V-UaVSc2xPp71SJy4apnj66VxT37KPbc/view?usp=sharing
-Recording: https://drive.google.com/file/d/1gZCv6wB6rPwE7v62f-2A2V9qIJeXU0Ly/view?usp=sharing
+PowerPoint: https://drive.google.com/file/d/1V-UaVSc2xPp71SJy4apnj66VxT37KPbc/view?usp=sharing <br>
+Recording: https://drive.google.com/file/d/1gZCv6wB6rPwE7v62f-2A2V9qIJeXU0Ly/view?usp=sharing <br>
 Entire Folder (just in case): https://drive.google.com/drive/folders/1lxULhO0KueeEpq-AXBjFrFYFuzbEM3Ds?usp=sharing
 
 # Setting Up
